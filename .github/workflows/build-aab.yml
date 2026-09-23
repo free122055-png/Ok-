@@ -36,7 +36,7 @@ jobs:
 
       - name: Complete Resource Sanitize
         run: |
-          echo "=== Sanitizing and generating valid Android images ==="
+          echo "=== Sanitizing Resources ==="
           sudo apt-get update && sudo apt-get install -y imagemagick
           rm -rf android/app/src/main/res/mipmap-anydpi-v26/*.png
           for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
@@ -50,106 +50,30 @@ jobs:
             convert -size 480x800 xc:"#1a1b1f" PNG32:"$splash_file"
           done
 
-      - name: Prepare and Validate Keystore
-        env:
-          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-        run: |
-          echo "=== Preparing Keystore ==="
-          mkdir -p android/app
-          KEYSTORE_PATH="android/app/release.keystore"
-          
-          # 1. Try to inject from Secret if provided
-          if [ ! -z "$RELEASE_KEYSTORE_BASE64" ] && [ ${#RELEASE_KEYSTORE_BASE64} -gt 100 ]; then
-            echo "Injecting keystore from RELEASE_KEYSTORE_BASE64 secret..."
-            echo "$RELEASE_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
-          else
-            echo "Secret missing or invalid. Checking for local keystore..."
-            if [ ! -f "$KEYSTORE_PATH" ]; then
-              echo "CRITICAL ERROR: No keystore file found at $KEYSTORE_PATH and no valid Secret provided!"
-              exit 1
-            fi
-            echo "Using existing local keystore file."
-          fi
-
-          # 2. Check file size
-          FILE_SIZE=$(stat -c%s "$KEYSTORE_PATH")
-          echo "Keystore file size: $FILE_SIZE bytes"
-          if [ "$FILE_SIZE" -lt 100 ]; then
-            echo "CRITICAL ERROR: Keystore file is too small ($FILE_SIZE bytes). It is likely corrupt or empty."
-            exit 1
-          fi
-
-          # 3. Validate Password and Alias
-          STOREPASS="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
-          ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
-          
-          echo "Validating keystore password and alias..."
-          if ! keytool -list -v -keystore "$KEYSTORE_PATH" -storepass "$STOREPASS" > keystore_debug.txt 2>&1; then
-            echo "CRITICAL ERROR: Failed to unlock keystore! The password might be wrong."
-            echo "--- Keytool Output ---"
-            cat keystore_debug.txt
-            exit 1
-          fi
-
-          if ! grep -q "Alias name: $ALIAS" keystore_debug.txt; then
-            echo "CRITICAL ERROR: Alias '$ALIAS' not found in keystore!"
-            echo "Available aliases:"
-            grep "Alias name:" keystore_debug.txt
-            exit 1
-          fi
-          echo "Keystore validation SUCCESSFUL."
-
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x android/gradlew
 
-      - name: Build Unsigned AAB and APK
+      - name: Build Signed AAB and APK
         run: |
           cd android
-          echo "=== Running Gradle Build (Unsigned) ==="
-          ./gradlew bundleRelease assembleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
+          echo "=== Starting Official Gradle Build ==="
+          ./gradlew clean bundleRelease assembleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
 
-      - name: Sign Artifacts (Manual Jarsigner)
-        env:
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+      - name: Verify Signatures
         run: |
-          KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/release.keystore"
-          STOREPASS="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
-          ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
-          KEYPASS="${RELEASE_KEY_PASSWORD:-almayadin123}"
-          
-          echo "=== Manual Signing Process ==="
-          
-          # Sign AAB
+          echo "=== Verifying AAB Signature ==="
           AAB_FILE=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
-          if [ -z "$AAB_FILE" ]; then echo "AAB not found"; exit 1; fi
-          echo "Signing $AAB_FILE..."
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore "$KEYSTORE_PATH" -storepass "$STOREPASS" -keypass "$KEYPASS" \
-            "$AAB_FILE" "$ALIAS"
+          jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified"
           
-          # Sign APK
+          echo "=== Verifying APK Signature ==="
           APK_FILE=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
-          if [ -z "$APK_FILE" ]; then echo "APK not found"; exit 1; fi
-          echo "Signing $APK_FILE..."
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore "$KEYSTORE_PATH" -storepass "$STOREPASS" -keypass "$KEYPASS" \
-            "$APK_FILE" "$ALIAS"
+          jarsigner -verify -verbose -certs "$APK_FILE" | grep -i "jar verified"
 
-          echo "=== Verifying Signatures ==="
-          jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified" || (echo "AAB Verification Failed"; exit 1)
-          jarsigner -verify -verbose -certs "$APK_FILE" | grep -i "jar verified" || (echo "APK Verification Failed"; exit 1)
-          
-          mkdir -p final-artifacts
-          cp "$AAB_FILE" final-artifacts/app-release.aab
-          cp "$APK_FILE" final-artifacts/app-release.apk
-
-      - name: Upload Signed Artifacts
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Release-Builds
-          path: final-artifacts/
+          path: |
+            android/app/build/outputs/bundle/release/*.aab
+            android/app/build/outputs/apk/release/*.apk
           retention-days: 30
