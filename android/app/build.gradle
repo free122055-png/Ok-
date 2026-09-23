@@ -21,18 +21,8 @@ android {
         targetCompatibility JavaVersion.VERSION_21
     }
 
-    signingConfigs {
-        release {
-            storeFile file('release.keystore')
-            storePassword project.findProperty('RELEASE_STORE_PASSWORD') ?: System.getenv("RELEASE_KEYSTORE_PASSWORD") ?: 'almayadin123'
-            keyAlias project.findProperty('RELEASE_KEY_ALIAS') ?: System.getenv("RELEASE_KEY_ALIAS") ?: 'almayadin'
-            keyPassword project.findProperty('RELEASE_KEY_PASSWORD') ?: System.getenv("RELEASE_KEY_PASSWORD") ?: 'almayadin123'
-        }
-    }
-
     buildTypes {
         release {
-            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
