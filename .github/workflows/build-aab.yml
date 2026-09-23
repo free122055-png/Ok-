@@ -53,27 +53,53 @@ jobs:
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x android/gradlew
 
-      - name: Build Signed AAB and APK
+      - name: Build Unsigned AAB and APK
         run: |
           cd android
-          echo "=== Starting Official Gradle Build ==="
+          echo "=== Building Unsigned Artifacts ==="
           ./gradlew clean bundleRelease assembleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
 
-      - name: Verify Signatures
+      - name: Manual Signing (Jarsigner)
+        env:
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: |
-          echo "=== Verifying AAB Signature ==="
-          AAB_FILE=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
-          jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified"
+          KEYSTORE="android/app/release.keystore"
+          # Standard fallbacks if secrets are not set
+          STOREPASS="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
+          ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
+          KEYPASS="${RELEASE_KEY_PASSWORD:-almayadin123}"
+
+          echo "=== Starting Manual Signing ==="
           
-          echo "=== Verifying APK Signature ==="
+          # Sign AAB
+          AAB_FILE=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
+          if [ -z "$AAB_FILE" ]; then echo "AAB file not found"; exit 1; fi
+          echo "Signing AAB: $AAB_FILE"
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore "$KEYSTORE" -storepass "$STOREPASS" -keypass "$KEYPASS" \
+            "$AAB_FILE" "$ALIAS"
+
+          # Sign APK
           APK_FILE=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
-          jarsigner -verify -verbose -certs "$APK_FILE" | grep -i "jar verified"
+          if [ -z "$APK_FILE" ]; then echo "APK file not found"; exit 1; fi
+          echo "Signing APK: $APK_FILE"
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore "$KEYSTORE" -storepass "$STOREPASS" -keypass "$KEYPASS" \
+            "$APK_FILE" "$ALIAS"
+
+          echo "=== Verifying Signatures ==="
+          jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified" || exit 1
+          jarsigner -verify -verbose -certs "$APK_FILE" | grep -i "jar verified" || exit 1
+          
+          mkdir -p final-artifacts
+          cp "$AAB_FILE" final-artifacts/app-release.aab
+          cp "$APK_FILE" final-artifacts/app-release.apk
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Release-Builds
-          path: |
-            android/app/build/outputs/bundle/release/*.aab
-            android/app/build/outputs/apk/release/*.apk
+          path: final-artifacts/
           retention-days: 30
