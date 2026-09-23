@@ -78,6 +78,14 @@ jobs:
           console.log('Keystore written successfully to android/app/release.keystore');
           "
 
+      - name: Verify Keystore Content
+        env:
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+        run: |
+          STOREPASS="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
+          echo "Checking keystore aliases..."
+          keytool -list -v -keystore android/app/release.keystore -storepass "$STOREPASS" | grep "Alias name" || echo "Could not list aliases. Password might be wrong."
+
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x android/gradlew
 
@@ -88,22 +96,20 @@ jobs:
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: |
           cd android
-          # Export env vars for Gradle to pick up
-          export RELEASE_KEYSTORE_PASSWORD="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
-          export RELEASE_KEY_ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
-          export RELEASE_KEY_PASSWORD="${RELEASE_KEY_PASSWORD:-almayadin123}"
+          STOREPASS="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
+          ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
+          KEYPASS="${RELEASE_KEY_PASSWORD:-almayadin123}"
           
           echo "=== Starting Gradle Build ==="
-          ./gradlew bundleRelease assembleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
+          ./gradlew bundleRelease assembleRelease --no-daemon \
+            -PRELEASE_STORE_PASSWORD="$STOREPASS" \
+            -PRELEASE_KEY_ALIAS="$ALIAS" \
+            -PRELEASE_KEY_PASSWORD="$KEYPASS" \
+            -Pandroid.suppressUnsupportedCompileSdk=36
 
       - name: Verify AAB Signature
         run: |
-          AAB_PATH="android/app/build/outputs/bundle/release/app-release.aab"
-          if [ ! -f "$AAB_PATH" ]; then
-            # Try to find it if name is different
-            AAB_PATH=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
-          fi
-          
+          AAB_PATH=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
           if [ -z "$AAB_PATH" ]; then
             echo "ERROR: AAB file not found!"
             exit 1
@@ -113,7 +119,7 @@ jobs:
           jarsigner -verify -verbose -certs "$AAB_PATH" | grep -i "jar verified"
           
           if [ $? -ne 0 ]; then
-            echo "CRITICAL ERROR: AAB Signature Verification FAILED!"
+            echo "CRITICAL ERROR: AAB Signature Verification FAILED! The bundle is NOT signed correctly."
             exit 1
           fi
           echo "AAB Signature Verified Successfully."
