@@ -65,30 +65,45 @@ jobs:
           mkdir -p android/app
           node -e "
           const fs = require('fs');
-          let b64 = process.env.RELEASE_KEYSTORE_BASE64;
-          if (!b64 && fs.existsSync('public/keystore_b64.txt')) {
-            b64 = fs.readFileSync('public/keystore_b64.txt', 'utf8').trim();
-          }
-          if (!b64) {
-            console.error('CRITICAL ERROR: Keystore base64 not found in secrets or public/keystore_b64.txt!');
+          const b64 = process.env.RELEASE_KEYSTORE_BASE64;
+          if (!b64 || b64.length < 20) {
+            console.error('CRITICAL ERROR: RELEASE_KEYSTORE_BASE64 secret is missing or invalid!');
             process.exit(1);
           }
-          const buf = Buffer.from(b64, 'base64');
-          if (buf.length < 100) {
-            console.error('CRITICAL ERROR: Keystore file seems too small or invalid!');
+          try {
+            const buf = Buffer.from(b64.trim(), 'base64');
+            if (buf.length < 100) {
+              console.error('CRITICAL ERROR: Decoded keystore is too small! Size:', buf.length);
+              process.exit(1);
+            }
+            fs.writeFileSync('android/app/release.keystore', buf);
+            console.log('Keystore written successfully. Size:', buf.length, 'bytes');
+          } catch (e) {
+            console.error('CRITICAL ERROR: Failed to decode base64 or write file:', e.message);
             process.exit(1);
           }
-          fs.writeFileSync('android/app/release.keystore', buf);
-          console.log('Keystore written successfully to android/app/release.keystore. Size:', buf.length, 'bytes');
           "
 
-      - name: Diagnose Keystore Alias
+      - name: Verify Keystore and Alias
         env:
           RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
         run: |
           STOREPASS="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
-          echo "Listing aliases in keystore to ensure 'almayadin' exists..."
-          keytool -list -v -keystore android/app/release.keystore -storepass "$STOREPASS" | grep "Alias name" || echo "WARNING: Could not list aliases. Check password."
+          ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
+          
+          echo "=== Verifying Keystore Integrity ==="
+          # This step will fail the build if the password is wrong or keystore is invalid
+          keytool -list -keystore android/app/release.keystore -storepass "$STOREPASS" -v > keystore_info.txt
+          
+          if grep -q "Alias name: $ALIAS" keystore_info.txt; then
+            echo "SUCCESS: Alias '$ALIAS' found in keystore."
+          else
+            echo "CRITICAL ERROR: Alias '$ALIAS' NOT found in keystore!"
+            echo "Available aliases:"
+            grep "Alias name:" keystore_info.txt
+            exit 1
+          fi
 
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x android/gradlew
@@ -99,13 +114,14 @@ jobs:
           echo "=== Starting Gradle Build (Unsigned) ==="
           ./gradlew bundleRelease assembleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
 
-      - name: Sign Artifacts and Verify (Strict)
+      - name: Sign Artifacts (Strict)
         env:
           RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: |
-          KEYSTORE="android/app/release.keystore"
+          # Use absolute path to avoid ambiguity
+          KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/release.keystore"
           STOREPASS="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
           ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
           KEYPASS="${RELEASE_KEY_PASSWORD:-almayadin123}"
@@ -115,32 +131,36 @@ jobs:
           # 1. Sign AAB
           AAB_FILE=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
           if [ -z "$AAB_FILE" ]; then
-            echo "ERROR: AAB file not found after build!"
+            echo "ERROR: AAB file not found!"
             exit 1
           fi
           
           echo "Signing AAB: $AAB_FILE"
           jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore "$KEYSTORE" -storepass "$STOREPASS" -keypass "$KEYPASS" \
+            -keystore "$KEYSTORE_PATH" \
+            -storepass "$STOREPASS" \
+            -keypass "$KEYPASS" \
             "$AAB_FILE" "$ALIAS"
           
           echo "Verifying AAB Signature..."
           jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified"
           if [ $? -ne 0 ]; then
-            echo "CRITICAL ERROR: AAB Signature Verification FAILED! The bundle is NOT signed correctly."
+            echo "CRITICAL ERROR: AAB Signature Verification FAILED!"
             exit 1
           fi
 
           # 2. Sign APK
           APK_FILE=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
           if [ -z "$APK_FILE" ]; then
-            echo "ERROR: APK file not found after build!"
+            echo "ERROR: APK file not found!"
             exit 1
           fi
           
           echo "Signing APK: $APK_FILE"
           jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore "$KEYSTORE" -storepass "$STOREPASS" -keypass "$KEYPASS" \
+            -keystore "$KEYSTORE_PATH" \
+            -storepass "$STOREPASS" \
+            -keypass "$KEYPASS" \
             "$APK_FILE" "$ALIAS"
           
           echo "Verifying APK Signature..."
@@ -152,7 +172,6 @@ jobs:
 
           echo "=== Signing and Verification Completed Successfully ==="
           
-          # Move files to final-artifacts for clarity
           mkdir -p final-artifacts
           cp "$AAB_FILE" final-artifacts/app-release.aab
           cp "$APK_FILE" final-artifacts/app-release.apk
@@ -161,12 +180,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Release-AAB
-          path: final-artifacts/*.aab
+          path: final-artifacts/app-release.aab
           retention-days: 30
 
       - name: Upload Signed APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Release-APK
-          path: final-artifacts/*.apk
+          path: final-artifacts/app-release.apk
           retention-days: 30
