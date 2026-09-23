@@ -1,0 +1,8 @@
+{
+  "appId": "com.bnb.business.network",
+  "appName": "BNB Mobile Banking",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

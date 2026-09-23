@@ -1,0 +1,150 @@
+name: Build Signed Android AAB & APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-aab-apk:
+    name: Build & Sign AAB and APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Java JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Install Node Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build Web Production Bundle
+        run: npm run build
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
+      - name: Complete Resource Sanitize
+        run: |
+          echo "=== Sanitizing and generating valid Android images ==="
+          sudo apt-get update && sudo apt-get install -y imagemagick
+
+          # 1. Clear duplicate pngs in anydpi-v26
+          rm -rf android/app/src/main/res/mipmap-anydpi-v26/*.png
+
+          # 2. Re-create valid icons for all mipmap directories
+          for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            dir="android/app/src/main/res/mipmap-$density"
+            mkdir -p "$dir"
+            convert -size 192x192 xc:"#3880ff" -fill white -draw "circle 96,96 96,20" PNG32:"$dir/ic_launcher.png"
+            convert -size 192x192 xc:"#3880ff" -fill white -draw "circle 96,96 96,20" PNG32:"$dir/ic_launcher_round.png"
+            convert -size 192x192 xc:none -fill white -draw "circle 96,96 96,20" PNG32:"$dir/ic_launcher_foreground.png"
+          done
+
+          # 3. Fix all splash files across all drawables
+          find android/app/src/main/res -name "*splash*.png" | while read -r splash_file; do
+            echo "Sanitizing splash: $splash_file"
+            convert -size 480x800 xc:"#1a1b1f" PNG32:"$splash_file"
+          done
+
+      - name: Inject Official Play Store Keystore
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+        run: |
+          echo "=== Injecting Official Play Store Keystore ==="
+          mkdir -p android/app
+          node -e "
+          const fs = require('fs');
+          let b64 = process.env.RELEASE_KEYSTORE_BASE64;
+          if (!b64 && fs.existsSync('public/keystore_b64.txt')) {
+            b64 = fs.readFileSync('public/keystore_b64.txt', 'utf8').trim();
+          }
+          if (!b64) {
+            console.error('CRITICAL ERROR: Keystore base64 not found in secrets or public/keystore_b64.txt!');
+            process.exit(1);
+          }
+          const buf = Buffer.from(b64, 'base64');
+          fs.writeFileSync('android/app/release.keystore', buf);
+          console.log('Keystore written successfully to android/app/release.keystore');
+          "
+
+      - name: Grant Execute Permission to Gradle Wrapper
+        run: chmod +x android/gradlew
+
+      - name: Build and Sign AAB & APK
+        env:
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          cd android
+          # Export env vars for Gradle to pick up
+          export RELEASE_KEYSTORE_PASSWORD="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
+          export RELEASE_KEY_ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
+          export RELEASE_KEY_PASSWORD="${RELEASE_KEY_PASSWORD:-almayadin123}"
+          
+          echo "=== Starting Gradle Build ==="
+          ./gradlew bundleRelease assembleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
+
+      - name: Verify AAB Signature
+        run: |
+          AAB_PATH="android/app/build/outputs/bundle/release/app-release.aab"
+          if [ ! -f "$AAB_PATH" ]; then
+            # Try to find it if name is different
+            AAB_PATH=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
+          fi
+          
+          if [ -z "$AAB_PATH" ]; then
+            echo "ERROR: AAB file not found!"
+            exit 1
+          fi
+          
+          echo "Verifying signature for: $AAB_PATH"
+          jarsigner -verify -verbose -certs "$AAB_PATH" | grep -i "jar verified"
+          
+          if [ $? -ne 0 ]; then
+            echo "CRITICAL ERROR: AAB Signature Verification FAILED!"
+            exit 1
+          fi
+          echo "AAB Signature Verified Successfully."
+
+      - name: Verify APK Signature
+        run: |
+          APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          if [ -z "$APK_PATH" ]; then
+            echo "ERROR: APK file not found!"
+            exit 1
+          fi
+          
+          echo "Verifying signature for: $APK_PATH"
+          jarsigner -verify -verbose -certs "$APK_PATH" | grep -i "jar verified"
+          
+          if [ $? -ne 0 ]; then
+            echo "CRITICAL ERROR: APK Signature Verification FAILED!"
+            exit 1
+          fi
+          echo "APK Signature Verified Successfully."
+
+      - name: Upload Signed AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Release-AAB
+          path: android/app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+
+      - name: Upload Signed APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Release-APK
+          path: android/app/build/outputs/apk/release/*.apk
+          retention-days: 30
