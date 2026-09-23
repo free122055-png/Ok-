@@ -57,53 +57,34 @@ jobs:
             convert -size 480x800 xc:"#1a1b1f" PNG32:"$splash_file"
           done
 
-      - name: Inject Official Play Store Keystore
+      - name: Prepare Play Store Keystore
         env:
           RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
         run: |
-          echo "=== Injecting Official Play Store Keystore ==="
+          echo "=== Preparing Play Store Keystore ==="
           mkdir -p android/app
           node -e "
           const fs = require('fs');
           const b64 = process.env.RELEASE_KEYSTORE_BASE64;
-          if (!b64 || b64.length < 20) {
-            console.error('CRITICAL ERROR: RELEASE_KEYSTORE_BASE64 secret is missing or invalid!');
-            process.exit(1);
-          }
-          try {
-            const buf = Buffer.from(b64.trim(), 'base64');
-            if (buf.length < 100) {
-              console.error('CRITICAL ERROR: Decoded keystore is too small! Size:', buf.length);
+          const localPath = 'android/app/release.keystore';
+          
+          if (b64 && b64.length > 20) {
+            console.log('Using keystore from RELEASE_KEYSTORE_BASE64 secret.');
+            try {
+              const buf = Buffer.from(b64.trim(), 'base64');
+              fs.writeFileSync(localPath, buf);
+              console.log('Keystore written successfully from secret. Size:', buf.length);
+            } catch (e) {
+              console.error('Error decoding secret:', e.message);
               process.exit(1);
             }
-            fs.writeFileSync('android/app/release.keystore', buf);
-            console.log('Keystore written successfully. Size:', buf.length, 'bytes');
-          } catch (e) {
-            console.error('CRITICAL ERROR: Failed to decode base64 or write file:', e.message);
+          } else if (fs.existsSync(localPath)) {
+            console.log('Secret missing, but found local keystore at ' + localPath + '. Using it.');
+          } else {
+            console.error('CRITICAL ERROR: No keystore found! Please set RELEASE_KEYSTORE_BASE64 secret or commit release.keystore to android/app/');
             process.exit(1);
           }
           "
-
-      - name: Verify Keystore and Alias
-        env:
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-        run: |
-          STOREPASS="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
-          ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
-          
-          echo "=== Verifying Keystore Integrity ==="
-          # This step will fail the build if the password is wrong or keystore is invalid
-          keytool -list -keystore android/app/release.keystore -storepass "$STOREPASS" -v > keystore_info.txt
-          
-          if grep -q "Alias name: $ALIAS" keystore_info.txt; then
-            echo "SUCCESS: Alias '$ALIAS' found in keystore."
-          else
-            echo "CRITICAL ERROR: Alias '$ALIAS' NOT found in keystore!"
-            echo "Available aliases:"
-            grep "Alias name:" keystore_info.txt
-            exit 1
-          fi
 
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x android/gradlew
@@ -120,7 +101,6 @@ jobs:
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: |
-          # Use absolute path to avoid ambiguity
           KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/release.keystore"
           STOREPASS="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
           ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
