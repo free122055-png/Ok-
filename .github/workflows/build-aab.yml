@@ -50,56 +50,52 @@ jobs:
             convert -size 480x800 xc:"#1a1b1f" PNG32:"$splash_file"
           done
 
+      - name: Validate Keystore
+        run: |
+          KEYSTORE="android/app/release.keystore"
+          if [ ! -f "$KEYSTORE" ]; then
+            echo "CRITICAL ERROR: release.keystore file NOT found in android/app/"
+            exit 1
+          fi
+          FILE_SIZE=$(stat -c%s "$KEYSTORE")
+          echo "Keystore size: $FILE_SIZE bytes"
+          if [ "$FILE_SIZE" -lt 100 ]; then
+            echo "CRITICAL ERROR: release.keystore is too small or corrupt. Please re-upload it."
+            exit 1
+          fi
+
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x android/gradlew
 
-      - name: Build Unsigned AAB and APK
+      - name: Build and Sign (Official Gradle Path)
         run: |
           cd android
-          echo "=== Building Unsigned Artifacts ==="
-          ./gradlew clean bundleRelease assembleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
+          STOREPASS="almayadin123"
+          ALIAS="almayadin"
+          KEYPASS="almayadin123"
+          
+          echo "=== Starting Build ==="
+          ./gradlew bundleRelease assembleRelease --no-daemon \
+            -PRELEASE_STORE_PASSWORD="$STOREPASS" \
+            -PRELEASE_KEY_ALIAS="$ALIAS" \
+            -PRELEASE_KEY_PASSWORD="$KEYPASS" \
+            -Pandroid.suppressUnsupportedCompileSdk=36
 
-      - name: Manual Signing (Jarsigner)
-        env:
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+      - name: Verify Signatures
         run: |
-          KEYSTORE="android/app/release.keystore"
-          # Standard fallbacks if secrets are not set
-          STOREPASS="${RELEASE_KEYSTORE_PASSWORD:-almayadin123}"
-          ALIAS="${RELEASE_KEY_ALIAS:-almayadin}"
-          KEYPASS="${RELEASE_KEY_PASSWORD:-almayadin123}"
-
-          echo "=== Starting Manual Signing ==="
-          
-          # Sign AAB
+          echo "=== Verifying AAB Signature ==="
           AAB_FILE=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
-          if [ -z "$AAB_FILE" ]; then echo "AAB file not found"; exit 1; fi
-          echo "Signing AAB: $AAB_FILE"
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore "$KEYSTORE" -storepass "$STOREPASS" -keypass "$KEYPASS" \
-            "$AAB_FILE" "$ALIAS"
-
-          # Sign APK
-          APK_FILE=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
-          if [ -z "$APK_FILE" ]; then echo "APK file not found"; exit 1; fi
-          echo "Signing APK: $APK_FILE"
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore "$KEYSTORE" -storepass "$STOREPASS" -keypass "$KEYPASS" \
-            "$APK_FILE" "$ALIAS"
-
-          echo "=== Verifying Signatures ==="
-          jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified" || exit 1
-          jarsigner -verify -verbose -certs "$APK_FILE" | grep -i "jar verified" || exit 1
+          jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified" || (echo "Verification Failed"; exit 1)
           
-          mkdir -p final-artifacts
-          cp "$AAB_FILE" final-artifacts/app-release.aab
-          cp "$APK_FILE" final-artifacts/app-release.apk
+          echo "=== Verifying APK Signature ==="
+          APK_FILE=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          jarsigner -verify -verbose -certs "$APK_FILE" | grep -i "jar verified" || (echo "Verification Failed"; exit 1)
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Release-Builds
-          path: final-artifacts/
+          path: |
+            android/app/build/outputs/bundle/release/*.aab
+            android/app/build/outputs/apk/release/*.apk
           retention-days: 30
