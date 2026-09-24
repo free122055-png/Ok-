@@ -50,52 +50,63 @@ jobs:
             convert -size 480x800 xc:"#1a1b1f" PNG32:"$splash_file"
           done
 
-      - name: Validate Keystore
+      - name: Validate Keystore and Password
         run: |
           KEYSTORE="android/app/release.keystore"
+          STOREPASS="almayadin123"
           if [ ! -f "$KEYSTORE" ]; then
-            echo "CRITICAL ERROR: release.keystore file NOT found in android/app/"
+            echo "ERROR: release.keystore NOT found!"
             exit 1
           fi
-          FILE_SIZE=$(stat -c%s "$KEYSTORE")
-          echo "Keystore size: $FILE_SIZE bytes"
-          if [ "$FILE_SIZE" -lt 100 ]; then
-            echo "CRITICAL ERROR: release.keystore is too small or corrupt. Please re-upload it."
+          echo "Checking keystore integrity with password..."
+          if ! keytool -list -keystore "$KEYSTORE" -storepass "$STOREPASS" > /dev/null 2>&1; then
+            echo "CRITICAL ERROR: The keystore file is corrupt or the password 'almayadin123' is wrong!"
             exit 1
           fi
+          echo "Keystore is valid."
 
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x android/gradlew
 
-      - name: Build and Sign (Official Gradle Path)
+      - name: Build Unsigned AAB and APK
         run: |
           cd android
+          echo "=== Building Unsigned App (No signing errors possible here) ==="
+          ./gradlew clean bundleRelease assembleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
+
+      - name: Manual Signing (Jarsigner)
+        run: |
+          KEYSTORE="android/app/release.keystore"
           STOREPASS="almayadin123"
           ALIAS="almayadin"
-          KEYPASS="almayadin123"
           
-          echo "=== Starting Build ==="
-          ./gradlew bundleRelease assembleRelease --no-daemon \
-            -PRELEASE_STORE_PASSWORD="$STOREPASS" \
-            -PRELEASE_KEY_ALIAS="$ALIAS" \
-            -PRELEASE_KEY_PASSWORD="$KEYPASS" \
-            -Pandroid.suppressUnsupportedCompileSdk=36
-
-      - name: Verify Signatures
-        run: |
-          echo "=== Verifying AAB Signature ==="
+          echo "=== Starting Manual Signing ==="
+          
+          # Sign AAB
           AAB_FILE=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
-          jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified" || (echo "Verification Failed"; exit 1)
-          
-          echo "=== Verifying APK Signature ==="
+          if [ -z "$AAB_FILE" ]; then echo "AAB file not found"; exit 1; fi
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore "$KEYSTORE" -storepass "$STOREPASS" -keypass "$STOREPASS" \
+            "$AAB_FILE" "$ALIAS"
+
+          # Sign APK
           APK_FILE=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
-          jarsigner -verify -verbose -certs "$APK_FILE" | grep -i "jar verified" || (echo "Verification Failed"; exit 1)
+          if [ -z "$APK_FILE" ]; then echo "APK file not found"; exit 1; fi
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore "$KEYSTORE" -storepass "$STOREPASS" -keypass "$STOREPASS" \
+            "$APK_FILE" "$ALIAS"
+
+          echo "=== Verifying Signatures ==="
+          jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified" || exit 1
+          jarsigner -verify -verbose -certs "$APK_FILE" | grep -i "jar verified" || exit 1
+          
+          mkdir -p final-artifacts
+          cp "$AAB_FILE" final-artifacts/app-release.aab
+          cp "$APK_FILE" final-artifacts/app-release.apk
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Release-Builds
-          path: |
-            android/app/build/outputs/bundle/release/*.aab
-            android/app/build/outputs/apk/release/*.apk
+          path: final-artifacts/
           retention-days: 30
