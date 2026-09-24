@@ -50,63 +50,32 @@ jobs:
             convert -size 480x800 xc:"#1a1b1f" PNG32:"$splash_file"
           done
 
-      - name: Validate Keystore and Password
-        run: |
-          KEYSTORE="android/app/release.keystore"
-          STOREPASS="almayadin123"
-          if [ ! -f "$KEYSTORE" ]; then
-            echo "ERROR: release.keystore NOT found!"
-            exit 1
-          fi
-          echo "Checking keystore integrity with password..."
-          if ! keytool -list -keystore "$KEYSTORE" -storepass "$STOREPASS" > /dev/null 2>&1; then
-            echo "CRITICAL ERROR: The keystore file is corrupt or the password 'almayadin123' is wrong!"
-            exit 1
-          fi
-          echo "Keystore is valid."
-
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x android/gradlew
 
-      - name: Build Unsigned AAB and APK
+      - name: Build Signed AAB and APK
         run: |
           cd android
-          echo "=== Building Unsigned App (No signing errors possible here) ==="
+          echo "=== Starting Official Gradle Build ==="
           ./gradlew clean bundleRelease assembleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
 
-      - name: Manual Signing (Jarsigner)
+      - name: Verify Signatures
         run: |
-          KEYSTORE="android/app/release.keystore"
-          STOREPASS="almayadin123"
-          ALIAS="almayadin"
-          
-          echo "=== Starting Manual Signing ==="
-          
-          # Sign AAB
+          echo "=== Verifying AAB Signature ==="
           AAB_FILE=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
           if [ -z "$AAB_FILE" ]; then echo "AAB file not found"; exit 1; fi
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore "$KEYSTORE" -storepass "$STOREPASS" -keypass "$STOREPASS" \
-            "$AAB_FILE" "$ALIAS"
-
-          # Sign APK
+          jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified"
+          
+          echo "=== Verifying APK Signature ==="
           APK_FILE=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
           if [ -z "$APK_FILE" ]; then echo "APK file not found"; exit 1; fi
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore "$KEYSTORE" -storepass "$STOREPASS" -keypass "$STOREPASS" \
-            "$APK_FILE" "$ALIAS"
-
-          echo "=== Verifying Signatures ==="
-          jarsigner -verify -verbose -certs "$AAB_FILE" | grep -i "jar verified" || exit 1
-          jarsigner -verify -verbose -certs "$APK_FILE" | grep -i "jar verified" || exit 1
-          
-          mkdir -p final-artifacts
-          cp "$AAB_FILE" final-artifacts/app-release.aab
-          cp "$APK_FILE" final-artifacts/app-release.apk
+          jarsigner -verify -verbose -certs "$APK_FILE" | grep -i "jar verified"
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Release-Builds
-          path: final-artifacts/
+          path: |
+            android/app/build/outputs/bundle/release/*.aab
+            android/app/build/outputs/apk/release/*.apk
           retention-days: 30
