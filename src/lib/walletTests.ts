@@ -1,6 +1,6 @@
 import { db } from './firebase';
 import { doc, getDoc, setDoc, collection, addDoc, query, where, getDocs, deleteDoc } from 'firebase/firestore';
-import { processWalletTransaction, processBnbTransfer, reconcileUserLedger, getEffectiveBalance } from './walletLedger';
+import { processWalletTransaction, processAmbTransfer, reconcileUserLedger, getEffectiveBalance } from './walletLedger';
 
 export interface TestResultItem {
   testNumber: number;
@@ -25,7 +25,7 @@ export async function runWalletEndToEndTests(testUserId: string = 'TEST_USER_999
       uid: testUserId,
       name: 'Test Sender User',
       phone: '01700000999',
-      memberId: 'BNBTEST999',
+      memberId: 'AMBTEST999',
       balance: 0,
       mainBalance: 0,
       updatedAt: new Date().toISOString()
@@ -35,7 +35,7 @@ export async function runWalletEndToEndTests(testUserId: string = 'TEST_USER_999
       uid: receiverUserId,
       name: 'Test Receiver User',
       phone: '01700000888',
-      memberId: 'BNBTEST888',
+      memberId: 'AMBTEST888',
       balance: 200,
       mainBalance: 200,
       updatedAt: new Date().toISOString()
@@ -104,15 +104,15 @@ export async function runWalletEndToEndTests(testUserId: string = 'TEST_USER_999
     });
 
     // ==========================================
-    // TEST 3 — BNB-to-BNB Send Money
+    // TEST 3 — AMB-to-AMB Send Money
     // ==========================================
     try {
-      const transferRes = await processBnbTransfer({
+      const transferRes = await processAmbTransfer({
         senderUid: testUserId,
         receiverIdentifier: '01700000888',
         amount: 500,
         transactionId: `TST-TRF-${Date.now()}`,
-        note: 'Test BNB Transfer 500'
+        note: 'Test AMB Transfer 500'
       });
 
       const snapSender = await getDoc(senderRef);
@@ -122,12 +122,12 @@ export async function runWalletEndToEndTests(testUserId: string = 'TEST_USER_999
 
       // Receiver initial was 200 + 500 = 700
       if (transferRes.success && senderBal === 500 && receiverBal === 700) {
-        results.push({ testNumber: 3, testName: 'BNB-to-BNB Send Money (1000 -> Sender 500, Receiver +500)', status: 'PASS', details: `Sender Balance = ${senderBal}, Receiver Balance = ${receiverBal}. Correctly debited and credited.` });
+        results.push({ testNumber: 3, testName: 'AMB-to-AMB Send Money (1000 -> Sender 500, Receiver +500)', status: 'PASS', details: `Sender Balance = ${senderBal}, Receiver Balance = ${receiverBal}. Correctly debited and credited.` });
       } else {
-        results.push({ testNumber: 3, testName: 'BNB-to-BNB Send Money (1000 -> Sender 500, Receiver +500)', status: 'FAIL', details: `Sender = ${senderBal}, Receiver = ${receiverBal}` });
+        results.push({ testNumber: 3, testName: 'AMB-to-AMB Send Money (1000 -> Sender 500, Receiver +500)', status: 'FAIL', details: `Sender = ${senderBal}, Receiver = ${receiverBal}` });
       }
     } catch (e: any) {
-      results.push({ testNumber: 3, testName: 'BNB-to-BNB Send Money', status: 'FAIL', details: e.message });
+      results.push({ testNumber: 3, testName: 'AMB-to-AMB Send Money', status: 'FAIL', details: e.message });
     }
 
     // ==========================================
@@ -215,7 +215,7 @@ export async function runWalletEndToEndTests(testUserId: string = 'TEST_USER_999
 
       let rejectedSuccessfully = false;
       try {
-        await processBnbTransfer({
+        await processAmbTransfer({
           senderUid: testUserId,
           receiverIdentifier: '01700000888',
           amount: balBeforeIns + 5000, // Insufficient
@@ -247,14 +247,14 @@ export async function runWalletEndToEndTests(testUserId: string = 'TEST_USER_999
       const snapConc = await getDoc(senderRef);
       const currentBal = getEffectiveBalance(snapConc.data());
 
-      const p1 = processBnbTransfer({
+      const p1 = processAmbTransfer({
         senderUid: testUserId,
         receiverIdentifier: '01700000888',
         amount: currentBal,
         transactionId: `TST-CONC-1-${Date.now()}`
       }).catch(e => ({ error: e.message }));
 
-      const p2 = processBnbTransfer({
+      const p2 = processAmbTransfer({
         senderUid: testUserId,
         receiverIdentifier: '01700000888',
         amount: currentBal,

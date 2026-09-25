@@ -59,10 +59,10 @@ export const messaging = typeof window !== 'undefined' ? getMessaging(app) : nul
 let fallbackUid: string | null = null;
 function getOrCreateFallbackUid() {
   if (!fallbackUid) {
-    fallbackUid = localStorage.getItem('bnb_fallback_uid');
+    fallbackUid = localStorage.getItem('amb_fallback_uid');
     if (!fallbackUid) {
       fallbackUid = 'anon_user_' + Math.random().toString(36).substring(2, 15);
-      localStorage.setItem('bnb_fallback_uid', fallbackUid);
+      localStorage.setItem('amb_fallback_uid', fallbackUid);
     }
   }
   return fallbackUid;

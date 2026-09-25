@@ -12,17 +12,17 @@ export function getClientDeviceId(): string {
   
   // 1. Try to load from localStorage
   try {
-    devId = localStorage.getItem('bnb_device_id') || '';
+    devId = localStorage.getItem('amb_device_id') || '';
   } catch (e) {}
 
   // 2. Try to load from Cookie as a backup to prevent loss when cache/localStorage is wiped
   if (!devId) {
     try {
-      const match = document.cookie.match(/(?:^|; )bnb_device_id=([^;]*)/);
+      const match = document.cookie.match(/(?:^|; )amb_device_id=([^;]*)/);
       if (match && match[1]) {
         devId = decodeURIComponent(match[1]);
         // Restore to localStorage
-        localStorage.setItem('bnb_device_id', devId);
+        localStorage.setItem('amb_device_id', devId);
       }
     } catch (e) {}
   }
@@ -35,28 +35,28 @@ export function getClientDeviceId(): string {
     
     // Set in localStorage
     try {
-      localStorage.setItem('bnb_device_id', devId);
+      localStorage.setItem('amb_device_id', devId);
     } catch (e) {}
     
     // Set in Cookie (lasts 10 years)
     try {
       const expires = new Date();
       expires.setFullYear(expires.getFullYear() + 10);
-      document.cookie = `bnb_device_id=${encodeURIComponent(devId)};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+      document.cookie = `amb_device_id=${encodeURIComponent(devId)};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
     } catch (e) {}
   } else {
     // Keep both synced
     try {
-      if (!localStorage.getItem('bnb_device_id')) {
-        localStorage.setItem('bnb_device_id', devId);
+      if (!localStorage.getItem('amb_device_id')) {
+        localStorage.setItem('amb_device_id', devId);
       }
     } catch (e) {}
     try {
-      const hasCookie = document.cookie.includes('bnb_device_id=');
+      const hasCookie = document.cookie.includes('amb_device_id=');
       if (!hasCookie) {
         const expires = new Date();
         expires.setFullYear(expires.getFullYear() + 10);
-        document.cookie = `bnb_device_id=${encodeURIComponent(devId)};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+        document.cookie = `amb_device_id=${encodeURIComponent(devId)};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
       }
     } catch (e) {}
   }
@@ -190,9 +190,9 @@ export function getDeviceFingerprint(): string {
       ctx.fillRect(100, 1, 40, 15);
       ctx.fillStyle = "#069";
       ctx.font = "12px sans-serif";
-      ctx.fillText("BNB_Lock_🛡️", 2, 12);
+      ctx.fillText("AMB_Lock_🛡️", 2, 12);
       ctx.fillStyle = "rgba(102, 204, 0, 0.6)";
-      ctx.fillText("BNB_Lock_🛡️", 3, 13);
+      ctx.fillText("AMB_Lock_🛡️", 3, 13);
       canvasSig = canvas.toDataURL();
     }
   } catch (e) {}
@@ -208,7 +208,7 @@ export function getDeviceFingerprint(): string {
   const hashStr = Math.abs(hash).toString(36);
   
   // Format: Versioned format with separated variables for parsing
-  return `bnb_phy_v2__${hashStr}__${os}__${model}__${gpu}__${screenDim}__${availDim}__${cores}c__${touch}t__${tz}__${tzOffset}__${colorDepth}__${langList}__${platform}`;
+  return `amb_phy_v2__${hashStr}__${os}__${model}__${gpu}__${screenDim}__${availDim}__${cores}c__${touch}t__${tz}__${tzOffset}__${colorDepth}__${langList}__${platform}`;
 }
 
 export function isSamePhysicalPhone(fpA?: string | null, fpB?: string | null): boolean {
@@ -223,7 +223,7 @@ export function isSamePhysicalPhone(fpA?: string | null, fpB?: string | null): b
   const partsB = strB.split('__');
 
   // Verify versioned format
-  if (partsA[0] === 'bnb_phy_v2' && partsB[0] === 'bnb_phy_v2' && partsA.length >= 14 && partsB.length >= 14) {
+  if (partsA[0] === 'amb_phy_v2' && partsB[0] === 'amb_phy_v2' && partsA.length >= 14 && partsB.length >= 14) {
     const osA = partsA[2];
     const osB = partsB[2];
     const gpuA = partsA[4];
@@ -348,13 +348,18 @@ export async function getDeviceBoundUser(clientDevId?: string): Promise<{ docId:
 }
 
 export function normalizeMemberId(id: string | undefined | null): string {
-  if (!id) return 'BNB00000000';
+  if (!id) return 'AMB00000000';
   
   const trimmed = id.trim().toUpperCase();
   
-  // If it's already a perfect BNB00000000 style, return it
-  if (trimmed.startsWith('BNB') && trimmed.length === 11 && /^\d+$/.test(trimmed.slice(3))) {
+  // If it's already a perfect AMB00000000 style, return it
+  if (trimmed.startsWith('AMB') && trimmed.length === 11 && /^\d+$/.test(trimmed.slice(3))) {
     return trimmed;
+  }
+
+  // Handle legacy AMB prefix transition
+  if (trimmed.startsWith('AMB') && trimmed.length === 11 && /^\d+$/.test(trimmed.slice(3))) {
+    return 'AMB' + trimmed.slice(3);
   }
   
   // Main Admin does not have a serial number
@@ -367,7 +372,7 @@ export function normalizeMemberId(id: string | undefined | null): string {
   if (digits) {
     const num = parseInt(digits, 10);
     if (!isNaN(num)) {
-      return `BNB${String(num).padStart(8, '0')}`;
+      return `AMB${String(num).padStart(8, '0')}`;
     }
   }
 
@@ -377,7 +382,7 @@ export function normalizeMemberId(id: string | undefined | null): string {
     hash = trimmed.charCodeAt(i) + ((hash << 5) - hash);
   }
   const positiveHash = Math.abs(hash) % 100000000;
-  return `BNB${String(positiveHash).padStart(8, '0')}`;
+  return `AMB${String(positiveHash).padStart(8, '0')}`;
 }
 
 export function formatBanglaAmount(amount: number | string | undefined | null): string {
@@ -614,7 +619,7 @@ export function saveUserToLocalBackup(user: User | null | undefined): void {
   if (!user || !user.phone) return;
   if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
   try {
-    const backupKeys = ['bnb_registered_members', 'bnb_all_users_backup'];
+    const backupKeys = ['amb_registered_members', 'amb_all_users_backup'];
     const cleanPhone = normalizePhoneNumber(user.phone);
     const userDigits = convertBengaliToEnglishDigits(user.phone).replace(/\D/g, '').slice(-9);
 
@@ -644,7 +649,7 @@ export function saveUserToLocalBackup(user: User | null | undefined): void {
       if (members.length > 200) members = members.slice(0, 200);
       localStorage.setItem(backupKey, JSON.stringify(members));
     }
-    localStorage.setItem('bnb_last_user', JSON.stringify(user));
+    localStorage.setItem('amb_last_user', JSON.stringify(user));
   } catch (err) {
     console.warn("Failed to save user to local backup:", err);
   }
@@ -667,7 +672,7 @@ export function maskSecretPhone(phone: string | undefined | null): string {
 }
 
 /**
- * Generates the next strictly sequential Member ID (e.g., BNB00000014)
+ * Generates the next strictly sequential Member ID (e.g., AMB00000014)
  * using an atomic Firestore transaction on the master serial counter.
  * Ensures serials are clean, contiguous, and never skip or generate random numbers.
  */
@@ -693,7 +698,7 @@ export async function getNextSequentialMemberId(): Promise<string> {
           const uData = uDoc.data();
           if (uData.memberId && typeof uData.memberId === 'string') {
             const rawId = uData.memberId.trim().toUpperCase();
-            if (rawId.startsWith('BNB') && !rawId.includes('TEST') && !rawId.includes('DEMO')) {
+            if ((rawId.startsWith('AMB') || rawId.startsWith('AMB')) && !rawId.includes('TEST') && !rawId.includes('DEMO')) {
               const digits = rawId.replace(/\D/g, '');
               const num = parseInt(digits, 10);
               // Ignore invalid astronomical numbers (e.g. phone hashes or demo numbers > 10000)
@@ -709,7 +714,7 @@ export async function getNextSequentialMemberId(): Promise<string> {
       const newSerial = currentSerial + 1;
       const payload = {
         lastSerial: newSerial,
-        lastAssignedId: `BNB${String(newSerial).padStart(8, '0')}`,
+        lastAssignedId: `AMB${String(newSerial).padStart(8, '0')}`,
         updatedAt: new Date().toISOString()
       };
 
@@ -719,7 +724,7 @@ export async function getNextSequentialMemberId(): Promise<string> {
       return newSerial;
     });
 
-    return `BNB${String(nextSerial).padStart(8, '0')}`;
+    return `AMB${String(nextSerial).padStart(8, '0')}`;
   } catch (err) {
     console.warn("Transaction failed for member counter, scanning users collection fallback:", err);
     let maxSerial = 0;
@@ -730,7 +735,7 @@ export async function getNextSequentialMemberId(): Promise<string> {
         const uData = uDoc.data();
         if (uData.memberId && typeof uData.memberId === 'string') {
           const rawId = uData.memberId.trim().toUpperCase();
-          if (rawId.startsWith('BNB') && !rawId.includes('TEST') && !rawId.includes('DEMO')) {
+          if ((rawId.startsWith('AMB') || rawId.startsWith('AMB')) && !rawId.includes('TEST') && !rawId.includes('DEMO')) {
             const digits = rawId.replace(/\D/g, '');
             const num = parseInt(digits, 10);
             if (!isNaN(num) && num > maxSerial && num < 10000) {
@@ -743,12 +748,12 @@ export async function getNextSequentialMemberId(): Promise<string> {
     const nextSerial = (maxSerial > 0 ? maxSerial : 1) + 1;
     const payload = {
       lastSerial: nextSerial,
-      lastAssignedId: `BNB${String(nextSerial).padStart(8, '0')}`,
+      lastAssignedId: `AMB${String(nextSerial).padStart(8, '0')}`,
       updatedAt: new Date().toISOString()
     };
     setDoc(counterRef, payload, { merge: true }).catch(() => {});
     setDoc(sysCounterRef, payload, { merge: true }).catch(() => {});
-    return `BNB${String(nextSerial).padStart(8, '0')}`;
+    return `AMB${String(nextSerial).padStart(8, '0')}`;
   }
 }
 
@@ -850,7 +855,7 @@ export async function deleteUserCompletelyFromDatabase(targetUserOrId: string | 
 
   // Clean local storage backup caches so stale records don't linger
   try {
-    const backupKeys = ['bnb_registered_members', 'bnb_all_users_backup'];
+    const backupKeys = ['amb_registered_members', 'amb_all_users_backup'];
     for (const key of backupKeys) {
       const raw = localStorage.getItem(key);
       if (raw) {
@@ -867,11 +872,11 @@ export async function deleteUserCompletelyFromDatabase(targetUserOrId: string | 
         }
       }
     }
-    const lastUserRaw = localStorage.getItem('bnb_last_user');
+    const lastUserRaw = localStorage.getItem('amb_last_user');
     if (lastUserRaw) {
       const lastUser = JSON.parse(lastUserRaw);
       if (lastUser && (targetDocIds.has(lastUser.uid) || normalizePhoneNumber(lastUser.phone) === normalized)) {
-        localStorage.removeItem('bnb_last_user');
+        localStorage.removeItem('amb_last_user');
       }
     }
   } catch (e) {}
@@ -879,7 +884,7 @@ export async function deleteUserCompletelyFromDatabase(targetUserOrId: string | 
 
 /**
  * Super-robust user search helper:
- * Finds an active user in Firestore regardless of phone number formatting, member ID (e.g. BNB00000015), email, or name.
+ * Finds an active user in Firestore regardless of phone number formatting, member ID (e.g. AMB00000015), email, or name.
  * Reads directly from Firestore to ensure freshness and prevent stale local state mismatches.
  */
 export async function findUserInFirestoreByPhone(
@@ -978,7 +983,7 @@ export async function findUserInFirestoreByPhone(
   const queryPromises = [];
   
   // Query by memberId
-  if (normalizedMemberQuery && normalizedMemberQuery !== 'BNB00000000') {
+  if (normalizedMemberQuery && normalizedMemberQuery !== 'AMB00000000') {
     queryPromises.push(getDocs(query(collection(db, 'users'), where('memberId', '==', normalizedMemberQuery))));
   }
   
@@ -1003,7 +1008,7 @@ export async function findUserInFirestoreByPhone(
         const uNormDigits = uData.normalizedPhone ? convertBengaliToEnglishDigits(uData.normalizedPhone).replace(/\D/g, '') : '';
         const uMember = uData.memberId ? uData.memberId.toUpperCase() : '';
 
-        const memberMatch = Boolean(normalizedMemberQuery && normalizedMemberQuery !== 'BNB00000000' && uMember === normalizedMemberQuery);
+        const memberMatch = Boolean(normalizedMemberQuery && normalizedMemberQuery !== 'AMB00000000' && uMember === normalizedMemberQuery);
         
         // Strict phone validation:
         // When searching by phone, the document's phone digits MUST end with last9Digits!
@@ -1048,7 +1053,7 @@ export async function findUserInFirestoreByPhone(
         ((uPhone && uPhone.endsWith(last9Digits)) || 
          (!uPhone && uNorm && uNorm.endsWith(last9Digits)))
       );
-      const memberMatch = Boolean(normalizedMemberQuery && normalizedMemberQuery !== 'BNB00000000' && uMember === normalizedMemberQuery);
+      const memberMatch = Boolean(normalizedMemberQuery && normalizedMemberQuery !== 'AMB00000000' && uMember === normalizedMemberQuery);
       const emailMatch = Boolean(uData.email && uData.email.toLowerCase() === trimmedQuery.toLowerCase());
 
       const isMatch = phoneMatch || memberMatch || emailMatch;
@@ -1072,7 +1077,7 @@ export async function findUserInFirestoreByPhone(
   // 5. Check Local Backup Cache ONLY if phone or member ID matches exactly
   try {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      const backupKeys = ['bnb_registered_members', 'bnb_all_users_backup', 'bnb_last_user'];
+      const backupKeys = ['amb_registered_members', 'amb_all_users_backup', 'amb_last_user', 'amb_registered_members', 'amb_all_users_backup', 'amb_last_user'];
       for (const backupKey of backupKeys) {
         const raw = localStorage.getItem(backupKey);
         if (!raw) continue;
@@ -1085,7 +1090,7 @@ export async function findUserInFirestoreByPhone(
             const uMember = u.memberId ? u.memberId.toUpperCase() : '';
             if (
               (last9Digits && uDigits.length >= 9 && uDigits.endsWith(last9Digits)) ||
-              (normalizedMemberQuery && normalizedMemberQuery !== 'BNB00000000' && uMember === normalizedMemberQuery)
+              (normalizedMemberQuery && normalizedMemberQuery !== 'AMB00000000' && (uMember === normalizedMemberQuery || (normalizedMemberQuery.startsWith('AMB') && uMember === 'AMB' + normalizedMemberQuery.slice(3))))
             ) {
               const uid = u.uid || ('user_' + (normalizePhoneNumber(u.phone) || digitsOnly));
               const recoveredObj: User = { ...u, uid };
@@ -1107,7 +1112,7 @@ export async function findUserInFirestoreByPhone(
 export async function recoverOldAccount(phoneOrMemberId: string, name?: string, pin: string = '1234'): Promise<User> {
   const normalized = normalizePhoneNumber(phoneOrMemberId);
   let memberId = '';
-  if (phoneOrMemberId.startsWith('BNB') && phoneOrMemberId.length >= 6) {
+  if (phoneOrMemberId.startsWith('AMB') && phoneOrMemberId.length >= 6) {
     memberId = normalizeMemberId(phoneOrMemberId);
   } else {
     memberId = await getNextSequentialMemberId();

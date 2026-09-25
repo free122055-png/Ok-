@@ -7,7 +7,7 @@ export const DEFAULT_QARD_CONFIG = {
   rulesSubtitle: "করযে হাসানা শর্তাবলি (সংক্ষেপে)",
   rulesList: [
     { id: '1', icon: '🤝', title: 'সম্পূর্ণ বিনা সুদে', description: 'সম্পূর্ণ বিনা সুদে করজে হাসানা (ঋণ) প্রদান করা হবে।' },
-    { id: '2', icon: '📅', title: 'সক্রিয়তার শর্ত', description: 'আবেদনকারীকে আমাদের অ্যাপে সর্বনিম্ন ২ মাস সক্রিয় থাকতে হবে এবং এই সময়ে কমপক্ষে BNB টু BNB ২০,০০০ টাকার লেনদেন থাকতে হবে।' },
+    { id: '2', icon: '📅', title: 'সক্রিয়তার শর্ত', description: 'আবেদনকারীকে আমাদের অ্যাপে সর্বনিম্ন ২ মাস সক্রিয় থাকতে হবে এবং এই সময়ে কমপক্ষে AMB টু AMB ২০,০০০ টাকার লেনদেন থাকতে হবে।' },
     { id: '3', icon: '🔍', title: 'এজেন্ট ভেরিফিকেশন', description: 'এরপর আমাদের এজেন্ট যাচাই-বাছাই করে আবেদনকারীর জন্য ঋণের পরিমাণ নির্ধারণ করবেন। কাউকে খালি হাতে ফেরানো হবে না।' },
     { id: '4', icon: '🎯', title: 'ঋণের লিমিট ও ভবিষ্যৎ প্ল্যান', description: 'প্রাথমিকভাবে সর্বনিম্ন ৫০০ টাকা থেকে সর্বোচ্চ ১০,০০০ টাকা পর্যন্ত করজে হাসানা দেওয়া হবে। তবে আমাদের ভবিষ্যৎ পরিকল্পনা আছে বাড়ি করার জন্য এবং বিদেশ যাওয়ার জন্য ৫০,০০০ থেকে ১,০০,০০০ টাকা পর্যন্ত এখান থেকে দেওয়ার জন্য বিনা সুদে।' },
     { id: '5', icon: '⏳', title: 'পরিশোধের মেয়াদ ও কিস্তির নিয়ম', description: 'যেই তারিখে টাকা নিবেন, ঠিক পরের মাসে সেই একই তারিখে পরিশোধ করতে হবে (অর্থাৎ পুরো ৩০ দিন গণনা হবে)। যারা ৩ মাসের জন্য নিবেন ৯০ দিন গণনা হবে তবে প্রতি ৩০ দিন পর পর মোট ৩টি সমান কিস্তিতে পরিশোধ করতে হবে।' },
@@ -21,7 +21,7 @@ export const DEFAULT_QARD_CONFIG = {
   },
   eligibilityConfig: {
     requiredActiveDays: 60,
-    requiredBnbTxVolume: 20000,
+    requiredAmbTxVolume: 20000,
     trackerTitle: "আপনার করযে হাসানা যোগ্যতা ট্র্যাকার",
     trackerSubtitle: "ঋণের আবেদন করার জন্য নিম্নলিখিত শর্তাবলী পূরণ করা আবশ্যকঃ"
   },
@@ -59,7 +59,7 @@ export const DEFAULT_QARD_CONFIG = {
       traditional: 80000
     },
     guidelines: [
-      { id: '1', icon: '👑', title: 'সমবায় সদস্যদের ১০০% সমপরিমাণ লোন সুবিধা', description: 'BNB সমবায় সমিতির সদস্যরা ৩ মাসের জন্য স্বর্ণের সমপরিমাণ (১০০% টাকা) জরুরি লোন নিতে পারবেন এবং ৩ মাসের মধ্যে সমপরিমাণ মূল টাকা পরিশোধ করে অক্ষত অবস্থায় স্বর্ণ ছাড়িয়ে নিতে পারবেন।' },
+      { id: '1', icon: '👑', title: 'সমবায় সদস্যদের ১০০% সমপরিমাণ লোন সুবিধা', description: 'AMB সমবায় সমিতির সদস্যরা ৩ মাসের জন্য স্বর্ণের সমপরিমাণ (১০০% টাকা) জরুরি লোন নিতে পারবেন এবং ৩ মাসের মধ্যে সমপরিমাণ মূল টাকা পরিশোধ করে অক্ষত অবস্থায় স্বর্ণ ছাড়িয়ে নিতে পারবেন।' },
       { id: '2', icon: '👥', title: 'সাধারণ নাগরিকদের জন্য বাজারদর নীতি', description: 'যাঁরা সমবায় সমিতির সদস্য নন, তাঁরা প্রচলিত বাজার নীতি ও সাধারণ মূল্যায়নের ভিত্তিতে স্বর্ণ রেখে জরুরি আর্থিক সুবিধা গ্রহণ করতে পারবেন।' },
       { id: '3', icon: '💎', title: '০% সুদ ও সুদমুক্ত কল্যাণ সেবা', description: 'করযে হাসানা তহবিলের অধীনে সমবায় সদস্যদের জন্য কোনো প্রকার সুদ, অতিরিক্ত ফি বা লুকানো চার্জ নেই।' },
       { id: '4', icon: '🔒', title: '৩ মাসের সুরক্ষিত ভল্ট হেফাজত', description: 'নির্দিষ্ট ৩ মাস (৯০ দিন) সময়সীমার পূর্বে আপনার সংরক্ষিত স্বর্ণ কোনো অবস্থাতেই বিক্রি বা হস্তান্তর করা হবে না।' },
@@ -133,20 +133,20 @@ export const DEFAULT_CONFIG: AppConfig = {
   },
   historyRetentionDays: 365,
   sectionNotices: {
-    samity: "BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সেকশন নোটিশ: কোম্পানির শেয়ার ও সঞ্চয় জমার ক্ষেত্রে সবসময় অফিসিয়াল নম্বর ব্যবহার করুন।",
-    bank: "MY BNB লেনদেন সেকশন নোটিশ: সরাসরি আপনার একাউন্ট থেকে রেমিট্যান্স এবং অভ্যন্তরীণ ফান্ড ক্যাশ ইন/আউট করুন।",
-    safedeals: "BNB নিরাপদ লেনদেন সেকশন নোটিশ: পাইকারি ডিল বুকিং করার আগে সেলার বিবরণী ও পণ্যের সঠিক বিবরণ যাচাই করে নিন।",
-    telecom: "BNB টেলিকম সেকশন নোটিশ: অটোমেটিক রিচার্জ ও ড্রাইভ প্যাক ফাস্ট ডেলিভারির জন্য ১০ সেকেন্ড থেকে ৫ মিনিট অপেক্ষা করুন।",
-    qard: "BNB কর্জে হাসানা সেকশন নোটিশ: সুদমুক্ত ঋণ আবেদন করতে নিয়মাবলী অনুসরণ করুন। দান করে কল্যাণ ফান্ডকে সমৃদ্ধ করুন।",
-    ration: "BNB রেশন কার্ড সেকশন নোটিশ: ডিজিটাল রেশন কার্ডের সহায়তায় কম দামে সেরা মানসম্মত রেশন সামগ্রী সংগ্রহ করুন।",
+    samity: "AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সেকশন নোটিশ: কোম্পানির শেয়ার ও সঞ্চয় জমার ক্ষেত্রে সবসময় অফিসিয়াল নম্বর ব্যবহার করুন।",
+    bank: "MY AMB লেনদেন সেকশন নোটিশ: সরাসরি আপনার একাউন্ট থেকে রেমিট্যান্স এবং অভ্যন্তরীণ ফান্ড ক্যাশ ইন/আউট করুন।",
+    safedeals: "AMB নিরাপদ লেনদেন সেকশন নোটিশ: পাইকারি ডিল বুকিং করার আগে সেলার বিবরণী ও পণ্যের সঠিক বিবরণ যাচাই করে নিন।",
+    telecom: "AMB টেলিকম সেকশন নোটিশ: অটোমেটিক রিচার্জ ও ড্রাইভ প্যাক ফাস্ট ডেলিভারির জন্য ১০ সেকেন্ড থেকে ৫ মিনিট অপেক্ষা করুন।",
+    qard: "AMB কর্জে হাসানা সেকশন নোটিশ: সুদমুক্ত ঋণ আবেদন করতে নিয়মাবলী অনুসরণ করুন। দান করে কল্যাণ ফান্ডকে সমৃদ্ধ করুন।",
+    ration: "AMB রেশন কার্ড সেকশন নোটিশ: ডিজিটাল রেশন কার্ডের সহায়তায় কম দামে সেরা মানসম্মত রেশন সামগ্রী সংগ্রহ করুন।",
     safi: "safi সাফি ইন-হাউস ব্র্যান্ড সেকশন নোটিশ: শতভাগ ভেজালমুক্ত ও বিশুদ্ধ অর্গানিক পণ্যসামগ্রী অর্ডারে আকর্ষনীয় ছাড় রয়েছে।",
-    hisab: "BNB হিসাব খাতা সেকশন নোটিশ: আপনার প্রতিদিনের ব্যক্তিগত ও ব্যবসায়িক আয়ের-ব্যয়ের নিখুঁত হিসাব রাখুন নিরাপদ ডিজিটাল খাতায়।",
-    agent: "BNB এজেন্ট পোর্টাল সেকশন নোটিশ: এজেন্ট ও ক্যারিয়ার প্রতিনিধি হিসেবে আপনার কমিশন এবং মেম্বার সুবিধা তদারকি করুন।",
-    bap: "BNB এডমিন প্যানেল সেকশন নোটিশ: জাতীয় গেটওয়ে থেকে অ্যাপের বিভিন্ন সিকিউরিটি এবং ভেরিফিকেশন স্টেটাস চেক করুন।",
-    about: "BNB লক্ষ্যমাত্রা সেকশন নোটিশ: প্রতিষ্ঠানের কর্পোরেট লক্ষ্য, ভিশন, আগামী দিনের পরিকল্পনা এবং নিয়মনীতি বিস্তারিত পড়ুন।",
-    courier: "BNB কুরিয়ার সেকশন নোটিশ: সারাদেশে সুপার ফাস্ট পার্সেল ও লজিস্টিকস ডেলিভারি বুকিং সহজেই গ্রহণ করুন।"
+    hisab: "AMB হিসাব খাতা সেকশন নোটিশ: আপনার প্রতিদিনের ব্যক্তিগত ও ব্যবসায়িক আয়ের-ব্যয়ের নিখুঁত হিসাব রাখুন নিরাপদ ডিজিটাল খাতায়।",
+    agent: "AMB এজেন্ট পোর্টাল সেকশন নোটিশ: এজেন্ট ও ক্যারিয়ার প্রতিনিধি হিসেবে আপনার কমিশন এবং মেম্বার সুবিধা তদারকি করুন।",
+    bap: "AMB এডমিন প্যানেল সেকশন নোটিশ: জাতীয় গেটওয়ে থেকে অ্যাপের বিভিন্ন সিকিউরিটি এবং ভেরিফিকেশন স্টেটাস চেক করুন।",
+    about: "AMB লক্ষ্যমাত্রা সেকশন নোটিশ: প্রতিষ্ঠানের কর্পোরেট লক্ষ্য, ভিশন, আগামী দিনের পরিকল্পনা এবং নিয়মনীতি বিস্তারিত পড়ুন।",
+    courier: "AMB কুরিয়ার সেকশন নোটিশ: সারাদেশে সুপার ফাস্ট পার্সেল ও লজিস্টিকস ডেলিভারি বুকিং সহজেই গ্রহণ করুন।"
   },
-  appName: "BNB Business Network Bangladesh",
+  appName: "AMB Al Mayadin Bazar",
   personalMfsNumber: "01865911728",
   personalBankCard: "4840610010369801",
   supportPhone: "01865911728",
@@ -246,14 +246,14 @@ export const DEFAULT_CONFIG: AppConfig = {
       logoBgClass: "bg-indigo-200"
     }
   ],
-  samityTerms: "BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর মেম্বারশিপ ফি ৫০০ টাকা নগদ বা রকেট এর মাধ্যমে জমা করে আবেদন সম্পন্ন করুন। আপনার পেমেন্ট ভেরিফাই হয়ে গেলেই সকল প্রিভিলেজ আনলক হবে।",
-  tickerText: "BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সাধারণ ফান্ডে স্বাগতম। আপনি এখান থেকে সঞ্চয় জমা দিতে পারেন, ঋণ আবেদন এবং মুনাফার শেয়ার তুলতে পারেন।",
-  samityTicker: "BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সাধারণ ফান্ডে স্বাগতম। আপনি এখান থেকে সঞ্চয় জমা দিতে পারেন, ঋণ আবেদন এবং মুনাফার শেয়ার তুলতে পারেন।",
+  samityTerms: "AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর মেম্বারশিপ ফি ৫০০ টাকা নগদ বা রকেট এর মাধ্যমে জমা করে আবেদন সম্পন্ন করুন। আপনার পেমেন্ট ভেরিফাই হয়ে গেলেই সকল প্রিভিলেজ আনলক হবে।",
+  tickerText: "AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সাধারণ ফান্ডে স্বাগতম। আপনি এখান থেকে সঞ্চয় জমা দিতে পারেন, ঋণ আবেদন এবং মুনাফার শেয়ার তুলতে পারেন।",
+  samityTicker: "AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সাধারণ ফান্ডে স্বাগতম। আপনি এখান থেকে সঞ্চয় জমা দিতে পারেন, ঋণ আবেদন এবং মুনাফার শেয়ার তুলতে পারেন।",
   qardTicker: "সুদমুক্ত করযে হাসানা কল্যাণ তহবিলে আপনাকে স্বাগতম। আপনার সামর্থ্য অনুযায়ী দান করে ফান্ড সমৃদ্ধ করুন অথবা প্রয়োজনের সময়ে সুদমুক্ত করযে স্বস্তির নিঃশ্বাস ফেলুন।",
   qardConfig: DEFAULT_QARD_CONFIG,
   telecomTicker: "টেলিকম ফ্লেক্সিলোড ও সুপার ফাস্ট ড্রাইভ অফার গাইডঃ সব অপারেটরের ইনস্ট্যান্ট ক্যাশব্যাক ও বেস্ট ডিসকাউন্টেড অফার ড্রাইভ প্যাকেজ সমূহ সচল রয়েছে। অটোমেটেড রিচার্জ ১০ সেকেন্ড থেকে ৫ মিনিটের মধ্যে সচলভাবে সম্পন্ন হয়।",
   safiTicker: "প্রিমিয়াম Safi ব্র্যান্ডের শতভাগ খাঁটি পণ্য সম্ভার! আমাদের নিজস্ব তত্ত্বাবধানে প্রস্তুতকৃত ভেজালমুক্ত প্রিমিয়াম পণ্যসমূহ সরাসরি মেইন ব্যালেন্স থেকে সহজেই ক্রয় করুন।",
-  escrowTicker: "BNB নিরাপদ লেনদেনঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।",
+  escrowTicker: "AMB নিরাপদ লেনদেনঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।",
   rationTicker: "কো-অপারেটিভ ডিজিটাল রেশন কার্ড সেবাঃ ভর্তুকি মূল্যে নিত্যপ্রয়োজনীয় চাল, ডাল, তেল ও অন্যান্য পণ্যসামগ্রী ক্রয়ের সুবিধা উপভোগ করুন।",
   exchangeRatePerThousand: 1150,
   mobileRechargePercent: 2.0,
@@ -291,19 +291,19 @@ export const DEFAULT_CONFIG: AppConfig = {
     
     // Grid Cards
     cardSamityBadge: "কোম্পানি পোর্টাল",
-    cardSamityTitle: "BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর",
+    cardSamityTitle: "AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর",
     cardSamityDesc: "ডিপোজিট ও সঞ্চয়",
 
     cardSafeDealsBadge: "গ্রুপ বাই ডিল",
-    cardSafeDealsTitle: "BNB নিরাপদ লেনদেন",
+    cardSafeDealsTitle: "AMB নিরাপদ লেনদেন",
     cardSafeDealsDesc: "ভেরিফাইড পাইকারি",
 
     cardQardBadge: "সুদমুক্ত ঋণ",
-    cardQardTitle: "BNB কর্জে হাসানা",
+    cardQardTitle: "AMB কর্জে হাসানা",
     cardQardDesc: "কল্যাণ ঋণ তহবিল",
 
     cardBankBadge: "রেমিট্যান্স লাইভ",
-    cardBankTitle: "MY BNB লেনদেন",
+    cardBankTitle: "MY AMB লেনদেন",
     cardBankDesc: "প্রবাস থেকে পাঠান",
 
     cardSafiBadge: "ইন-হাউস ব্র্যান্ড",
@@ -311,31 +311,31 @@ export const DEFAULT_CONFIG: AppConfig = {
     cardSafiDesc: "খাঁটি পণ্য সম্ভার",
 
     cardTelecomBadge: "রিচার্জ প্যাক",
-    cardTelecomTitle: "BNB টেলিকম",
+    cardTelecomTitle: "AMB টেলিকম",
     cardTelecomDesc: "ফ্লেক্সিলোড ও অফার",
 
     cardShopBadge: "পণ্য অর্ডার",
-    cardShopTitle: "BNB সুপার শপ",
+    cardShopTitle: "AMB সুপার শপ",
     cardShopDesc: "আমানত দিয়ে ক্রয়",
 
     cardRationBadge: "কার্ড হোল্ডার",
-    cardRationTitle: "BNB রেশন কার্ড",
+    cardRationTitle: "AMB রেশন কার্ড",
     cardRationDesc: "পাইকারি সুবিধা ও ছাড়",
 
     cardCourierBadge: "ইন্সট্যান্ট ফার্স্ট ⚡",
-    cardCourierTitle: "BNB কুরিয়ার",
+    cardCourierTitle: "AMB কুরিয়ার",
     cardCourierDesc: "পার্সেল ও লজিস্টিকস",
 
     cardAgentBadge: "এজেন্ট পোর্টাল",
-    cardAgentTitle: "BNB এজেন্ট",
+    cardAgentTitle: "AMB এজেন্ট",
     cardAgentDesc: "লাভজনক ক্যারিয়ার",
 
     cardAboutBadge: "পরিচিতি ও গাইড",
-    cardAboutTitle: "BNB লক্ষ্যমাত্রা",
+    cardAboutTitle: "AMB লক্ষ্যমাত্রা",
     cardAboutDesc: "কোম্পানি প্রোফাইল",
 
     cardBapBadge: "ন্যাশনাল গেটওয়ে",
-    cardBapTitle: "BNB বাংলাদেশ এডমিন প্যানেল",
+    cardBapTitle: "AMB বাংলাদেশ এডমিন প্যানেল",
     cardBapDesc: "ভেরিফিকেশন ও তথ্য সেবা"
   },
   serviceStatus: {
@@ -362,9 +362,9 @@ export const DEFAULT_CONFIG: AppConfig = {
   forceUpdateActive: false,
   minAppVersion: "2.0",
   latestAppVersion: "2.0",
-  downloadLink: "https://play.google.com/store/apps/details?id=com.bnb.business",
+  downloadLink: "https://play.google.com/store/apps/details?id=com.amb.business",
   updateTitle: "নতুন সংস্করণ উপলব্ধ!",
-  updateDescription: "BNB BUSINESS Network Bangladesh-এর নতুন আপডেট প্রকাশিত হয়েছে। অ্যাপ ব্যবহার চালিয়ে যেতে হলে নতুন ভার্সন ইনস্টল করা বাধ্যতামূলক।",
+  updateDescription: "AMB BUSINESS Network Bangladesh-এর নতুন আপডেট প্রকাশিত হয়েছে। অ্যাপ ব্যবহার চালিয়ে যেতে হলে নতুন ভার্সন ইনস্টল করা বাধ্যতামূলক।",
   telecomDefaultSlabs: [
     { amount: 20, cashback: 0 },
     { amount: 50, cashback: 5 },
@@ -386,7 +386,7 @@ export const DEFAULT_CONFIG: AppConfig = {
 ৩. সাফি প্রিমিয়াম ইন-হাউস ব্রান্ডের নিজস্ব আউটলেট চালু করা।
 ৪. আন্তর্জাতিক রেমিট্যান্স ক্যাশ পোর্টালের গতি আরও উন্নত করা।`,
     mission: `আমাদের মূল লক্ষ্য হল প্রযুক্তির সঠিক ব্যবহারের মাধ্যমে একটি সুদমুক্ত, বৈষম্যহীন ও স্বনির্ভর অর্থনৈতিক সমাজ বিনির্মাণ করা। গ্রামীণ ও সুবিধাবঞ্চিত ক্ষুদ্র ব্যবসায়ী এবং প্রবাসী ভাই-বোনদের সঞ্চয় একত্রিত করে বড় আকারের লাভজনক যৌথ উদ্যোগে রূপান্তরের মাধ্যমে সবার সামাজিক সমৃদ্ধি অর্জন করা।`,
-    feedback: `আমাদের সেবা ও অ্যাপের মান আরও উন্নত করার জন্য আপনার যেকোনো মূল্যবান মতামত, অভিযোগ অথবা পরামর্শ আমাদের কাছে অত্যন্ত গুরুত্বপূর্ণ। সরাসরি কল করুন আমাদের হেল্প ডেস্কে অথবা ইমেইল করুন networkbangladeshbnbbusiness@gmail.com ঠিকানায়।`
+    feedback: `আমাদের সেবা ও অ্যাপের মান আরও উন্নত করার জন্য আপনার যেকোনো মূল্যবান মতামত, অভিযোগ অথবা পরামর্শ আমাদের কাছে অত্যন্ত গুরুত্বপূর্ণ। সরাসরি কল করুন আমাদের হেল্প ডেস্কে অথবা ইমেইল করুন networkbangladeshambbusiness@gmail.com ঠিকানায়।`
   }
 };
 
@@ -430,16 +430,16 @@ export async function loadAppConfig(): Promise<AppConfig> {
     if (!data.globalTexts) {
       data.globalTexts = {};
     }
-    if (data.globalTexts.cardSafeDealsTitle === "BNB নিরাপদ ডিল" || !data.globalTexts.cardSafeDealsTitle) {
-      data.globalTexts.cardSafeDealsTitle = "BNB নিরাপদ লেনদেন";
+    if (data.globalTexts.cardSafeDealsTitle === "AMB নিরাপদ ডিল" || !data.globalTexts.cardSafeDealsTitle) {
+      data.globalTexts.cardSafeDealsTitle = "AMB নিরাপদ লেনদেন";
       updated = true;
     }
-    if (data.globalTexts.cardBankTitle === "BNB ব্যাংক" || data.globalTexts.cardBankTitle === "BNB লেনদেন" || !data.globalTexts.cardBankTitle) {
-      data.globalTexts.cardBankTitle = "MY BNB লেনদেন";
+    if (data.globalTexts.cardBankTitle === "AMB ব্যাংক" || data.globalTexts.cardBankTitle === "AMB লেনদেন" || !data.globalTexts.cardBankTitle) {
+      data.globalTexts.cardBankTitle = "MY AMB লেনদেন";
       updated = true;
     }
-    if (data.escrowTicker === "BNB নিরাপদ ডিলঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।" || !data.escrowTicker) {
-      data.escrowTicker = "BNB নিরাপদ লেনদেনঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।";
+    if (data.escrowTicker === "AMB নিরাপদ ডিলঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।" || !data.escrowTicker) {
+      data.escrowTicker = "AMB নিরাপদ লেনদেনঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।";
       updated = true;
     }
     if (updated) {
@@ -487,7 +487,7 @@ export async function saveAppConfig(newConfig: AppConfig): Promise<void> {
     }
 
     try {
-      localStorage.setItem('bnb_app_config', JSON.stringify({ ...DEFAULT_CONFIG, ...sanitized }));
+      localStorage.setItem('amb_app_config', JSON.stringify({ ...DEFAULT_CONFIG, ...sanitized }));
     } catch (e) {}
   } catch (err) {
     console.error("Failed to save DB config:", err);
@@ -524,7 +524,7 @@ export async function saveSectionIcon(sectionKey: string, iconDataUrl: string): 
     }
     
     try {
-      const cached = localStorage.getItem('bnb_app_config');
+      const cached = localStorage.getItem('amb_app_config');
       if (cached) {
         const parsed = JSON.parse(cached);
         parsed.sectionIcons = parsed.sectionIcons || {};
@@ -537,7 +537,7 @@ export async function saveSectionIcon(sectionKey: string, iconDataUrl: string): 
         } else {
           parsed.sectionIcons[sectionKey] = iconDataUrl;
         }
-        localStorage.setItem('bnb_app_config', JSON.stringify(parsed));
+        localStorage.setItem('amb_app_config', JSON.stringify(parsed));
       }
     } catch (e) {}
   } catch (err) {

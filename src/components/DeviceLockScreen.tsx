@@ -69,7 +69,7 @@ export default function DeviceLockScreen({ user, deviceId, onLogout, appConfig }
     ? cleanAdminPhone 
     : (cleanAdminPhone.startsWith('0') ? '88' + cleanAdminPhone : '880' + cleanAdminPhone);
 
-  const waMessage = `আসসালামু আলাইকুম এডমিন, আমার BNB অ্যাকাউন্টে ডিভাইস লক দেখাচ্ছে। আমি নতুন ডিভাইসে লগইন করতে পারছি না। দয়া করে আমার অ্যাকাউন্টটি জিরো ডিভাইস (রিলিজ) করে দিন।\n\nনাম: ${user.name}\nমেম্বার আইডি: #${user.memberId}\nমোবাইল নম্বর: ${user.phone}\nডিভাইস আইডি: ${deviceId}`;
+  const waMessage = `আসসালামু আলাইকুম এডমিন, আমার AMB অ্যাকাউন্টে ডিভাইস লক দেখাচ্ছে। আমি নতুন ডিভাইসে লগইন করতে পারছি না। দয়া করে আমার অ্যাকাউন্টটি জিরো ডিভাইস (রিলিজ) করে দিন।\n\nনাম: ${user.name}\nমেম্বার আইডি: #${user.memberId}\nমোবাইল নম্বর: ${user.phone}\nডিভাইস আইডি: ${deviceId}`;
   const waUrl = `https://wa.me/${internationalPhone}?text=${encodeURIComponent(waMessage)}`;
 
   return (
@@ -87,7 +87,7 @@ export default function DeviceLockScreen({ user, deviceId, onLogout, appConfig }
           </div>
           <div>
             <span className="font-extrabold text-[12px] tracking-wider uppercase text-[#f97316]">
-              BNB SECURITY GATEWAY
+              AMB SECURITY GATEWAY
             </span>
           </div>
         </div>
@@ -137,7 +137,7 @@ export default function DeviceLockScreen({ user, deviceId, onLogout, appConfig }
         {/* Details & Explanation Box */}
         <div className="bg-[#161c2c] border border-slate-800/80 rounded-2xl p-4 sm:p-5 space-y-3.5 text-slate-300 text-[12.5px] leading-relaxed w-full text-left shadow-2xl">
           <p className="text-slate-200 font-medium">
-            নিরাপত্তার স্বার্থে, BNB বিজনেস অ্যাকাউন্টের একটি অ্যাকাউন্ট এককালীন শুধুমাত্র একটি ফোনেই লগইন করা সম্ভব।
+            নিরাপত্তার স্বার্থে, AMB বিজনেস অ্যাকাউন্টের একটি অ্যাকাউন্ট এককালীন শুধুমাত্র একটি ফোনেই লগইন করা সম্ভব।
           </p>
           <p className="text-slate-400 text-[11.5px] leading-relaxed">
             আপনার অ্যাকাউন্টটি ইতোমধ্যে অন্য একটি ডিভাইসে লগইন করা রয়েছে। অ্যাডমিন প্যানেলের অনুমোদন ব্যতীত আপনি এই অ্যাকাউন্টটি একাধিক ডিভাইসে ব্যবহার করতে পারবেন না।

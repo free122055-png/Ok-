@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Transaction, Offer, AppConfig, generateBnbTrxId, formatShortTrxId } from '../types';
+import { User, Transaction, Offer, AppConfig, generateAmbTrxId, formatShortTrxId } from '../types';
 import { db } from '../lib/firebase';
 import UnifiedBackButton from './UnifiedBackButton';
 import { collection, addDoc, doc, updateDoc, setDoc, query, where, getDocs } from 'firebase/firestore';
@@ -35,7 +35,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useBackHandler } from '../lib/navigationManager';
 import TelecomAdmin from './TelecomAdmin';
 import MoneyExchangeModule from './MoneyExchangeModule';
-import { BnbPaymentReceiptModal, PaymentReceiptData } from './BnbPaymentReceiptModal';
+import { AmbPaymentReceiptModal, PaymentReceiptData } from './AmbPaymentReceiptModal';
 
 // Helper functions for operator-specific cashback rules matching
 const isOperatorMatch = (ruleOpRaw?: string, targetOpRaw?: string): boolean => {
@@ -100,7 +100,7 @@ const getFilteredRulesForOperator = (rules: any[] = [], operator: string) => {
   return [...filtered].sort((a, b) => Number(a.amount) - Number(b.amount));
 };
 
-interface BNBTelecomScreenProps {
+interface AMBTelecomScreenProps {
   user: User;
   allOffers: Offer[];
   onBack: () => void;
@@ -110,7 +110,7 @@ interface BNBTelecomScreenProps {
   allNotices?: any[];
 }
 
-export default function BNBTelecomScreen({ 
+export default function AMBTelecomScreen({ 
   user, 
   allOffers, 
   onBack, 
@@ -118,7 +118,7 @@ export default function BNBTelecomScreen({
   onOpenDeposit,
   appConfig,
   allNotices = []
-}: BNBTelecomScreenProps) {
+}: AMBTelecomScreenProps) {
   
   const [activeSubView, setActiveSubView] = useState<'main' | 'admin'>('main');
   const [addBalanceMsg, setAddBalanceMsg] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
@@ -141,7 +141,7 @@ export default function BNBTelecomScreen({
     {
       id: 1,
       tag: "টেলিকম অফার",
-      title: "BNB টেলিকম রিচার্জ",
+      title: "AMB টেলিকম রিচার্জ",
       description: "সব অপারেটরে আকর্ষণীয় ক্যাশব্যাক ও সুপার ফাস্ট ফ্লেক্সিলোড ড্রাইভে অফার!",
       bgGradient: "from-slate-950 via-cyan-950 to-emerald-950",
       image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=650"
@@ -149,7 +149,7 @@ export default function BNBTelecomScreen({
     {
       id: 2,
       tag: "সঞ্চয় ও বিনিয়োগ",
-      title: "Business Network Bangladesh",
+      title: "Al Mayadin Bazar",
       description: "নিরাপদে আপনার আমানত সঞ্চয় করুন ও সহজ ঋণের সুবিধা গ্রহণ করুন।",
       bgGradient: "from-emerald-950 via-emerald-900 to-teal-950",
       image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=650"
@@ -249,7 +249,7 @@ export default function BNBTelecomScreen({
       fee: 0,
       totalAmount: tx.amount || 0,
       status: tx.status || 'pending',
-      beneficiaryName: tx.userName || user.name || 'BNB সদস্য',
+      beneficiaryName: tx.userName || user.name || 'AMB সদস্য',
       beneficiaryAccount: tx.memberId || user.memberId || user.phone,
       senderPhone: tx.phone || tx.receiverPhone || user.phone || 'N/A',
       description: tx.description,
@@ -294,7 +294,7 @@ export default function BNBTelecomScreen({
     prevModalCountRef.current = activeModalCount;
   }, [activeModalCount]);
 
-  // BNB Telecom Internal Back Handler
+  // AMB Telecom Internal Back Handler
   useBackHandler(() => {
     const modalClosed = closeTelecomModals();
     if (modalClosed) return true;
@@ -355,7 +355,7 @@ export default function BNBTelecomScreen({
         typeLabel: 'ডেইলি বোনাস',
         amount: 5,
         status: 'success',
-        description: 'BNB টেলিকম ডেইলি বোনাস (৳5.00) সফলভাবে মেইন ওয়ালেটে যুক্ত হয়েছে।',
+        description: 'AMB টেলিকম ডেইলি বোনাস (৳5.00) সফলভাবে মেইন ওয়ালেটে যুক্ত হয়েছে।',
         createdAt: new Date().toISOString()
       };
 
@@ -411,8 +411,8 @@ export default function BNBTelecomScreen({
       const rules = appConfig?.rechargeCashbackRules || [];
       const matchedCashback = getMatchedCashbackForRule(rules, selectedOffer.price, offerOp);
 
-      const bnbTrxId = generateBnbTrxId('BN');
-      const txId = `tx-tel-${bnbTrxId}`;
+      const ambTrxId = generateAmbTrxId('BN');
+      const txId = `tx-tel-${ambTrxId}`;
       let description = `${selectedOffer.operator} নম্বরে (${recipientNumber}) প্যাকঃ "${selectedOffer.title}" ক্রয়ের আবেদন করা হয়েছে। অ্যাডমিন ভেরিফিকেশন পেন্ডিং রয়েছে।`;
       if (matchedCashback > 0) {
         description += ` (স্পেশাল ক্যাশব্যাক অফারঃ ৳${matchedCashback} টাকা)`;
@@ -420,8 +420,8 @@ export default function BNBTelecomScreen({
 
       const newTx: Transaction = {
         id: txId,
-        transactionId: bnbTrxId,
-        receiptNo: bnbTrxId,
+        transactionId: ambTrxId,
+        receiptNo: ambTrxId,
         userId: user.uid,
         userName: user.name,
         memberId: user.memberId,
@@ -457,7 +457,7 @@ export default function BNBTelecomScreen({
       // Show Full-Screen Transaction Receipt Modal
       setReceiptModalData({
         typeLabel: `ড্রাইভ প্যাক (${selectedOffer.operator})`,
-        transactionId: bnbTrxId,
+        transactionId: ambTrxId,
         amount: selectedOffer.price,
         fee: 0,
         totalAmount: selectedOffer.price,
@@ -533,8 +533,8 @@ export default function BNBTelecomScreen({
       const rules = appConfig?.rechargeCashbackRules || [];
       const matchedCashback = getMatchedCashbackForRule(rules, reloadAmt, cashRechargeOperator);
 
-      const bnbTrxId = generateBnbTrxId('BN');
-      const txId = `tx-cash-${bnbTrxId}`;
+      const ambTrxId = generateAmbTrxId('BN');
+      const txId = `tx-cash-${ambTrxId}`;
       const typeLabel = cashRechargeOperator === 'Alaap' 
         ? 'আলাপ রিচার্জ' 
         : cashRechargeOperator === 'Brilliant' 
@@ -551,8 +551,8 @@ export default function BNBTelecomScreen({
           
       const newTx: Transaction = {
         id: txId,
-        transactionId: bnbTrxId,
-        receiptNo: bnbTrxId,
+        transactionId: ambTrxId,
+        receiptNo: ambTrxId,
         userId: user.uid,
         userName: user.name,
         memberId: user.memberId,
@@ -588,7 +588,7 @@ export default function BNBTelecomScreen({
       // Show Full-Screen Transaction Receipt Modal
       setReceiptModalData({
         typeLabel: typeLabel,
-        transactionId: bnbTrxId,
+        transactionId: ambTrxId,
         amount: reloadAmt,
         fee: 0,
         totalAmount: reloadAmt,
@@ -667,7 +667,7 @@ export default function BNBTelecomScreen({
           <div className="text-left">
             <h1 className="text-xs xs:text-sm font-black flex items-center gap-1 text-indigo-700">
               <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-              BNB টেলিকম
+              AMB টেলিকম
             </h1>
             <p className="text-[8px] xs:text-[10px] text-slate-550 uppercase tracking-wider font-mono">ID: {user.memberId}</p>
           </div>
@@ -1609,7 +1609,7 @@ export default function BNBTelecomScreen({
                     <Headphones className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-slate-900">BNB টেলিকম হেল্পলাইন</h3>
+                    <h3 className="text-sm font-black text-slate-900">AMB টেলিকম হেল্পলাইন</h3>
                     <p className="text-[10px] text-slate-500 font-extrabold">সরাসরি সাপোর্ট ও মেসেজিং সেকশন</p>
                   </div>
                 </div>
@@ -1831,7 +1831,7 @@ export default function BNBTelecomScreen({
 
               {/* Footer */}
               <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
-                <span className="text-[10px] text-slate-400 font-bold">© BUSINESS NETWORK BANGLADESH (BNB)</span>
+                <span className="text-[10px] text-slate-400 font-bold">© BUSINESS NETWORK BANGLADESH (AMB)</span>
               </div>
             </motion.div>
           </div>
@@ -1840,12 +1840,12 @@ export default function BNBTelecomScreen({
     </>
   )}
 
-      {/* Full-Screen BNB Payment Receipt Modal */}
-      <BnbPaymentReceiptModal
+      {/* Full-Screen Al Mayadin Payment Receipt Modal */}
+      <AmbPaymentReceiptModal
         isOpen={isReceiptOpen}
         onClose={() => setIsReceiptOpen(false)}
         data={receiptModalData}
-        appLogo={appConfig?.logoUrl || "/bnb_logo.png"}
+        appLogo={appConfig?.logoUrl || "/amb_logo.png"}
       />
 
     </div>

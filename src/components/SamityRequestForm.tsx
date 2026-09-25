@@ -330,7 +330,7 @@ export default function SamityRequestForm({ user, appConfig, onClose, onSubmitSu
               <div>
                 <label className="text-slate-450 font-semibold block">অ্যাকাউন্ট রোল (Account Role):</label>
                 <div className="text-slate-700 font-semibold bg-white border border-slate-200 rounded-xl px-3 py-2 mt-1 capitalize">
-                  {user.role === 'admin' ? 'এডমিন (BNB Admin)' : 'প্রিমিয়াম সদস্য'}
+                  {user.role === 'admin' ? 'এডমিন (AMB Admin)' : 'প্রিমিয়াম সদস্য'}
                 </div>
               </div>
             </div>

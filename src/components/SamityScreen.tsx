@@ -5,7 +5,7 @@ import { db } from '../lib/firebase';
 import SamityAdmin from './SamityAdmin';
 import SamityInvestmentsView from './SamityInvestmentsView';
 import UnifiedBackButton from './UnifiedBackButton';
-import { BnbPaymentReceiptModal, PaymentReceiptData } from './BnbPaymentReceiptModal';
+import { AmbPaymentReceiptModal, PaymentReceiptData } from './AmbPaymentReceiptModal';
 import { 
   collection, 
   query, 
@@ -145,11 +145,11 @@ export default function SamityScreen({
       fee: 0,
       totalAmount: tx.amount || 0,
       status: tx.status || 'pending',
-      beneficiaryName: tx.userName || user.name || 'BNB সদস্য',
+      beneficiaryName: tx.userName || user.name || 'AMB সদস্য',
       beneficiaryAccount: tx.memberId || user.memberId || user.phone,
       senderPhone: tx.phone || user.phone || 'N/A',
       description: tx.description,
-      paymentMethod: tx.paymentMethod || 'BNB ওয়ালেট',
+      paymentMethod: tx.paymentMethod || 'AMB ওয়ালেট',
       transactionDate: tx.createdAt ? new Date(tx.createdAt).toLocaleString('bn-BD', {
         day: 'numeric',
         month: 'numeric',
@@ -455,8 +455,8 @@ export default function SamityScreen({
       let maxSerial = 0;
       if (Array.isArray(allUsers) && allUsers.length > 0) {
         allUsers.forEach((u) => {
-          if (u.memberId && u.memberId.startsWith('BNB')) {
-            const serialPart = u.memberId.replace('BNB', '');
+          if (u.memberId && u.memberId.startsWith('AMB')) {
+            const serialPart = u.memberId.replace('AMB', '');
             const serialNum = parseInt(serialPart, 10);
             if (!isNaN(serialNum) && serialNum > maxSerial) {
               maxSerial = serialNum;
@@ -465,7 +465,7 @@ export default function SamityScreen({
         });
       }
       const nextSerial = Math.max(maxSerial, (allUsers?.length || 0)) + 1;
-      const newMemberId = `BNB${String(nextSerial).padStart(8, '0')}`;
+      const newMemberId = `AMB${String(nextSerial).padStart(8, '0')}`;
       const userDocId = 'user_' + (normPhone || Date.now().toString());
       const nowIso = new Date().toISOString();
 
@@ -772,7 +772,7 @@ export default function SamityScreen({
           amount: liveTargetRate,
           status: 'approved',
           isApproved: true,
-          paymentMethod: 'BNB Wallet',
+          paymentMethod: 'Al Mayadin Wallet',
           description: `সদস্য কর্তৃক ওয়ালেট থেকে ${selectedPayMonth.name} ${payYear} সালের সমিতি সঞ্চয় কিস্তি ৳${liveTargetRate.toLocaleString('bn-BD')} জমা দেওয়া হয়েছে।`,
           createdAt: nowIso,
           receiptNo: `DEP-MONTH-${Date.now()}`
@@ -1444,8 +1444,8 @@ export default function SamityScreen({
     const totalUsers = Array.isArray(adminUsers) ? adminUsers.length : 0;
     if (Array.isArray(adminUsers)) {
       adminUsers.forEach((u) => {
-        if (u.memberId && u.memberId.startsWith('BNB')) {
-          const serialPart = u.memberId.replace('BNB', '');
+        if (u.memberId && u.memberId.startsWith('AMB')) {
+          const serialPart = u.memberId.replace('AMB', '');
           const serialNum = parseInt(serialPart, 10);
           if (!isNaN(serialNum) && serialNum > maxSerial) {
             maxSerial = serialNum;
@@ -1454,7 +1454,7 @@ export default function SamityScreen({
       });
     }
     const nextSerial = Math.max(maxSerial, totalUsers) + 1;
-    return `BNB${String(nextSerial).padStart(8, '0')}`;
+    return `AMB${String(nextSerial).padStart(8, '0')}`;
   };
 
   const handleReconciliationSubmit = async (e: React.FormEvent) => {
@@ -1611,12 +1611,12 @@ export default function SamityScreen({
           } else if (tx.type === 'coop_savings_deposit' || tx.type === 'samity_deposit') {
             updatedSavings += tx.amount;
             updatedDps += tx.amount;
-            if (tx.paymentMethod === 'Main Balance' || tx.paymentMethod === 'BNB Wallet' || tx.paymentMethod === 'মেইন ব্যালেন্স' || tx.paymentMethod === 'Wallet' || (tx as any).deductFromMain) {
+            if (tx.paymentMethod === 'Main Balance' || tx.paymentMethod === 'Al Mayadin Wallet' || tx.paymentMethod === 'মেইন ব্যালেন্স' || tx.paymentMethod === 'Wallet' || (tx as any).deductFromMain) {
               updatedBalance = Math.max(0, updatedBalance - tx.amount);
             }
           } else if (tx.type === 'loan_repayment') {
             updatedDueLoan = Math.max(0, updatedDueLoan - tx.amount);
-            if ((!tx.paymentMethod || tx.paymentMethod === 'Main Balance' || tx.paymentMethod === 'BNB Wallet' || tx.paymentMethod === 'মেইন ব্যালেন্স') && updatedBalance >= tx.amount) {
+            if ((!tx.paymentMethod || tx.paymentMethod === 'Main Balance' || tx.paymentMethod === 'Al Mayadin Wallet' || tx.paymentMethod === 'মেইন ব্যালেন্স') && updatedBalance >= tx.amount) {
               updatedBalance = Math.max(0, updatedBalance - tx.amount);
             }
           } else if (tx.type === 'coop_loan_apply') {
@@ -2356,7 +2356,7 @@ export default function SamityScreen({
     }
 
     if (amt > 50000) {
-      setFormError('BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর নীতি অনুযায়ী নতুন লোন সর্বোচ্চ 50,000 টাকার বেশি হওয়া সম্ভব নয়।');
+      setFormError('AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর নীতি অনুযায়ী নতুন লোন সর্বোচ্চ 50,000 টাকার বেশি হওয়া সম্ভব নয়।');
       return;
     }
 
@@ -2998,7 +2998,7 @@ export default function SamityScreen({
 
                 <div className="flex items-center gap-1 mt-0.5">
                   <span className="text-[9px] text-teal-100 font-bold block leading-none">
-                    সদস্য আইডি: <strong className="font-mono text-white">{user.memberId || "BNB00005327"}</strong>
+                    সদস্য আইডি: <strong className="font-mono text-white">{user.memberId || "AMB00005327"}</strong>
                   </span>
                 </div>
               </div>
@@ -3097,7 +3097,7 @@ export default function SamityScreen({
                     <Bell className="w-5 h-5 animate-bounce" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest leading-none">BNB Notice Board</h3>
+                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest leading-none">AMB Notice Board</h3>
                     <p className="text-[9.5px] mt-1 text-indigo-600 font-bold block">লাইভ সমবায় নোটিশ ও সিস্টেম ঘোষণা বার্তাখানা</p>
                   </div>
                 </div>
@@ -3406,7 +3406,7 @@ export default function SamityScreen({
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-400 font-mono font-bold leading-none">সহযোগী আইডিঃ {user.memberId || "BNB00005327"}</p>
+                <p className="text-xs text-slate-400 font-mono font-bold leading-none">সহযোগী আইডিঃ {user.memberId || "AMB00005327"}</p>
               </div>
 
               <div className="border-t border-slate-100 pt-4 text-left space-y-2.5 text-xs font-sans">
@@ -3484,7 +3484,7 @@ export default function SamityScreen({
               </div>
               <div className="flex-grow overflow-hidden relative mr-1">
                 <marquee className="text-[11px] font-bold text-slate-800 leading-none py-0.5" behavior="scroll" direction="left" scrollamount="4">
-                  {appConfig?.samityTicker || "BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সাধারণ ফান্ডে স্বাগতম। আপনি এখান থেকে সঞ্চয় জমা দিতে পারেন, ঋণ আবেদন এবং মুনাফার শেয়ার তুলতে পারেন।"}
+                  {appConfig?.samityTicker || "AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সাধারণ ফান্ডে স্বাগতম। আপনি এখান থেকে সঞ্চয় জমা দিতে পারেন, ঋণ আবেদন এবং মুনাফার শেয়ার তুলতে পারেন।"}
                 </marquee>
               </div>
             </div>
@@ -4053,7 +4053,7 @@ export default function SamityScreen({
           </motion.div>
         )}
 
-        {/* ================= SUB VIEW: BNB OUR INVESTMENTS (আমাদের ইনভেস্ট) ================= */}
+        {/* ================= SUB VIEW: AMB OUR INVESTMENTS (আমাদের ইনভেস্ট) ================= */}
         {bottomTab === 'home' && activeSubView === 'our_investments' && (
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
@@ -4487,7 +4487,7 @@ export default function SamityScreen({
                       value={referrerCodeInput}
                       onChange={(e) => setReferrerCodeInput(e.target.value)}
                       className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-800"
-                      placeholder="যেমনঃ BNB00000001"
+                      placeholder="যেমনঃ AMB00000001"
                     />
                     <button
                       onClick={handleSetReferrer}
@@ -4625,7 +4625,7 @@ export default function SamityScreen({
                       value={shareRecipientId}
                       onChange={(e) => setShareRecipientId(e.target.value)}
                       className="block w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-850 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white"
-                      placeholder="যেমনঃ BNB00000002"
+                      placeholder="যেমনঃ AMB00000002"
                     />
                     {shareRecipientName ? (
                       <span className="text-[10px] text-emerald-600 font-bold block mt-1">
@@ -5855,7 +5855,7 @@ export default function SamityScreen({
 
                 {/* Footer */}
                 <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
-                  <span className="text-[10px] text-slate-400 font-bold">© BUSINESS NETWORK BANGLADESH (BNB)</span>
+                  <span className="text-[10px] text-slate-400 font-bold">© BUSINESS NETWORK BANGLADESH (AMB)</span>
                 </div>
               </motion.div>
             </motion.div>
@@ -6360,7 +6360,7 @@ export default function SamityScreen({
                     </div>
                     <div>
                       <h3 className="text-sm font-black text-slate-900">অফিসিয়াল হেল্পলাইন সেবা</h3>
-                      <p className="text-[10px] text-slate-500 font-bold">BNB সমবায় সমিতি ও কাস্টমার সাপোর্ট</p>
+                      <p className="text-[10px] text-slate-500 font-bold">AMB সমবায় সমিতি ও কাস্টমার সাপোর্ট</p>
                     </div>
                   </div>
                   <button
@@ -6956,12 +6956,12 @@ export default function SamityScreen({
 
       </div>
 
-      {/* Full-Screen BNB Payment Receipt Modal */}
-      <BnbPaymentReceiptModal
+      {/* Full-Screen Al Mayadin Payment Receipt Modal */}
+      <AmbPaymentReceiptModal
         isOpen={isReceiptOpen}
         onClose={() => setIsReceiptOpen(false)}
         data={receiptModalData}
-        appLogo={appConfig?.logoUrl || "/bnb_logo.png"}
+        appLogo={appConfig?.logoUrl || "/amb_logo.png"}
       />
 
     </div>

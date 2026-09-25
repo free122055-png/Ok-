@@ -1059,7 +1059,7 @@ function AdminUserEditModalContent(props: any) {
                 required
                 value={editUserMemberId || ''}
                 onChange={(e) => setEditUserMemberId(e.target.value.toUpperCase())}
-                placeholder="BNB00000001"
+                placeholder="AMB00000001"
                 className="block w-full px-2 py-1 bg-white border border-emerald-400 rounded-lg text-xs font-mono font-black text-emerald-950 uppercase focus:outline-none focus:ring-1 focus:ring-emerald-500"
               />
             </div>

@@ -424,7 +424,7 @@ export default function SafeDealsEscrowView({
       if (resolvedRecipient) {
         await addDoc(collection(db, 'notices'), {
           title: `নিরাপদ লেনদেন জমার নিবেদন!`,
-          content: `${liveUser.name} (BNB ID: ${liveUser.memberId}) আপনার ফোন নম্বরে ৳${cleanAmount.toLocaleString('bn-BD')} BDT এর একটি নিরাপদ লেনদেন বুকিং জমা করেছেন। ট্র্যাকিং জমা দিয়ে বা পণ্যটি পাঠিয়ে রিলিজ বুঝে নিন।`,
+          content: `${liveUser.name} (AMB ID: ${liveUser.memberId}) আপনার ফোন নম্বরে ৳${cleanAmount.toLocaleString('bn-BD')} BDT এর একটি নিরাপদ লেনদেন বুকিং জমা করেছেন। ট্র্যাকিং জমা দিয়ে বা পণ্যটি পাঠিয়ে রিলিজ বুঝে নিন।`,
           createdAt: timestamp
         });
       }
@@ -869,7 +869,7 @@ export default function SafeDealsEscrowView({
           </div>
           <div className="flex-grow overflow-hidden relative mr-1.5">
             <marquee className="text-[12px] font-bold text-slate-800 leading-none py-0.5" behavior="scroll" direction="left" scrollamount="4">
-              {appConfig?.escrowTicker || "BNB নিরাপদ লেনদেনঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।"}
+              {appConfig?.escrowTicker || "AMB নিরাপদ লেনদেনঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।"}
             </marquee>
           </div>
         </div>
@@ -1236,7 +1236,7 @@ export default function SafeDealsEscrowView({
                     <input 
                       type="text"
                       required
-                      placeholder="উদাঃ BNB00005327 অথবা মোবাইল"
+                      placeholder="উদাঃ AMB00005327 অথবা মোবাইল"
                       value={sendPhone}
                       onChange={(e) => setSendPhone(e.target.value)}
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:outline-none focus:border-blue-500 font-mono text-sm pl-10"
@@ -1360,7 +1360,7 @@ export default function SafeDealsEscrowView({
                     
                     {pendingSales.length === 0 ? (
                       <div className="p-8 text-center border border-dashed border-slate-200 rounded-2xl text-slate-400 text-xs font-bold leading-relaxed">
-                        আপাতত আপনার জন্য কোনো পেন্ডিং বুকিং পাওয়া যায়নি। ক্রেতাদের আপনার BNB মোবাইল নম্বরে বা BNB মেম্বার আইডিতে "টাকা পাঠান" সেকশন ব্যবহার করে পেমেন্ট করার কথা বলুন।
+                        আপাতত আপনার জন্য কোনো পেন্ডিং বুকিং পাওয়া যায়নি। ক্রেতাদের আপনার AMB মোবাইল নম্বরে বা AMB মেম্বার আইডিতে "টাকা পাঠান" সেকশন ব্যবহার করে পেমেন্ট করার কথা বলুন।
                       </div>
                     ) : (
                       <div className="space-y-3">
@@ -2093,7 +2093,7 @@ export default function SafeDealsEscrowView({
                         ctx.fillStyle = '#94a3b8';
                         ctx.font = 'bold 10px system-ui, sans-serif';
                         ctx.fillText('এটি একটি সিস্টেম জেনারেটেড রসিদ কপি। যেকোনো তথ্যের জন্য সাপোর্ট টিমে যোগাযোগ করুন।', canvas.width / 2, currentY + 30);
-                        ctx.fillText('© BUSINESS NETWORK BANGLADESH (BNB)', canvas.width / 2, currentY + 48);
+                        ctx.fillText('© BUSINESS NETWORK BANGLADESH (AMB)', canvas.width / 2, currentY + 48);
 
                         // Bottom scallops
                         ctx.fillStyle = '#f1f5f9';
@@ -2118,7 +2118,7 @@ export default function SafeDealsEscrowView({
                         const blobUrl = URL.createObjectURL(blob);
 
                         const link = document.createElement('a');
-                        link.download = `BNB-Escrow-Voucher-${voucherData.bookingId}.png`;
+                        link.download = `AMB-Escrow-Voucher-${voucherData.bookingId}.png`;
                         link.href = blobUrl;
                         document.body.appendChild(link);
                         link.click();
@@ -2401,7 +2401,7 @@ export default function SafeDealsEscrowView({
                   <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5">
                     <ShieldCheck className="w-5 h-5 text-emerald-600" /> অ্যাডমিন সাপোর্ট ও ট্র্যাকিং সেন্টার
                   </h3>
-                  <p className="text-[10px] text-slate-450 font-bold">Business Network Bangladesh (BNB)</p>
+                  <p className="text-[10px] text-slate-450 font-bold">Al Mayadin Bazar (AMB)</p>
                 </div>
                 <button 
                   type="button"
@@ -2664,7 +2664,7 @@ export default function SafeDealsEscrowView({
 
               {/* Footer */}
               <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
-                <span className="text-[10px] text-slate-400 font-bold">© BUSINESS NETWORK BANGLADESH (BNB)</span>
+                <span className="text-[10px] text-slate-400 font-bold">© BUSINESS NETWORK BANGLADESH (AMB)</span>
               </div>
             </motion.div>
           </div>

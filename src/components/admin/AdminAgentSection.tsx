@@ -25,14 +25,14 @@ import { User, Transaction, Notice, Offer, BapReport, BapGroup, BapAdminRequest,
 import { normalizeMemberId, formatBanglaAmount, normalizePhoneNumber, findUserInFirestoreByPhone, getNextSequentialMemberId, deleteUserCompletelyFromDatabase, convertBengaliToEnglishDigits } from '../../lib/memberUtils';
 import { sortTransactionsNewestFirst, getTxTime } from '../../lib/transactionUtils';
 import { saveAppConfig, DEFAULT_QARD_CONFIG } from '../../lib/config';
-import { BNBLogo } from '../BNBLogo';
+import { AMBLogo } from '../AMBLogo';
 import { HeaderPendingModal } from '../HeaderPendingModal';
 import SamityScreen from '../SamityScreen';
 import UnifiedBackButton from '../UnifiedBackButton';
 import SamityAdmin from '../SamityAdmin';
 import SafiPremiumShop from '../SafiPremiumShop';
 import TelecomAdmin from '../TelecomAdmin';
-import BnbSalaryAdmin from '../BnbSalaryAdmin';
+import AmbSalaryAdmin from '../AmbSalaryAdmin';
 import { HistoryRetentionSettings } from '../HistoryRetentionSettings';
 import { runWalletEndToEndTests, TestResultItem } from '../../lib/walletTests';
 import { 
@@ -301,10 +301,10 @@ export function AdminAgentSection(props: any) {
             <div className="bg-slate-50 border border-slate-200/80 p-6 rounded-3xl">
               <div className="border-b border-slate-200/80 pb-4 mb-5">
                 <h2 className="text-base sm:text-lg font-black text-emerald-450 flex items-center gap-2">
-                  💼 BNB কো-অপারেティブ ক্যারিয়ার ও এজেন্ট রিক্রুটিং সেল
+                  💼 AMB কো-অপারেティブ ক্যারিয়ার ও এজেন্ট রিক্রুটিং সেল
                 </h2>
                 <p className="text-xs text-slate-450 mt-1 font-semibold leading-relaxed">
-                  এখানে সারা বাংলাদেশ ও বিশ্বজুড়ে সমবায় সদস্যদের সাবমিট করা BNB এজেন্ট পার্টনারশিপ আবেদনগুলো অনুমোদন করতে পারবেন এবং সরাসরি নতুন এজেন্টদের পজিশন সেট ও ডিলিট করতে পারবেন।
+                  এখানে সারা বাংলাদেশ ও বিশ্বজুড়ে সমবায় সদস্যদের সাবমিট করা AMB এজেন্ট পার্টনারশিপ আবেদনগুলো অনুমোদন করতে পারবেন এবং সরাসরি নতুন এজেন্টদের পজিশন সেট ও ডিলিট করতে পারবেন।
                 </p>
               </div>
 

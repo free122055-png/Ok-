@@ -139,7 +139,7 @@ export default function SetAppLockModal({
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   maxLength={12}
-                  placeholder="যেমন: bnb987654 বা 1234"
+                  placeholder="যেমন: amb987654 বা 1234"
                   className="w-full pl-8 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
                   required
                 />

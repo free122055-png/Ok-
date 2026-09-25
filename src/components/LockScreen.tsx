@@ -5,7 +5,7 @@ import { db } from '../lib/firebase';
 import { doc, getDoc, collection, query, where, getDocs, updateDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { KeyRound, LogOut, ArrowRight, ShieldAlert, Check, X, Search, Lock, ShieldCheck, Eye, EyeOff, LockKeyhole } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BNBLogo } from './BNBLogo';
+import { AMBLogo } from './AMBLogo';
 import { getLockoutState, recordFailedAttempt, clearLockoutState, LockoutState } from '../lib/lockoutUtils';
 import LockoutScreen from './LockoutScreen';
 
@@ -330,7 +330,7 @@ export default function LockScreen({
       }
 
       // Also check if valid PIN was previously cached on this device
-      const cachedPin = typeof window !== 'undefined' ? (localStorage.getItem('bnb_user_pin') || '') : '';
+      const cachedPin = typeof window !== 'undefined' ? (localStorage.getItem('amb_user_pin') || '') : '';
 
       const isCorrectPin = 
         (userPin && targetPin === userPin) ||
@@ -341,7 +341,7 @@ export default function LockScreen({
       if (isCorrectPin) {
         clearLockoutState(userIdentifier);
         try {
-          localStorage.setItem('bnb_user_pin', targetPin);
+          localStorage.setItem('amb_user_pin', targetPin);
           if (user) {
             user.pin = targetPin;
           }
@@ -487,11 +487,11 @@ export default function LockScreen({
             {appConfig?.logoUrl ? (
               <img src={appConfig.logoUrl} alt="Logo" className="w-full h-full object-cover rounded-xl" referrerPolicy="no-referrer" />
             ) : (
-              <BNBLogo className="w-11 h-11 text-emerald-700 filter drop-shadow-xs" />
+              <AMBLogo className="w-11 h-11 text-emerald-700 filter drop-shadow-xs" />
             )}
           </div>
           <h1 className="text-base font-black tracking-wider text-emerald-850 uppercase text-center">
-            {appConfig?.appName || 'BNB BUSINESS NETWORK BANGLADESH'}
+            {appConfig?.appName || 'AMB BUSINESS NETWORK BANGLADESH'}
           </h1>
           <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">DIGITAL SAMITY SYSTEM</p>
         </div>
@@ -633,7 +633,7 @@ export default function LockScreen({
               <h2 className="text-lg font-black text-slate-900 tracking-tight mt-1">{user.name || 'সদস্য'}</h2>
               <div className="flex items-center gap-2 justify-center">
                 <p className="text-[11px] font-mono font-bold text-slate-800 bg-white px-3 py-0.5 rounded-full border border-slate-200 shadow-2xs">
-                  {user.memberId || localStorage.getItem('bnb_user_member_id') || 'BNB00000000'}
+                  {user.memberId || localStorage.getItem('amb_user_member_id') || 'AMB00000000'}
                 </p>
                 {user.phone && (
                   <p className="text-[11px] font-mono font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200 shadow-2xs">

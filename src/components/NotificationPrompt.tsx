@@ -78,12 +78,12 @@ export const NotificationPrompt: React.FC<NotificationPromptProps> = ({ appConfi
     }
 
     // 3. Determine visibility logically: Persistent decision always takes precedence
-    const permanentlyGranted = localStorage.getItem('bnb_permissions_permanently_granted') === 'true' ||
-                               localStorage.getItem('bnb_location_permission_granted') === 'true';
+    const permanentlyGranted = localStorage.getItem('amb_permissions_permanently_granted') === 'true' ||
+                               localStorage.getItem('amb_location_permission_granted') === 'true';
     const bothGranted = currentNotif === 'granted' && currentGeo === 'granted';
 
     if (bothGranted || permanentlyGranted) {
-      localStorage.setItem('bnb_permissions_permanently_granted', 'true');
+      localStorage.setItem('amb_permissions_permanently_granted', 'true');
       setIsVisible(false);
     } else {
       // First install/login or ungranted session -> show bKash/Google style prompt
@@ -106,12 +106,12 @@ export const NotificationPrompt: React.FC<NotificationPromptProps> = ({ appConfi
   useEffect(() => {
     if (isChecking) return;
 
-    const permanentlyGranted = localStorage.getItem('bnb_permissions_permanently_granted') === 'true' ||
-                               localStorage.getItem('bnb_location_permission_granted') === 'true';
+    const permanentlyGranted = localStorage.getItem('amb_permissions_permanently_granted') === 'true' ||
+                               localStorage.getItem('amb_location_permission_granted') === 'true';
     const bothGranted = notifState === 'granted' && geoState === 'granted';
 
     if (bothGranted || permanentlyGranted) {
-      localStorage.setItem('bnb_permissions_permanently_granted', 'true');
+      localStorage.setItem('amb_permissions_permanently_granted', 'true');
       setIsVisible(false);
     } else {
       setIsVisible(true);
@@ -215,16 +215,16 @@ export const NotificationPrompt: React.FC<NotificationPromptProps> = ({ appConfi
     setIsLoading(false);
     
     // Always mark permanently granted in localStorage upon user action (single tap approval)
-    localStorage.setItem('bnb_permissions_permanently_granted', 'true');
-    localStorage.setItem('bnb_location_permission_granted', 'true');
+    localStorage.setItem('amb_permissions_permanently_granted', 'true');
+    localStorage.setItem('amb_location_permission_granted', 'true');
     setGeoState('granted');
     setNotifState('granted');
     setIsVisible(false);
   };
 
   const handleDismiss = () => {
-    localStorage.setItem('bnb_permissions_permanently_granted', 'true');
-    localStorage.setItem('bnb_location_permission_granted', 'true');
+    localStorage.setItem('amb_permissions_permanently_granted', 'true');
+    localStorage.setItem('amb_location_permission_granted', 'true');
     setIsVisible(false);
   };
 

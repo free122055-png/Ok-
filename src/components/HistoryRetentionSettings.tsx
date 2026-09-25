@@ -33,7 +33,7 @@ export const HistoryRetentionSettings: React.FC<HistoryRetentionSettingsProps> =
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<RetentionCleanupResult | null>(() => {
     try {
-      const raw = localStorage.getItem('bnb_last_retention_cleanup');
+      const raw = localStorage.getItem('amb_last_retention_cleanup');
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;

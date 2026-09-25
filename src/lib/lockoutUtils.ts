@@ -24,7 +24,7 @@ const normalizeKey = (key?: string): string => {
 
 export const getLockoutState = (identifier?: string): LockoutInfo => {
   const normKey = normalizeKey(identifier);
-  const storageKey = `bnb_lockout_${normKey}`;
+  const storageKey = `amb_lockout_${normKey}`;
   
   try {
     const raw = localStorage.getItem(storageKey);
@@ -91,7 +91,7 @@ export const recordFailedAttempt = (
   reason?: 'pin' | 'password';
 } => {
   const normKey = normalizeKey(identifier);
-  const storageKey = `bnb_lockout_${normKey}`;
+  const storageKey = `amb_lockout_${normKey}`;
   const currentState = getLockoutState(identifier);
 
   if (currentState.isLocked) {
@@ -142,7 +142,7 @@ export const recordFailedAttempt = (
 
 export const resetLockout = (identifier?: string, type?: 'pin' | 'password' | 'all'): void => {
   const normKey = normalizeKey(identifier);
-  const storageKey = `bnb_lockout_${normKey}`;
+  const storageKey = `amb_lockout_${normKey}`;
 
   try {
     if (!type || type === 'all') {

@@ -25,14 +25,14 @@ import { User, Transaction, Notice, Offer, BapReport, BapGroup, BapAdminRequest,
 import { normalizeMemberId, formatBanglaAmount, normalizePhoneNumber, findUserInFirestoreByPhone, getNextSequentialMemberId, deleteUserCompletelyFromDatabase, convertBengaliToEnglishDigits } from '../../lib/memberUtils';
 import { sortTransactionsNewestFirst, getTxTime } from '../../lib/transactionUtils';
 import { saveAppConfig, DEFAULT_QARD_CONFIG } from '../../lib/config';
-import { BNBLogo } from '../BNBLogo';
+import { AMBLogo } from '../AMBLogo';
 import { HeaderPendingModal } from '../HeaderPendingModal';
 import SamityScreen from '../SamityScreen';
 import UnifiedBackButton from '../UnifiedBackButton';
 import SamityAdmin from '../SamityAdmin';
 import SafiPremiumShop from '../SafiPremiumShop';
 import TelecomAdmin from '../TelecomAdmin';
-import BnbSalaryAdmin from '../BnbSalaryAdmin';
+import AmbSalaryAdmin from '../AmbSalaryAdmin';
 import { HistoryRetentionSettings } from '../HistoryRetentionSettings';
 import { runWalletEndToEndTests, TestResultItem } from '../../lib/walletTests';
 import { 
@@ -466,7 +466,7 @@ export function AdminBannersSection(props: any) {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-base sm:text-lg font-black text-amber-400 flex items-center gap-2">
-                    🖼️ BNB স্লাইডার ব্যানার ও কভার ছবি আপলোড প্যানেল
+                    🖼️ AMB স্লাইডার ব্যানার ও কভার ছবি আপলোড প্যানেল
                   </h2>
                   <p className="text-xs text-slate-450 mt-1">সব সেকশনের জন্য ছবি গ্যালারি থেকে কভার ব্যানার ছবি আপলোড করুন ও কাস্টমাইজ করুন।</p>
                 </div>
@@ -647,7 +647,7 @@ export function AdminBannersSection(props: any) {
                             {/* Demo Overlay of Escrow Cover Banner Text to show how text sits on top of images */}
                             <div className="absolute left-4 bottom-4 text-left max-w-[80%] z-10 select-none">
                               <span className="px-1.5 py-0.5 bg-emerald-850/80 text-[6.5px] font-extrabold uppercase rounded text-emerald-300">ভেরিফাইড এসক্রো মার্কেটপ্লেস</span>
-                              <h4 className="text-[11px] font-black leading-tight mt-0.5 text-white">BNB নিরাপদ লেনদেন · লাইভ গ্রুপ বাই</h4>
+                              <h4 className="text-[11px] font-black leading-tight mt-0.5 text-white">AMB নিরাপদ লেনদেন · লাইভ গ্রুপ বাই</h4>
                               <p className="text-[8px] text-emerald-100/90 leading-normal mt-0.5 max-w-sm truncate">হোম ও সমবায়ীদের প্রথম সুরক্ষাবলয় সহায়ক এসক্রো...</p>
                             </div>
                           </div>

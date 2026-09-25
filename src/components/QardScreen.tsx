@@ -4,7 +4,7 @@ import { User, Transaction, AppConfig } from '../types';
 import { db } from '../lib/firebase';
 import { DEFAULT_QARD_CONFIG } from '../lib/config';
 import { hasCompletedSamityProfile, getMissingProfileFields } from '../lib/memberUtils';
-import BnbPaymentReceiptModal from './BnbPaymentReceiptModal';
+import AmbPaymentReceiptModal from './AmbPaymentReceiptModal';
 import UnifiedBackButton from './UnifiedBackButton';
 import { useBackHandler } from '../lib/navigationManager';
 import { 
@@ -124,7 +124,7 @@ export default function QardScreen({ user, onBack, syncLiveProfile, appConfig }:
     {
       id: 1,
       tag: "সঞ্চয় ও বিনিয়োগ",
-      title: "Business Network Bangladesh",
+      title: "Al Mayadin Bazar",
       description: "নিরাপদে আপনার আমানত সঞ্চয় করুন ও সহজ ঋণের সুবিধা গ্রহণ করুন।",
       bgGradient: "from-emerald-950 via-emerald-900 to-teal-950",
       image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=650"
@@ -132,7 +132,7 @@ export default function QardScreen({ user, onBack, syncLiveProfile, appConfig }:
     {
       id: 2,
       tag: "টেলিকম অফার",
-      title: "BNB টেলিকম রিচার্জ",
+      title: "AMB টেলিকম রিচার্জ",
       description: "সব অপারেটরে আকর্ষণীয় ক্যাশব্যাক ও সুপার ফাস্ট ফ্লেক্সিলোড ড্রাইভে অফার!",
       bgGradient: "from-slate-950 via-cyan-950 to-emerald-950",
       image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=650"
@@ -182,8 +182,8 @@ export default function QardScreen({ user, onBack, syncLiveProfile, appConfig }:
       : new Date().toLocaleString('bn-BD', { hour12: true });
 
     const text = `====================================
-BUSINESS NETWORK BANGLADESH (BNB)
-BNB Business Co-operative Welfare Fund
+BUSINESS NETWORK BANGLADESH (AMB)
+AMB Business Co-operative Welfare Fund
 ====================================
 অফিসিয়াল রসিদ (Official Receipt)
 ------------------------------------
@@ -233,7 +233,7 @@ BNB Business Co-operative Welfare Fund
 
     ctx.fillStyle = '#64748b'; // Slate-500
     ctx.font = '500 13px "Segoe UI", "Helvetica Neue", Arial, sans-serif';
-    ctx.fillText('BNB Business Co-operative Welfare Fund', 250, 85);
+    ctx.fillText('AMB Business Co-operative Welfare Fund', 250, 85);
 
     ctx.strokeStyle = '#cbd5e1';
     ctx.lineWidth = 1;
@@ -365,7 +365,7 @@ BNB Business Co-operative Welfare Fund
 
   // Eligibility check states
   const [activeDays, setActiveDays] = useState<number>(0);
-  const [bnbTxVolume, setBnbTxVolume] = useState<number>(0);
+  const [ambTxVolume, setAmbTxVolume] = useState<number>(0);
   const [eligibilityLoaded, setEligibilityLoaded] = useState<boolean>(false);
 
   // Coop 50% Instant Auto-Loan States
@@ -378,7 +378,7 @@ BNB Business Co-operative Welfare Fund
   const [selectedReceiptTx, setSelectedReceiptTx] = useState<Transaction | null>(null);
   const [showCertificate, setShowCertificate] = useState<boolean>(false);
   const [showRepayModal, setShowRepayModal] = useState<boolean>(false);
-  const [emailInput, setEmailInput] = useState<string>(user.phone + '@bnb-network.org');
+  const [emailInput, setEmailInput] = useState<string>(user.phone + '@amb-network.org');
   const [emailSending, setEmailSending] = useState<boolean>(false);
 
   const showReceiptForTx = (tx: Transaction) => {
@@ -573,7 +573,7 @@ BNB Business Co-operative Welfare Fund
           vol += tx.amount || 0;
         }
       });
-      setBnbTxVolume(vol);
+      setAmbTxVolume(vol);
       setEligibilityLoaded(true);
     } catch (err) {
       console.error("Eligibility fetch error:", err);
@@ -1072,8 +1072,8 @@ BNB Business Co-operative Welfare Fund
     }
 
     // Transaction volume constraint (Min 20,000 BDT for general members)
-    if (!isSamityInvestor && bnbTxVolume < 20000) {
-      setErrorMsg(`দুঃখিত! সাধারণ সদস্যদের ক্ষেত্রে এই 2 মাসে কমপক্ষে BNB টু BNB 20,000 টাকার লেনদেন থাকতে হবে। আপনার বর্তমান লেনদেন ৳${bnbTxVolume.toLocaleString('bn-BD')} BDT`);
+    if (!isSamityInvestor && ambTxVolume < 20000) {
+      setErrorMsg(`দুঃখিত! সাধারণ সদস্যদের ক্ষেত্রে এই 2 মাসে কমপক্ষে AMB টু AMB 20,000 টাকার লেনদেন থাকতে হবে। আপনার বর্তমান লেনদেন ৳${ambTxVolume.toLocaleString('bn-BD')} BDT`);
       return;
     }
 
@@ -1311,7 +1311,7 @@ BNB Business Co-operative Welfare Fund
       };
       await addDoc(collection(db, 'user_notifications'), notifData);
 
-      // Open Professional BNB Receipt Modal
+      // Open Professional AMB Receipt Modal
       setReceiptData({
         receiptNo: generatedReceiptNo,
         transactionId: generatedTxId,
@@ -3000,13 +3000,13 @@ BNB Business Co-operative Welfare Fund
           const vNotice = qardCfg.verificationNotice || DEFAULT_QARD_CONFIG.verificationNotice;
           const eligCfg = qardCfg.eligibilityConfig || DEFAULT_QARD_CONFIG.eligibilityConfig;
           const reqDays = eligCfg.requiredActiveDays ?? 60;
-          const reqVol = eligCfg.requiredBnbTxVolume ?? 20000;
+          const reqVol = eligCfg.requiredAmbTxVolume ?? 20000;
 
           const isSamityInvestor = user.samityStatus === 'approved' || user.samityApproved === true || user.isSamityMember === true || user.samitySchemeActive || user.role === 'admin' || user.isDemo;
 
           const isDaysEligible = isSamityInvestor || activeDays >= reqDays;
-          const isVolEligible = isSamityInvestor || bnbTxVolume >= reqVol;
-          const isOverallEligible = isSamityInvestor || (activeDays >= reqDays && bnbTxVolume >= reqVol);
+          const isVolEligible = isSamityInvestor || ambTxVolume >= reqVol;
+          const isOverallEligible = isSamityInvestor || (activeDays >= reqDays && ambTxVolume >= reqVol);
 
           return (
           <div className="space-y-4 font-sans text-left animate-fade-in">
@@ -3046,7 +3046,7 @@ BNB Business Co-operative Welfare Fund
                 <div className="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl text-[11px] text-emerald-950 font-bold flex items-start gap-2.5 shadow-2xs">
                   <span className="text-base leading-none">🏢</span>
                   <div className="space-y-0.5">
-                    <p className="font-black text-emerald-900">BNB কোম্পানি ম্যানেজমেন্ট ইনভেস্টার / সমবায় সমিতি সদস্য</p>
+                    <p className="font-black text-emerald-900">AMB কোম্পানি ম্যানেজমেন্ট ইনভেস্টার / সমবায় সমিতি সদস্য</p>
                     <p className="text-[10px] text-emerald-800 font-bold leading-relaxed">
                       আপনার সমবায় সমিতিতে সঞ্চয় জমা থাকায় 2 মাস সক্রিয় থাকা বা 20,000 টাকা লেনদেনের শর্ত প্রযোজ্য নয়! আপনি যেকোনো সময় আপনার জমা সঞ্চয়ের 50% টাকা ইনস্ট্যান্ট অটো-ঋণ হিসেবে গ্রহণ করতে পারবেন।
                     </p>
@@ -3076,7 +3076,7 @@ BNB Business Co-operative Welfare Fund
                   </div>
                 </div>
 
-                {/* Condition 2: BNB to BNB Tx Volume */}
+                {/* Condition 2: AMB to AMB Tx Volume */}
                 <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-start gap-3">
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
                     isVolEligible ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'
@@ -3084,13 +3084,13 @@ BNB Business Co-operative Welfare Fund
                     {isVolEligible ? <Check className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
                   </div>
                   <div className="space-y-0.5">
-                    <p className="text-[11px] font-black text-slate-750">BNB টু BNB লেনদেন (৳{reqVol.toLocaleString('bn-BD')})</p>
+                    <p className="text-[11px] font-black text-slate-750">AMB টু AMB লেনদেন (৳{reqVol.toLocaleString('bn-BD')})</p>
                     <p className="text-[10px] text-slate-500 font-bold">
                       {isSamityInvestor
                         ? `অব্যাহতিপ্রাপ্ত! সমবায় সমিতি ইনভেস্টার সদস্যদের জন্য 20,000 টাকা লেনদেনের বাধ্যবাধকতা নেই (অটো-অনুমোদিত)।`
                         : isVolEligible
-                          ? `পূরণ হয়েছে! আপনার BNB টু BNB লেনদেন ৳${bnbTxVolume.toLocaleString('bn-BD')} BDT`
-                          : `পূরণ হয়নি! (শুধুমাত্র সাধারণ সদস্যদের জন্যঃ আপনার লেনদেন ৳${bnbTxVolume.toLocaleString('bn-BD')} BDT, ন্যূনতম ${reqVol.toLocaleString('bn-BD')} টাকা প্রয়োজন)`}
+                          ? `পূরণ হয়েছে! আপনার AMB টু AMB লেনদেন ৳${ambTxVolume.toLocaleString('bn-BD')} BDT`
+                          : `পূরণ হয়নি! (শুধুমাত্র সাধারণ সদস্যদের জন্যঃ আপনার লেনদেন ৳${ambTxVolume.toLocaleString('bn-BD')} BDT, ন্যূনতম ${reqVol.toLocaleString('bn-BD')} টাকা প্রয়োজন)`}
                     </p>
                   </div>
                 </div>
@@ -3836,7 +3836,7 @@ BNB Business Co-operative Welfare Fund
                         const totalContribution = donorTxs.reduce((sum, t) => sum + t.amount, 0);
                         const firstTx = donorTxs[0];
                         const donorName = firstTx ? firstTx.userName : 'গোপন দাতা';
-                        const donorId = firstTx ? firstTx.memberId : 'BNB00000000';
+                        const donorId = firstTx ? firstTx.memberId : 'AMB00000000';
                         const donorTier = getDonorTier(totalContribution);
 
                         return (
@@ -3896,7 +3896,7 @@ BNB Business Co-operative Welfare Fund
           };
 
           const guidelinesList = (goldCfg?.guidelines && goldCfg.guidelines.length > 0) ? goldCfg.guidelines : [
-            { id: '1', icon: '👑', title: 'সমবায় সদস্যদের 100% সমপরিমাণ লোন সুবিধা', description: `BNB সমবায় সমিতির সদস্যরা ${protMonths} মাসের (${protDays} দিন) জন্য স্বর্ণের সমপরিমাণ (100% বাজারদর) পুরো টাকা ইমার্জেন্সি লোন নিতে পারবেন এবং ${protMonths} মাসের মধ্যে সমপরিমাণ মূল টাকা পরিশোধ করে স্বর্ণ ছাড়িয়ে নিতে পারবেন।` },
+            { id: '1', icon: '👑', title: 'সমবায় সদস্যদের 100% সমপরিমাণ লোন সুবিধা', description: `AMB সমবায় সমিতির সদস্যরা ${protMonths} মাসের (${protDays} দিন) জন্য স্বর্ণের সমপরিমাণ (100% বাজারদর) পুরো টাকা ইমার্জেন্সি লোন নিতে পারবেন এবং ${protMonths} মাসের মধ্যে সমপরিমাণ মূল টাকা পরিশোধ করে স্বর্ণ ছাড়িয়ে নিতে পারবেন।` },
             { id: '2', icon: '👥', title: 'সাধারণ নাগরিকদের জন্য বাজারদর নীতি', description: 'যাঁরা সমবায় সমিতির সদস্য নন, তাঁরা প্রচলিত বাজার নীতি ও সাধারণ মূল্যায়নের ভিত্তিতে স্বর্ণ রেখে জরুরি আর্থিক সুবিধা গ্রহণ করতে পারবেন।' },
             { id: '3', icon: '💎', title: '0% সুদ ও সুদমুক্ত কল্যাণ সেবা', description: 'করযে হাসানা তহবিলের অধীনে সমবায় সদস্যদের জন্য কোনো প্রকার সুদ, অতিরিক্ত ফি বা হিডেন চার্জ কাটা হবে না।' },
             { id: '4', icon: '🔒', title: `${protMonths} মাসের সুরক্ষিত ভল্ট হেফাজত`, description: `নির্দিষ্ট সময়সীমার (${protMonths} মাস / ${protDays} দিন) পূর্বে আপনার সংরক্ষিত স্বর্ণ কোনো অবস্থাতেই বিক্রি বা হস্তান্তর করা হবে না।` },
@@ -4056,7 +4056,7 @@ BNB Business Co-operative Welfare Fund
                       <strong className="text-[10.5px] font-black text-emerald-950">3 মাসের 100% জরুরি লোন সুবিধা</strong>
                     </div>
                     <p className="text-[10px] text-emerald-900 leading-relaxed font-medium">
-                      BNB সমবায় সমিতির সদস্যরা <strong>3 মাসের জন্য স্বর্ণের যত টাকা (সমপরিমাণ 100% পুরো টাকা)</strong> জরুরি লোন নিতে পারবেন। পরবর্তীতে <strong>3 মাসের মধ্যে সমপরিমাণ মূল টাকা পরিশোধ করে</strong> নিরাপদে ও অক্ষত অবস্থায় নিজের স্বর্ণ ফেরত নিতে পারবেন (0% সুদ, কোনো অতিরিক্ত চার্জ নেই)।
+                      AMB সমবায় সমিতির সদস্যরা <strong>3 মাসের জন্য স্বর্ণের যত টাকা (সমপরিমাণ 100% পুরো টাকা)</strong> জরুরি লোন নিতে পারবেন। পরবর্তীতে <strong>3 মাসের মধ্যে সমপরিমাণ মূল টাকা পরিশোধ করে</strong> নিরাপদে ও অক্ষত অবস্থায় নিজের স্বর্ণ ফেরত নিতে পারবেন (0% সুদ, কোনো অতিরিক্ত চার্জ নেই)।
                     </p>
                   </div>
 
@@ -4434,7 +4434,7 @@ BNB Business Co-operative Welfare Fund
 
       {/* ==================== DIGITAL RECEIPT MODAL POPUP ==================== */}
       {showReceiptModal && receiptData && (
-        <BnbPaymentReceiptModal
+        <AmbPaymentReceiptModal
           isOpen={showReceiptModal}
           onClose={() => {
             setShowReceiptModal(false);
@@ -4447,7 +4447,7 @@ BNB Business Co-operative Welfare Fund
             fee: 0,
             totalAmount: receiptData.amount || 0,
             status: 'success',
-            beneficiaryName: receiptData.userName || user.name || 'BNB সদস্য',
+            beneficiaryName: receiptData.userName || user.name || 'AMB সদস্য',
             beneficiaryAccount: receiptData.memberId || user.memberId || user.phone,
             senderPhone: user.phone,
             transactionDate: receiptData.createdAt ? new Date(receiptData.createdAt).toLocaleString('bn-BD') : new Date().toLocaleString('bn-BD')
@@ -4476,7 +4476,7 @@ BNB Business Co-operative Welfare Fund
               <div className="space-y-1">
                 <span className="text-[8px] tracking-widest font-sans font-black text-amber-700/80 uppercase">Certificate of Appreciation</span>
                 <h3 className="text-xl md:text-2xl font-black text-amber-800 font-serif tracking-tight">উদারতা ও কন্ট্রিবিউশন সম্মাননাপত্র</h3>
-                <p className="text-[8px] font-sans text-stone-500 font-extrabold uppercase mt-1">BNB Business Cooperative Co. Welfare Fund</p>
+                <p className="text-[8px] font-sans text-stone-500 font-extrabold uppercase mt-1">AMB Business Cooperative Co. Welfare Fund</p>
               </div>
 
               <div className="space-y-2 pt-2">
@@ -4501,11 +4501,11 @@ BNB Business Co-operative Welfare Fund
 
               <div className="flex justify-between items-end pt-4 text-[9px] font-sans text-stone-500 text-left">
                 <div className="space-y-0.5">
-                  <p>সার্টিফিকেট আইডিঃ BNB/QRD-{user.memberId?.slice(-5)}</p>
+                  <p>সার্টিফিকেট আইডিঃ AMB/QRD-{user.memberId?.slice(-5)}</p>
                   <p>প্রদানের তারিখঃ {new Date().toLocaleDateString('bn-BD')}</p>
                 </div>
                 <div className="border-t border-stone-300 pt-1 text-center pr-2">
-                  <p className="font-serif font-black text-amber-900 italic">BNB Board of Directors</p>
+                  <p className="font-serif font-black text-amber-900 italic">AMB Board of Directors</p>
                   <p className="text-[8px] text-stone-400 tracking-wide mt-0.5">অফিসিয়াল প্রধান পরিচালক</p>
                 </div>
               </div>
@@ -4668,7 +4668,7 @@ BNB Business Co-operative Welfare Fund
 
               {/* Footer */}
               <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
-                <span className="text-[10px] text-slate-400 font-bold">© BUSINESS NETWORK BANGLADESH (BNB)</span>
+                <span className="text-[10px] text-slate-400 font-bold">© BUSINESS NETWORK BANGLADESH (AMB)</span>
               </div>
             </motion.div>
           </motion.div>

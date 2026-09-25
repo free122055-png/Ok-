@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Volume2, VolumeX, SkipForward } from 'lucide-react';
-import { BNBLogo } from './BNBLogo';
+import { AMBLogo } from './AMBLogo';
 
 interface SplashVideoProps {
   onComplete: () => void;
@@ -183,7 +183,7 @@ export default function SplashVideo({ onComplete }: SplashVideoProps) {
             </div>
           )}
 
-          {/* Embedded BNB Business Level Logo (Fades & Scales up at Phase 2) */}
+          {/* Embedded AMB Business Level Logo (Fades & Scales up at Phase 2) */}
           <div 
             className={`absolute transition-all duration-1000 ease-out flex items-center justify-center ${
               phase >= 2 
@@ -192,7 +192,7 @@ export default function SplashVideo({ onComplete }: SplashVideoProps) {
             }`}
           >
             <div className="w-36 h-36 bg-black/60 rounded-full border border-white/20 shadow-[0_0_30px_rgba(16,185,129,0.15)] p-5.5 flex items-center justify-center">
-              <BNBLogo variant="white" className="w-full h-full" />
+              <AMBLogo variant="white" className="w-full h-full" />
             </div>
           </div>
         </div>
@@ -205,7 +205,7 @@ export default function SplashVideo({ onComplete }: SplashVideoProps) {
         >
           <div className="space-y-1.5">
             <h1 className="text-xl font-extrabold tracking-[0.16em] text-white">
-              BNB BUSINESS NETWORK
+              AMB BUSINESS NETWORK
             </h1>
             <p className="text-emerald-400 font-bold uppercase text-[11px] tracking-[0.3em] font-mono leading-none">
               Bangladesh

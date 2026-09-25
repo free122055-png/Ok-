@@ -1,5 +1,5 @@
 import React from 'react';
-import BnbSalaryAdmin from '../BnbSalaryAdmin';
+import AmbSalaryAdmin from '../AmbSalaryAdmin';
 
 interface AdminSalarySectionProps {
   adminTab: string;
@@ -16,7 +16,7 @@ export default function AdminSalarySection({
 
   return (
     <div className="w-full text-left animate-fade-in" id="admin-salary-section">
-      <BnbSalaryAdmin 
+      <AmbSalaryAdmin 
         onBack={() => {
           setViewingGrid(true);
           setAdminTab('general');

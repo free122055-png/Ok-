@@ -309,7 +309,7 @@ export default function AdminBillPaySection({
                 <Receipt className="w-4 h-4" />
               </span>
               <h1 className="text-base sm:text-lg font-black tracking-tight text-white">
-                BNB বিল পে এডমিন কন্ট্রোল প্যানেল
+                AMB বিল পে এডমিন কন্ট্রোল প্যানেল
               </h1>
             </div>
             <p className="text-xs text-purple-200 font-medium mt-0.5">

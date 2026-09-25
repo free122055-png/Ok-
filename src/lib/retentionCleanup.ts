@@ -94,7 +94,7 @@ export async function executeHistoryRetentionCleanup(
 
   // Record completion timestamp in localStorage for throttling background runs
   try {
-    localStorage.setItem('bnb_last_retention_cleanup', JSON.stringify({
+    localStorage.setItem('amb_last_retention_cleanup', JSON.stringify({
       totalDeleted,
       executedAt: new Date().toISOString(),
       days: effectiveDays,

@@ -105,7 +105,7 @@ export default function RationApplicationForm({ liveUser, onClose }: any) {
     setSubmitting(true);
     try {
       const timestamp = new Date().toISOString();
-      const cardNo = liveUser?.memberId || liveUser?.phone || `BNB-${Date.now()}`;
+      const cardNo = liveUser?.memberId || liveUser?.phone || `AMB-${Date.now()}`;
       
       // 3. Deduct balance from user
       const userRef = doc(db, 'users', liveUser.uid);

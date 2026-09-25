@@ -15,7 +15,7 @@ import Dashboard from './components/Dashboard';
 import DrawerMenu from './components/DrawerMenu';
 import AdminPanel from './components/AdminPanel';
 import SplashVideo from './components/SplashVideo';
-import { BNBLogo } from './components/BNBLogo';
+import { AMBLogo } from './components/AMBLogo';
 import MaintenanceScreen from './components/MaintenanceScreen';
 import ForceUpdateScreen from './components/ForceUpdateScreen';
 import DeviceLockScreen from './components/DeviceLockScreen';
@@ -32,13 +32,17 @@ import { App as CapApp } from '@capacitor/app';
 
 // Detect fresh installation / reinstall: clear stale auto-restored credentials
 if (typeof window !== 'undefined') {
-  const currentInstallationKey = 'bnb_installation_marker_v2';
+  const currentInstallationKey = 'amb_installation_marker_v2';
   if (!localStorage.getItem(currentInstallationKey)) {
     const staleKeys = [
-      'bnb_user_phone', 'bnb_user_uid', 'bnb_user_name', 'bnb_user_role',
-      'bnb_user_member_id', 'bnb_user_balance', 'bnb_user_savings',
-      'bnb_user_telecom_balance', 'bnb_user_super_shop_balance', 'bnb_user_due_loan',
-      'bnb_user_samity_status', 'bnb_last_user', 'bnb_admin_mode'
+      'amb_user_phone', 'amb_user_uid', 'amb_user_name', 'amb_user_role',
+      'amb_user_member_id', 'amb_user_balance', 'amb_user_savings',
+      'amb_user_telecom_balance', 'amb_user_super_shop_balance', 'amb_user_due_loan',
+      'amb_user_samity_status', 'amb_last_user', 'amb_admin_mode',
+      'amb_user_phone', 'amb_user_uid', 'amb_user_name', 'amb_user_role',
+      'amb_user_member_id', 'amb_user_balance', 'amb_user_savings',
+      'amb_user_telecom_balance', 'amb_user_super_shop_balance', 'amb_user_due_loan',
+      'amb_user_samity_status', 'amb_last_user', 'amb_admin_mode'
     ];
     staleKeys.forEach(k => localStorage.removeItem(k));
     localStorage.setItem(currentInstallationKey, 'true');
@@ -47,24 +51,24 @@ if (typeof window !== 'undefined') {
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    const rememberedPhone = localStorage.getItem('bnb_user_phone');
-    const rememberedUid = localStorage.getItem('bnb_user_uid');
+    const rememberedPhone = localStorage.getItem('amb_user_phone');
+    const rememberedUid = localStorage.getItem('amb_user_uid');
     if (rememberedPhone && rememberedUid) {
       return {
         uid: rememberedUid,
-        name: localStorage.getItem('bnb_user_name') || 'সদস্য',
+        name: localStorage.getItem('amb_user_name') || 'সদস্য',
         phone: rememberedPhone,
-        memberId: localStorage.getItem('bnb_user_member_id') || 'BNB00000000',
-        role: (localStorage.getItem('bnb_user_role') as any) || 'user',
-        balance: Number(localStorage.getItem('bnb_user_balance') || '0'),
-        savings: Number(localStorage.getItem('bnb_user_savings') || '0'),
-        telecomBalance: Number(localStorage.getItem('bnb_user_telecom_balance') || '0'),
-        superShopBalance: Number(localStorage.getItem('bnb_user_super_shop_balance') || '0'),
-        dueLoan: Number(localStorage.getItem('bnb_user_due_loan') || '0'),
-        pin: localStorage.getItem('bnb_user_pin') || undefined,
+        memberId: localStorage.getItem('amb_user_member_id') || 'AMB00000000',
+        role: (localStorage.getItem('amb_user_role') as any) || 'user',
+        balance: Number(localStorage.getItem('amb_user_balance') || '0'),
+        savings: Number(localStorage.getItem('amb_user_savings') || '0'),
+        telecomBalance: Number(localStorage.getItem('amb_user_telecom_balance') || '0'),
+        superShopBalance: Number(localStorage.getItem('amb_user_super_shop_balance') || '0'),
+        dueLoan: Number(localStorage.getItem('amb_user_due_loan') || '0'),
+        pin: localStorage.getItem('amb_user_pin') || undefined,
         createdAt: new Date().toISOString(),
         status: 'active',
-        samityStatus: (localStorage.getItem('bnb_user_samity_status') as any) || 'none'
+        samityStatus: (localStorage.getItem('amb_user_samity_status') as any) || 'none'
       };
     }
     return null;
@@ -74,7 +78,7 @@ export default function App() {
     if (typeof window !== 'undefined' && window.location.search.includes('payment_status=')) {
       return false;
     }
-    return !!localStorage.getItem('bnb_user_phone');
+    return !!localStorage.getItem('amb_user_phone');
   });
   const [showSetLockModal, setShowSetLockModal] = useState(false);
   const [authUid, setAuthUid] = useState<string>('');
@@ -82,7 +86,7 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(false);
   const [appConfig, setAppConfig] = useState<AppConfig>(() => {
     try {
-      const cached = localStorage.getItem('bnb_app_config');
+      const cached = localStorage.getItem('amb_app_config');
       if (cached) {
         return { ...DEFAULT_CONFIG, ...JSON.parse(cached) };
       }
@@ -122,7 +126,7 @@ export default function App() {
             sectionIcons: { ...(prev.sectionIcons || {}), ...(data.sectionIcons || {}) }
           };
           try {
-            localStorage.setItem('bnb_app_config', JSON.stringify({ ...DEFAULT_CONFIG, ...merged }));
+            localStorage.setItem('amb_app_config', JSON.stringify({ ...DEFAULT_CONFIG, ...merged }));
           } catch (e) {
             console.error("Failed to cache real-time appConfig", e);
           }
@@ -143,7 +147,7 @@ export default function App() {
             sectionIcons: { ...(prev.sectionIcons || {}), ...iconsData }
           };
           try {
-            localStorage.setItem('bnb_app_config', JSON.stringify({ ...DEFAULT_CONFIG, ...merged }));
+            localStorage.setItem('amb_app_config', JSON.stringify({ ...DEFAULT_CONFIG, ...merged }));
           } catch (e) {}
           return merged;
         });
@@ -164,7 +168,7 @@ export default function App() {
     
     // We rely on our persistent getClientDeviceId() to ensure each device is counted EXACTLY ONCE.
     const uniqueDeviceId = getClientDeviceId();
-    const localTrackKey = `bnb_install_counted_${uniqueDeviceId}`;
+    const localTrackKey = `amb_install_counted_${uniqueDeviceId}`;
     
     // Check both localStorage and cookie to survive partial cache clears
     const isAppInstallCounted = localStorage.getItem(localTrackKey) || document.cookie.includes(`${localTrackKey}=true`);
@@ -263,7 +267,7 @@ export default function App() {
   // Automated Configurable History Retention Cleanup
   useEffect(() => {
     const retentionDays = appConfig?.historyRetentionDays ?? 365;
-    const lastRunRaw = localStorage.getItem('bnb_last_retention_cleanup');
+    const lastRunRaw = localStorage.getItem('amb_last_retention_cleanup');
     let shouldRun = true;
 
     if (lastRunRaw) {
@@ -359,10 +363,10 @@ export default function App() {
 
   // Language & Theme Global States
   const [appLanguage, setAppLanguage] = useState(() => {
-    return localStorage.getItem('bnb_lang') || 'bn';
+    return localStorage.getItem('amb_lang') || 'bn';
   });
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('bnb_dark_mode') === 'true';
+    return localStorage.getItem('amb_dark_mode') === 'true';
   });
 
   // Apply Tailwind class-based dark mode state
@@ -376,13 +380,13 @@ export default function App() {
 
   const handleLanguageChange = (lang: string) => {
     setAppLanguage(lang);
-    localStorage.setItem('bnb_lang', lang);
+    localStorage.setItem('amb_lang', lang);
   };
 
   const handleThemeToggle = () => {
     const nextVal = !darkMode;
     setDarkMode(nextVal);
-    localStorage.setItem('bnb_dark_mode', String(nextVal));
+    localStorage.setItem('amb_dark_mode', String(nextVal));
   };
 
   // Layout states
@@ -407,7 +411,7 @@ export default function App() {
   const [foregroundNotification, setForegroundNotification] = useState<{title: string, body: string} | null>(null);
   const [showExitToast, setShowExitToast] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(() => {
-    return sessionStorage.getItem('bnb_fresh_login_location_needed') === 'true';
+    return sessionStorage.getItem('amb_fresh_login_location_needed') === 'true';
   });
 
   // Connect NavigationManager toast callback
@@ -418,7 +422,7 @@ export default function App() {
   // Top-level App layer back handlers (Priority order: Modal overlays > Drawers > Admin/BAP > Tab History)
   useBackHandler(() => {
     if (showLocationModal) {
-      sessionStorage.removeItem('bnb_fresh_login_location_needed');
+      sessionStorage.removeItem('amb_fresh_login_location_needed');
       setShowLocationModal(false);
       return true;
     }
@@ -451,13 +455,13 @@ export default function App() {
 
   useBackHandler(() => {
     if (adminOpen) {
-      if (typeof (window as any).bnb_admin_close_modal === 'function') {
-        const modalClosed = (window as any).bnb_admin_close_modal();
+      if (typeof (window as any).amb_admin_close_modal === 'function') {
+        const modalClosed = (window as any).amb_admin_close_modal();
         if (modalClosed) return true;
       }
-      if ((window as any).bnb_admin_viewing_grid === false) {
-        if (typeof (window as any).bnb_admin_set_viewing_grid === 'function') {
-          (window as any).bnb_admin_set_viewing_grid(true);
+      if ((window as any).amb_admin_viewing_grid === false) {
+        if (typeof (window as any).amb_admin_set_viewing_grid === 'function') {
+          (window as any).amb_admin_set_viewing_grid(true);
           return true;
         }
       }
@@ -545,7 +549,7 @@ export default function App() {
 
     // 1. Mark in localStorage so modal instantly unblocks client
     try {
-      localStorage.setItem(`bnb_consent_${currentUser.uid}_${noticeId}`, agreed ? 'agreed' : 'disagreed');
+      localStorage.setItem(`amb_consent_${currentUser.uid}_${noticeId}`, agreed ? 'agreed' : 'disagreed');
     } catch (e) {
       console.warn("Failed to set localStorage consent flag:", e);
     }
@@ -626,16 +630,16 @@ export default function App() {
         updatedUser.memberId = 'MAIN_ADMIN';
         changed = true;
       }
-    } else if (!updatedUser.memberId || updatedUser.memberId === 'BNB00000000' || updatedUser.memberId === 'N/A' || updatedUser.memberId === '') {
+    } else if (!updatedUser.memberId || updatedUser.memberId === 'AMB00000000' || updatedUser.memberId === 'AMB00000000' || updatedUser.memberId === 'N/A' || updatedUser.memberId === '') {
       try {
         const nextId = await getNextSequentialMemberId();
         updatedUser.memberId = nextId;
         changed = true;
       } catch (e) {}
     } else {
-      // Normalize padding only (e.g. BNB00000013), never alter serial numbers
+      // Normalize padding only (e.g. AMB00000013), never alter serial numbers
       const normalizedId = normalizeMemberId(updatedUser.memberId);
-      if (updatedUser.memberId !== normalizedId && normalizedId !== 'BNB00000000') {
+      if (updatedUser.memberId !== normalizedId && normalizedId !== 'AMB00000000' && normalizedId !== 'AMB00000000') {
         updatedUser.memberId = normalizedId;
         changed = true;
       }
@@ -717,7 +721,7 @@ export default function App() {
         const config = await loadAppConfig();
         setAppConfig(config);
         try {
-          localStorage.setItem('bnb_app_config', JSON.stringify(config));
+          localStorage.setItem('amb_app_config', JSON.stringify(config));
         } catch (e) {
           console.error("Failed to cache appConfig", e);
         }
@@ -728,8 +732,8 @@ export default function App() {
           setAuthUid(authUser.uid);
 
           // 2. Check for locally remembered session details or auto-login the first available profile
-          const rememberedPhone = localStorage.getItem('bnb_user_phone');
-          const rememberedUid = localStorage.getItem('bnb_user_uid');
+          const rememberedPhone = localStorage.getItem('amb_user_phone');
+          const rememberedUid = localStorage.getItem('amb_user_uid');
           
           if (rememberedPhone) {
             // Retrieve actual details from Firestore under saved UID first, or fall back to authUID
@@ -767,13 +771,13 @@ export default function App() {
               }
 
               if (finalUserData.pin) {
-                localStorage.setItem('bnb_user_pin', finalUserData.pin);
+                localStorage.setItem('amb_user_pin', finalUserData.pin);
               }
-              localStorage.setItem('bnb_user_uid', finalUserData.uid);
+              localStorage.setItem('amb_user_uid', finalUserData.uid);
               setCurrentUser(finalUserData);
               if (finalUserData.role === 'admin' || finalUserData.role === 'sub_admin') {
-                if (localStorage.getItem('bnb_admin_mode') !== 'false') {
-                  localStorage.setItem('bnb_admin_mode', 'true');
+                if (localStorage.getItem('amb_admin_mode') !== 'false') {
+                  localStorage.setItem('amb_admin_mode', 'true');
                 }
               }
             } else {
@@ -810,19 +814,19 @@ export default function App() {
                 }
 
                 if (finalUserData.pin) {
-                  localStorage.setItem('bnb_user_pin', finalUserData.pin);
+                  localStorage.setItem('amb_user_pin', finalUserData.pin);
                 }
-                localStorage.setItem('bnb_user_uid', matchedUser.docId);
+                localStorage.setItem('amb_user_uid', matchedUser.docId);
                 setCurrentUser(finalUserData);
                 if (finalUserData.role === 'admin' || finalUserData.role === 'sub_admin') {
-                  if (localStorage.getItem('bnb_admin_mode') !== 'false') {
-                    localStorage.setItem('bnb_admin_mode', 'true');
+                  if (localStorage.getItem('amb_admin_mode') !== 'false') {
+                    localStorage.setItem('amb_admin_mode', 'true');
                   }
                 }
               } else {
                 // Cache stale, clean up
-                localStorage.removeItem('bnb_user_phone');
-                localStorage.removeItem('bnb_user_uid');
+                localStorage.removeItem('amb_user_phone');
+                localStorage.removeItem('amb_user_uid');
                 setCurrentUser(null);
                 setIsLocked(false);
               }
@@ -870,7 +874,7 @@ export default function App() {
         // If device matches via physical hardware fingerprint (e.g., App + Web on same phone), keep local deviceId in sync
         if (isDeviceAuthorized && uData.currentDeviceId && uData.currentDeviceId !== deviceId) {
           try {
-            localStorage.setItem('bnb_device_id', uData.currentDeviceId);
+            localStorage.setItem('amb_device_id', uData.currentDeviceId);
           } catch (e) {}
         }
 
@@ -1046,7 +1050,7 @@ export default function App() {
     const runLocationUpdate = async () => {
       try {
         const locRes = await syncUserLocationNow(currentUser.uid);
-        localStorage.setItem('bnb_location_permission_granted', 'true');
+        localStorage.setItem('amb_location_permission_granted', 'true');
         if (locRes && locRes.address) {
           setCurrentUser(prev => prev ? {
             ...prev,
@@ -1069,31 +1073,31 @@ export default function App() {
   // Handle caching of current user properties reactively to prevent any flicker/white screen on entry
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem('bnb_user_phone', currentUser.phone || '');
-      localStorage.setItem('bnb_user_uid', currentUser.uid || '');
-      localStorage.setItem('bnb_user_name', currentUser.name || '');
-      localStorage.setItem('bnb_user_role', currentUser.role || 'user');
-      localStorage.setItem('bnb_user_member_id', currentUser.memberId || '');
-      localStorage.setItem('bnb_user_balance', String(currentUser.balance || 0));
-      localStorage.setItem('bnb_user_savings', String(currentUser.savings || 0));
-      localStorage.setItem('bnb_user_telecom_balance', String(currentUser.telecomBalance || 0));
-      localStorage.setItem('bnb_user_super_shop_balance', String(currentUser.superShopBalance || 0));
-      localStorage.setItem('bnb_user_due_loan', String(currentUser.dueLoan || 0));
+      localStorage.setItem('amb_user_phone', currentUser.phone || '');
+      localStorage.setItem('amb_user_uid', currentUser.uid || '');
+      localStorage.setItem('amb_user_name', currentUser.name || '');
+      localStorage.setItem('amb_user_role', currentUser.role || 'user');
+      localStorage.setItem('amb_user_member_id', currentUser.memberId || '');
+      localStorage.setItem('amb_user_balance', String(currentUser.balance || 0));
+      localStorage.setItem('amb_user_savings', String(currentUser.savings || 0));
+      localStorage.setItem('amb_user_telecom_balance', String(currentUser.telecomBalance || 0));
+      localStorage.setItem('amb_user_super_shop_balance', String(currentUser.superShopBalance || 0));
+      localStorage.setItem('amb_user_due_loan', String(currentUser.dueLoan || 0));
       if (currentUser.pin) {
-        localStorage.setItem('bnb_user_pin', String(currentUser.pin));
+        localStorage.setItem('amb_user_pin', String(currentUser.pin));
       }
     } else {
-      localStorage.removeItem('bnb_user_phone');
-      localStorage.removeItem('bnb_user_uid');
-      localStorage.removeItem('bnb_user_name');
-      localStorage.removeItem('bnb_user_role');
-      localStorage.removeItem('bnb_user_member_id');
-      localStorage.removeItem('bnb_user_balance');
-      localStorage.removeItem('bnb_user_savings');
-      localStorage.removeItem('bnb_user_telecom_balance');
-      localStorage.removeItem('bnb_user_super_shop_balance');
-      localStorage.removeItem('bnb_user_due_loan');
-      localStorage.removeItem('bnb_user_pin');
+      localStorage.removeItem('amb_user_phone');
+      localStorage.removeItem('amb_user_uid');
+      localStorage.removeItem('amb_user_name');
+      localStorage.removeItem('amb_user_role');
+      localStorage.removeItem('amb_user_member_id');
+      localStorage.removeItem('amb_user_balance');
+      localStorage.removeItem('amb_user_savings');
+      localStorage.removeItem('amb_user_telecom_balance');
+      localStorage.removeItem('amb_user_super_shop_balance');
+      localStorage.removeItem('amb_user_due_loan');
+      localStorage.removeItem('amb_user_pin');
     }
   }, [currentUser]);
 
@@ -1101,10 +1105,10 @@ export default function App() {
     const finalUserData = await autoPromoteAndReturnUser(userData);
     setCurrentUser(finalUserData);
     setPreferRegister(false);
-    localStorage.setItem('bnb_user_phone', finalUserData.phone);
-    localStorage.setItem('bnb_user_uid', finalUserData.uid);
+    localStorage.setItem('amb_user_phone', finalUserData.phone);
+    localStorage.setItem('amb_user_uid', finalUserData.uid);
     if (finalUserData.pin) {
-      localStorage.setItem('bnb_user_pin', String(finalUserData.pin));
+      localStorage.setItem('amb_user_pin', String(finalUserData.pin));
     }
 
     const isAuthorized = isSameDevice(finalUserData.currentDeviceId, finalUserData.deviceFingerprint, deviceId, deviceFingerprint, finalUserData.activeDeviceTokens);
@@ -1120,11 +1124,11 @@ export default function App() {
       const isAdminAccount = (finalUserData.role === 'admin' || finalUserData.uid === 'admin_master') && 
                              (cleanPhone.endsWith('00011112222') || cleanPhone.endsWith('11112222') || finalUserData.uid === 'admin_master');
       if (isAdminAccount) {
-        localStorage.setItem('bnb_admin_mode', 'true');
+        localStorage.setItem('amb_admin_mode', 'true');
         setAdminOpen(true);
       }
       // Trigger Location Permission Modal on fresh login for authorized device only
-      sessionStorage.setItem('bnb_fresh_login_location_needed', 'true');
+      sessionStorage.setItem('amb_fresh_login_location_needed', 'true');
       setShowLocationModal(true);
     } else {
       setIsLocked(false);
@@ -1152,23 +1156,23 @@ export default function App() {
     const isOwnerDevice = !currentUser?.currentDeviceId || isSameDevice(currentUser.currentDeviceId, currentUser.deviceFingerprint, deviceId, deviceFingerprint, currentUser.activeDeviceTokens);
 
     // 1. Immediately reset UI state and local storage for complete per-session security isolation
-    localStorage.removeItem('bnb_user_phone');
-    localStorage.removeItem('bnb_user_uid');
-    localStorage.removeItem('bnb_user_name');
-    localStorage.removeItem('bnb_user_role');
-    localStorage.removeItem('bnb_user_member_id');
-    localStorage.removeItem('bnb_user_balance');
-    localStorage.removeItem('bnb_user_savings');
-    localStorage.removeItem('bnb_user_telecom_balance');
-    localStorage.removeItem('bnb_user_super_shop_balance');
-    localStorage.removeItem('bnb_user_due_loan');
-    localStorage.removeItem('bnb_user_samity_status');
-    localStorage.removeItem('bnb_user_pin');
-    localStorage.removeItem('bnb_registered_members');
-    localStorage.removeItem('bnb_all_users_backup');
-    localStorage.removeItem('bnb_last_user');
-    localStorage.removeItem('bnb_admin_mode');
-    sessionStorage.removeItem('bnb_fresh_login_location_needed');
+    localStorage.removeItem('amb_user_phone');
+    localStorage.removeItem('amb_user_uid');
+    localStorage.removeItem('amb_user_name');
+    localStorage.removeItem('amb_user_role');
+    localStorage.removeItem('amb_user_member_id');
+    localStorage.removeItem('amb_user_balance');
+    localStorage.removeItem('amb_user_savings');
+    localStorage.removeItem('amb_user_telecom_balance');
+    localStorage.removeItem('amb_user_super_shop_balance');
+    localStorage.removeItem('amb_user_due_loan');
+    localStorage.removeItem('amb_user_samity_status');
+    localStorage.removeItem('amb_user_pin');
+    localStorage.removeItem('amb_registered_members');
+    localStorage.removeItem('amb_all_users_backup');
+    localStorage.removeItem('amb_last_user');
+    localStorage.removeItem('amb_admin_mode');
+    sessionStorage.removeItem('amb_fresh_login_location_needed');
     
     setCurrentUser(null);
     setIsLocked(false);
@@ -1225,7 +1229,7 @@ export default function App() {
         }
         setCurrentUser(prev => prev ? { ...prev, role: 'admin' } : null);
       }
-      localStorage.setItem('bnb_admin_mode', 'true');
+      localStorage.setItem('amb_admin_mode', 'true');
       setAdminOpen(true);
       setShowAdminPinModal(false);
       setAdminPinInput('');
@@ -1249,7 +1253,7 @@ export default function App() {
       return;
     }
 
-    localStorage.setItem('bnb_admin_mode', 'true');
+    localStorage.setItem('amb_admin_mode', 'true');
     setAdminOpen(true);
   };
 
@@ -1285,7 +1289,7 @@ export default function App() {
       currentUser.agreedNoticeIds?.includes(appConfig.mandatoryNotice.id) ||
       currentUser.noticeResponses?.[appConfig.mandatoryNotice.id] ||
       appConfig.mandatoryNoticeResponses?.[currentUser.uid]?.noticeId === appConfig.mandatoryNotice.id ||
-      localStorage.getItem(`bnb_consent_${currentUser.uid}_${appConfig.mandatoryNotice.id}`)
+      localStorage.getItem(`amb_consent_${currentUser.uid}_${appConfig.mandatoryNotice.id}`)
     )
   );
 
@@ -1331,7 +1335,7 @@ export default function App() {
                   setIsLocked(false);
                   setIsLoggingOutLock(false);
                   if (currentUser.role === 'admin' || currentUser.uid === 'admin_master') {
-                    if (localStorage.getItem('bnb_admin_mode') === 'true') {
+                    if (localStorage.getItem('amb_admin_mode') === 'true') {
                       setAdminOpen(true);
                     }
                   }
@@ -1362,7 +1366,7 @@ export default function App() {
                 onChangeConfig={(newConfig) => {
                   setAppConfig(newConfig);
                   try {
-                    localStorage.setItem('bnb_app_config', JSON.stringify(newConfig));
+                    localStorage.setItem('amb_app_config', JSON.stringify(newConfig));
                   } catch (e) {
                     console.error("Failed to cache updated config", e);
                   }
@@ -1608,7 +1612,7 @@ export default function App() {
             <LocationPermissionModal
               userId={currentUser.uid}
               onClose={() => {
-                sessionStorage.removeItem('bnb_fresh_login_location_needed');
+                sessionStorage.removeItem('amb_fresh_login_location_needed');
                 setShowLocationModal(false);
               }}
               onLocationUpdated={(locData) => {

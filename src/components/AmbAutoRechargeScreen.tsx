@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Transaction, AppConfig, generateBnbTrxId, formatShortTrxId } from '../types';
+import { User, Transaction, AppConfig, generateAmbTrxId, formatShortTrxId } from '../types';
 import { db } from '../lib/firebase';
 import UnifiedBackButton from './UnifiedBackButton';
 import { doc, updateDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
@@ -22,7 +22,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BnbPaymentReceiptModal, PaymentReceiptData } from './BnbPaymentReceiptModal';
+import { AmbPaymentReceiptModal, PaymentReceiptData } from './AmbPaymentReceiptModal';
 
 // Helper functions for operator-specific cashback rules matching
 const isOperatorMatch = (ruleOpRaw?: string, targetOpRaw?: string): boolean => {
@@ -87,19 +87,19 @@ const getFilteredRulesForOperator = (rules: any[] = [], operator: string) => {
   return [...filtered].sort((a, b) => Number(a.amount) - Number(b.amount));
 };
 
-interface BnbAutoRechargeScreenProps {
+interface AmbAutoRechargeScreenProps {
   user: User;
   onBack: () => void;
   syncLiveProfile: () => void;
   appConfig?: AppConfig;
 }
 
-export default function BnbAutoRechargeScreen({
+export default function AmbAutoRechargeScreen({
   user,
   onBack,
   syncLiveProfile,
   appConfig
-}: BnbAutoRechargeScreenProps) {
+}: AmbAutoRechargeScreenProps) {
   const [operator, setOperator] = useState<string>('');
   const [rechargeAmount, setRechargeAmount] = useState<string>('');
   const [recipientNumber, setRecipientNumber] = useState<string>('');
@@ -173,10 +173,10 @@ export default function BnbAutoRechargeScreen({
       fee: 0,
       totalAmount: tx.amount || 0,
       status: tx.status || 'pending',
-      beneficiaryName: tx.userName || user.name || 'BNB সদস্য',
+      beneficiaryName: tx.userName || user.name || 'AMB সদস্য',
       beneficiaryAccount: tx.memberId || user.memberId || user.phone,
       senderPhone: tx.phone || tx.receiverPhone || user.phone || 'N/A',
-      paymentMethod: tx.operator || tx.paymentMethod || 'BNB রিচার্জ',
+      paymentMethod: tx.operator || tx.paymentMethod || 'AMB রিচার্জ',
       description: tx.description,
       transactionDate: tx.createdAt ? new Date(tx.createdAt).toLocaleString('bn-BD', {
         day: 'numeric',
@@ -237,7 +237,7 @@ export default function BnbAutoRechargeScreen({
         description: `মেইন ব্যালেন্স থেকে ৳${amt.toLocaleString()} রিচার্জ ব্যালেন্সে অ্যাড করা হয়েছে। (২% বোনাস কমিশন ৳${commission.toFixed(2)} সহ মোট ৳${totalToAdd.toFixed(2)} রিচার্জ ওয়ালেটে যুক্ত হয়েছে)।`,
         createdAt: new Date().toISOString(),
         rechargeCommission: commission,
-        operator: 'BNB Telecom'
+        operator: 'AMB Telecom'
       } as any;
 
       // Real-time notification
@@ -324,16 +324,16 @@ export default function BnbAutoRechargeScreen({
       user.telecomBalance = remainingTelecom;
       const updateFields = { telecomBalance: remainingTelecom };
 
-      const bnbTrxId = generateBnbTrxId('BN');
-      const txId = `tx-auto-${bnbTrxId}`;
+      const ambTrxId = generateAmbTrxId('BN');
+      const txId = `tx-auto-${ambTrxId}`;
       const typeLabel = 'অটো মোবাইল রিচার্জ';
 
       const description = `${operator} নম্বরে (${cleanCashNumber}) ৳${reloadAmt.toLocaleString('bn-BD')} ইনস্ট্যান্ট অটো রিচার্জের রিকোয়েস্ট সম্পন্ন হয়েছে (রিচার্জ ব্যালেন্স থেকে প্রদেয়)।`;
           
       const newTx: Transaction = {
         id: txId,
-        transactionId: bnbTrxId,
-        receiptNo: bnbTrxId,
+        transactionId: ambTrxId,
+        receiptNo: ambTrxId,
         userId: user.uid,
         userName: user.name,
         memberId: user.memberId,
@@ -366,7 +366,7 @@ export default function BnbAutoRechargeScreen({
       // Show Full-Screen Transaction Receipt Modal
       setReceiptModalData({
         typeLabel: typeLabel,
-        transactionId: bnbTrxId,
+        transactionId: ambTrxId,
         amount: reloadAmt,
         fee: 0,
         totalAmount: reloadAmt,
@@ -422,7 +422,7 @@ export default function BnbAutoRechargeScreen({
             <div>
               <h1 className="text-xs sm:text-sm font-black tracking-tight flex items-center gap-1">
                 <Smartphone className="w-3.5 h-3.5 text-cyan-400" />
-                BNB মোবাইল রিচার্জ (অটো)
+                AMB মোবাইল রিচার্জ (অটো)
               </h1>
               {/* Red-marked area: Main Balance Pill right under title */}
               <div 
@@ -895,7 +895,8 @@ export default function BnbAutoRechargeScreen({
 
       {/* Transaction Receipt Modal */}
       {isReceiptOpen && receiptModalData && (
-        <BnbPaymentReceiptModal
+        <AmbPaymentReceiptModal
+          isOpen={isReceiptOpen}
           data={receiptModalData}
           onClose={() => {
             setIsReceiptOpen(false);

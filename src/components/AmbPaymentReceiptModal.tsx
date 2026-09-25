@@ -49,6 +49,7 @@ export interface PaymentReceiptData {
   description?: string;
   adminNotice?: string;
   foreignAmount?: number;
+  netForeignAmount?: number;
   foreignCurrency?: string;
   exchangeRate?: number;
   bdtAmount?: number;
@@ -62,9 +63,12 @@ export interface PaymentReceiptData {
   beneficiaryDistrict?: string;
   beneficiaryPhone?: string;
   beneficiaryRelation?: string;
+  grossAmount?: number;
+  feeBdt?: number;
+  remittanceFee?: number;
 }
 
-interface BnbPaymentReceiptModalProps {
+interface AmbPaymentReceiptModalProps {
   isOpen: boolean;
   onClose: () => void;
   data: PaymentReceiptData | null;
@@ -73,7 +77,7 @@ interface BnbPaymentReceiptModalProps {
   onViewHistory?: () => void;
 }
 
-export const BnbPaymentReceiptModal: React.FC<BnbPaymentReceiptModalProps> = ({
+export const AmbPaymentReceiptModal: React.FC<AmbPaymentReceiptModalProps> = ({
   isOpen,
   onClose,
   data,
@@ -101,9 +105,9 @@ export const BnbPaymentReceiptModal: React.FC<BnbPaymentReceiptModalProps> = ({
   const totalFormatted = totalNum.toLocaleString('en-US', { minimumFractionDigits: 2 });
 
   const displayPhone = data.senderPhone || data.phone || data.userPhone || 'N/A';
-  const receiverName = data.beneficiaryName || data.accountName || 'BNB সদস্য';
+  const receiverName = data.beneficiaryName || data.accountName || 'AMB সদস্য';
   const receiverId = data.beneficiaryAccount || '';
-  const txId = data.transactionId || 'SENDBNB-' + Math.floor(100000 + Math.random() * 900000);
+  const txId = data.transactionId || 'SENDAMB-' + Math.floor(100000 + Math.random() * 900000);
   const typeLabel = data.typeLabel || data.paymentMethod || 'অ্যাড মানি (bKash)';
 
   const rawDate = data.transactionDate || data.createdAt;
@@ -144,7 +148,7 @@ export const BnbPaymentReceiptModal: React.FC<BnbPaymentReceiptModalProps> = ({
         : 'বাতিল (Rejected / Failed)';
 
     let lines: string[] = [
-      '🧾 লেনদেন রসিদ (BNB Digital Network)',
+      '🧾 লেনদেন রসিদ (AMB Digital Network)',
       '━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
       `1️⃣ লেনদেনের ধরন: ${typeLabel}`,
       `2️⃣ প্রাপক/সদস্য: ${receiverName}${receiverId ? ` (আইডি: ${receiverId})` : ''}`,
@@ -198,7 +202,7 @@ export const BnbPaymentReceiptModal: React.FC<BnbPaymentReceiptModalProps> = ({
     lines.push(`${currentStep}️⃣ বর্তমান স্ট্যাটাস: ${statusText}`);
     currentStep++;
 
-    lines.push(`${currentStep}️⃣ ডিজিটাল প্ল্যাটফর্ম: Business Network Bangladesh (BNB)`);
+    lines.push(`${currentStep}️⃣ ডিজিটাল প্ল্যাটফর্ম: Al Mayadin Bazar (AMB)`);
     lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     return lines.join('\n');
@@ -234,7 +238,7 @@ export const BnbPaymentReceiptModal: React.FC<BnbPaymentReceiptModalProps> = ({
       const image = canvas.toDataURL('image/png', 1.0);
       const link = document.createElement('a');
       link.href = image;
-      link.download = `BNB-Receipt-${txId}.png`;
+      link.download = `AMB-Receipt-${txId}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -268,10 +272,10 @@ export const BnbPaymentReceiptModal: React.FC<BnbPaymentReceiptModalProps> = ({
           );
 
           if (blob && navigator.canShare) {
-            const file = new File([blob], `BNB-Receipt-${txId}.png`, { type: 'image/png' });
+            const file = new File([blob], `AMB-Receipt-${txId}.png`, { type: 'image/png' });
             if (navigator.canShare({ files: [file] })) {
               await navigator.share({
-                title: 'BNB লেনদেন রসিদ',
+                title: 'AMB লেনদেন রসিদ',
                 text: serializedText,
                 files: [file]
               });
@@ -282,7 +286,7 @@ export const BnbPaymentReceiptModal: React.FC<BnbPaymentReceiptModalProps> = ({
 
           // Fallback to text sharing via Web Share
           await navigator.share({
-            title: 'BNB লেনদেন রসিদ',
+            title: 'AMB লেনদেন রসিদ',
             text: serializedText
           });
           setSharing(false);
@@ -626,7 +630,7 @@ export const BnbPaymentReceiptModal: React.FC<BnbPaymentReceiptModalProps> = ({
           {/* Footer Brand Seal */}
           <div className="pt-2 text-center border-t border-slate-100">
             <div className="flex items-center justify-center space-x-1.5 text-[9.5px] sm:text-[10px] text-slate-400 font-medium uppercase tracking-wider">
-              <span>BUSINESS NETWORK BANGLADESH (BNB)</span>
+              <span>BUSINESS NETWORK BANGLADESH (AMB)</span>
               <span>•</span>
               <span>ডিজিটাল লেনদেন সিস্টেম</span>
             </div>
@@ -780,4 +784,4 @@ export const BnbPaymentReceiptModal: React.FC<BnbPaymentReceiptModalProps> = ({
   );
 };
 
-export default BnbPaymentReceiptModal;
+export default AmbPaymentReceiptModal;

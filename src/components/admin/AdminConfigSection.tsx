@@ -25,14 +25,14 @@ import { User, Transaction, Notice, Offer, BapReport, BapGroup, BapAdminRequest,
 import { normalizeMemberId, formatBanglaAmount, normalizePhoneNumber, findUserInFirestoreByPhone, getNextSequentialMemberId, deleteUserCompletelyFromDatabase, convertBengaliToEnglishDigits } from '../../lib/memberUtils';
 import { sortTransactionsNewestFirst, getTxTime } from '../../lib/transactionUtils';
 import { saveAppConfig, DEFAULT_QARD_CONFIG } from '../../lib/config';
-import { BNBLogo } from '../BNBLogo';
+import { AMBLogo } from '../AMBLogo';
 import { HeaderPendingModal } from '../HeaderPendingModal';
 import SamityScreen from '../SamityScreen';
 import UnifiedBackButton from '../UnifiedBackButton';
 import SamityAdmin from '../SamityAdmin';
 import SafiPremiumShop from '../SafiPremiumShop';
 import TelecomAdmin from '../TelecomAdmin';
-import BnbSalaryAdmin from '../BnbSalaryAdmin';
+import AmbSalaryAdmin from '../AmbSalaryAdmin';
 import { HistoryRetentionSettings } from '../HistoryRetentionSettings';
 import { runWalletEndToEndTests, TestResultItem } from '../../lib/walletTests';
 import { 
@@ -730,14 +730,14 @@ export function AdminConfigSection(props: any) {
                       className="w-full bg-slate-900/50 border border-slate-800 focus:border-red-500 rounded-xl p-3 text-sm text-white outline-none transition cursor-pointer disabled:opacity-40"
                     >
                       <option value="">কোনোটিই নয় (হোম স্ক্রিন খুলবে)</option>
-                      <option value="telecom">BNB টেলিকম / রিচার্জ স্ক্রিন</option>
-                      <option value="samity">BNB সমবায় / সঞ্চয় স্ক্রিন</option>
-                      <option value="qard">BNB কর্জে হাসানা ঋণ স্ক্রিন</option>
-                      <option value="shop">BNB সুপার শপ ও অর্ডার</option>
-                      <option value="agent">BNB এজেন্ট ক্যাশআউট পয়েন্ট</option>
-                      <option value="escrow">BNB নিরাপদ লেনদেন এসক্রো</option>
-                      <option value="ration">BNB রেশন কার্ড সিস্টেম</option>
-                      <option value="courier">BNB ইনস্ট্যান্ট কুরিয়ার</option>
+                      <option value="telecom">AMB টেলিকম / রিচার্জ স্ক্রিন</option>
+                      <option value="samity">AMB সমবায় / সঞ্চয় স্ক্রিন</option>
+                      <option value="qard">AMB কর্জে হাসানা ঋণ স্ক্রিন</option>
+                      <option value="shop">AMB সুপার শপ ও অর্ডার</option>
+                      <option value="agent">AMB এজেন্ট ক্যাশআউট পয়েন্ট</option>
+                      <option value="escrow">AMB নিরাপদ লেনদেন এসক্রো</option>
+                      <option value="ration">AMB রেশন কার্ড সিস্টেম</option>
+                      <option value="courier">AMB ইনস্ট্যান্ট কুরিয়ার</option>
                       <option value="history">গ্রাহকের লেনদেনের ইতিহাস</option>
                       <option value="profile">গ্রাহক প্রোফাইল ও কেওয়াইসি</option>
                     </select>
@@ -869,7 +869,7 @@ export function AdminConfigSection(props: any) {
                     {cfgLogoUrl ? (
                       <img src={cfgLogoUrl} alt="App Logo" className="w-full h-full object-cover rounded-2xl" referrerPolicy="no-referrer" />
                     ) : (
-                      <BNBLogo size={70} variant="white" />
+                      <AMBLogo size={70} variant="white" />
                     )}
                     {cfgLogoUrl && (
                       <button
@@ -934,7 +934,7 @@ export function AdminConfigSection(props: any) {
                     onChange={(e) => setCfgAppName(e.target.value)}
                     required
                     className="w-full bg-slate-50 border border-slate-200/80 focus:border-emerald-500 rounded-xl p-3 text-sm text-slate-900 font-bold outline-none transition"
-                    placeholder="যেমন: BNB Business Network"
+                    placeholder="যেমন: AMB Business Network"
                   />
                   <p className="text-[10px] text-slate-500">ড্যাশবোর্ড এবং হোম স্ক্রিনে প্রদর্শিত মূল ব্র্যান্ডের নাম।</p>
                 </div>
@@ -1327,16 +1327,16 @@ export function AdminConfigSection(props: any) {
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
                     {[
-                      { key: 'samity', label: 'BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর' },
-                      { key: 'bank', label: 'MY BNB লেনদেন (রেমিট্যান্স)' },
-                      { key: 'telecom', label: 'BNB টেলিকম (ফ্লেক্সিলোড)' },
-                      { key: 'shop', label: 'BNB সুপার শপ (পণ্য অর্ডার)' },
+                      { key: 'samity', label: 'AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর' },
+                      { key: 'bank', label: 'MY AMB লেনদেন (রেমিট্যান্স)' },
+                      { key: 'telecom', label: 'AMB টেলিকম (ফ্লেক্সিলোড)' },
+                      { key: 'shop', label: 'AMB সুপার শপ (পণ্য অর্ডার)' },
                       { key: 'qard', label: 'করযে হাসানা (সুদমুক্ত ঋণ)' },
                       { key: 'safedeals', label: 'নিরাপদ লেনদেন (ভেরিফাইড পাইকারি)' },
                       { key: 'safi', label: 'প্রিমিয়াম Safi (খাঁটি পণ্য)' },
-                      { key: 'ration', label: 'BNB রেশন কার্ড (পাইকারি ছাড়)' },
+                      { key: 'ration', label: 'AMB রেশন কার্ড (পাইকারি ছাড়)' },
                       { key: 'chat', label: 'লাইভ চ্যাট (সাপোর্ট রুম)' },
-                      { key: 'agent', label: 'BNB এজেন্ট (ক্যারিয়ার পোর্টাল)' },
+                      { key: 'agent', label: 'AMB এজেন্ট (ক্যারিয়ার পোর্টাল)' },
                       { key: 'about', label: 'আমাদের সম্পর্কে (পরিচিতি)' },
                       { key: 'bap', label: 'বাংলাদেশ এডমিন প্যানেল' },
                     ].map((svc) => {
@@ -1501,7 +1501,7 @@ export function AdminConfigSection(props: any) {
                           {[
                             { key: 'home', label: '🏠 হোম (Home)' },
                             { key: 'deposit', label: '💸 সেন্ড মানি (Send)' },
-                            { key: 'add_money', label: '➕ BNB এড মানি (Add Money)' },
+                            { key: 'add_money', label: '➕ AMB এড মানি (Add Money)' },
                             { key: 'history', label: '📋 লেনদেন (Transactions)' },
                             { key: 'profile', label: '👤 প্রোফাইল (Card)' }
                           ].map((tab) => {

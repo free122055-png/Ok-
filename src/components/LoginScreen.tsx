@@ -4,7 +4,7 @@ import { doc, getDoc, setDoc, updateDoc, getDocs, collection, query, where, onSn
 import { User, AppConfig } from '../types';
 import { ShieldCheck, ShieldAlert, UserPlus, LogIn, Phone, User as UserIcon, Keyboard, ChevronDown, Search, Globe, Lock, Smartphone, Send, CheckCircle2, X, AlertTriangle, MessageSquare, ExternalLink, RefreshCw, Eye, EyeOff, KeyRound, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BNBLogo } from './BNBLogo';
+import { AMBLogo } from './AMBLogo';
 import { findUserInFirestoreByPhone, recoverOldAccount, normalizePhoneNumber, saveUserToLocalBackup, convertBengaliToEnglishDigits, getNextSequentialMemberId, getClientDeviceId, getDeviceFingerprint, isSameDevice, getDeviceBoundUser } from '../lib/memberUtils';
 import DeviceLockScreen from './DeviceLockScreen';
 import LockoutScreen from './LockoutScreen';
@@ -163,7 +163,7 @@ export default function LoginScreen({
         'পাসওয়ার্ড বা পিন দুটির মিল নেই!': 'Password or PIN do not match!',
         'সার্ভার সংযোগে ত্রুটি ঘটেছে': 'Server connection error occurred',
         'আবার চেষ্টা করুন।': 'Try again.',
-        'BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর পোর্টাল': 'BNB Management Company Investor Portal',
+        'AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর পোর্টাল': 'AMB Management Company Investor Portal',
         'অ্যাপের ভাষা পরিবর্তন': 'Change App Language',
         'থিম পরিবর্তন': 'Toggle Dark Theme'
       };
@@ -591,9 +591,9 @@ export default function LoginScreen({
       const engDigits = emailLower.replace(/\D/g, '');
 
       // Check if credentials match primary owner fallback details:
-      // Gmail: networkbangladeshbnbbusiness@gmail.com
+      // Gmail: networkbangladeshambbusiness@gmail.com
       // Phone: +8800011112222
-      const isPrimaryAdminEnv = emailLower === 'networkbangladeshbnbbusiness@gmail.com' || 
+      const isPrimaryAdminEnv = emailLower === 'networkbangladeshambbusiness@gmail.com' || 
                                 engDigits.endsWith('00011112222') ||
                                 engDigits.endsWith('11112222');
 
@@ -618,7 +618,7 @@ export default function LoginScreen({
           if (adminUser.role !== 'admin' || !adminUser.email || adminUser.phone !== targetPhone || !adminUser.approved || adminUser.memberId !== 'MAIN_ADMIN' || adminUser.pin !== '6666') {
             adminUser.role = 'admin';
             adminUser.approved = true;
-            adminUser.email = 'networkbangladeshbnbbusiness@gmail.com';
+            adminUser.email = 'networkbangladeshambbusiness@gmail.com';
             adminUser.pin = '6666';
             adminUser.phone = targetPhone;
             adminUser.memberId = 'MAIN_ADMIN';
@@ -630,13 +630,13 @@ export default function LoginScreen({
         } else {
           adminUser = {
             uid: 'admin_master',
-            name: 'Bangladesh BNB Administrator',
+            name: 'Bangladesh AMB Administrator',
             phone: '+8800011112222',
             memberId: 'MAIN_ADMIN',
             pin: '6666',
             role: 'admin',
             approved: true,
-            email: 'networkbangladeshbnbbusiness@gmail.com',
+            email: 'networkbangladeshambbusiness@gmail.com',
             balance: 999000,
             telecomBalance: 0,
             superShopBalance: 0,
@@ -756,7 +756,7 @@ export default function LoginScreen({
           if (adminUser.role !== 'admin' || !adminUser.email || adminUser.phone !== '+8800011112222' || !adminUser.approved || adminUser.memberId !== 'MAIN_ADMIN' || adminUser.pin !== '6666') {
             adminUser.role = 'admin';
             adminUser.approved = true;
-            adminUser.email = 'networkbangladeshbnbbusiness@gmail.com';
+            adminUser.email = 'networkbangladeshambbusiness@gmail.com';
             adminUser.pin = '6666';
             adminUser.phone = '+8800011112222';
             adminUser.memberId = 'MAIN_ADMIN';
@@ -768,13 +768,13 @@ export default function LoginScreen({
         } else {
           adminUser = {
             uid: 'admin_master',
-            name: 'Bangladesh BNB Administrator',
+            name: 'Bangladesh AMB Administrator',
             phone: '+8800011112222',
             memberId: 'MAIN_ADMIN',
             pin: '6666',
             role: 'admin',
             approved: true,
-            email: 'networkbangladeshbnbbusiness@gmail.com',
+            email: 'networkbangladeshambbusiness@gmail.com',
             balance: 999000,
             telecomBalance: 0,
             superShopBalance: 0,
@@ -1105,7 +1105,7 @@ export default function LoginScreen({
         return;
       }
 
-      // Create member credentials with Atomic Sequential Serial System (BNB00000001, BNB00000002...)
+      // Create member credentials with Atomic Sequential Serial System (AMB00000001, AMB00000002...)
       let generatedMemberId = await getNextSequentialMemberId();
       // Ensure memberId is strictly unique in users collection
       const midCheck = await getDocs(query(collection(db, 'users'), where('memberId', '==', generatedMemberId)));
@@ -1198,7 +1198,7 @@ export default function LoginScreen({
       <div className="w-full max-w-md flex justify-between items-center px-1 mb-3 relative z-20 shrink-0">
         <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-emerald-800 bg-white/90 px-3 py-1 rounded-full border border-slate-200/80 shadow-2xs">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>BNB সিকিউর গেটওয়ে</span>
+          <span>AMB সিকিউর গেটওয়ে</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -1237,25 +1237,25 @@ export default function LoginScreen({
             {appConfig?.logoUrl ? (
               <img 
                 src={appConfig.logoUrl} 
-                alt="BNB Logo" 
+                alt="AMB Logo" 
                 className="h-16 sm:h-20 w-auto max-w-[140px] object-contain drop-shadow-md" 
                 referrerPolicy="no-referrer" 
               />
             ) : (
               <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center filter drop-shadow-md">
-                <BNBLogo size={70} variant="white" />
+                <AMBLogo size={70} variant="white" />
               </div>
             )}
           </div>
           <div className="space-y-1 text-center">
             <h1 className="text-base sm:text-lg font-black font-sans tracking-wide leading-tight text-center text-white drop-shadow-xs">
-              <span className="text-emerald-300 font-extrabold mr-1.5">BNB</span>
+              <span className="text-emerald-300 font-extrabold mr-1.5">AMB</span>
               <span className="tracking-wider uppercase">BUSINESS NETWORK</span>
               <span className="block text-emerald-200 text-xs font-bold tracking-widest mt-0.5">BANGLADESH</span>
             </h1>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/30 border border-white/15 text-emerald-100 text-[11px] font-bold backdrop-blur-xs shadow-inner">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর পোর্টাল</span>
+              <span>AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর পোর্টাল</span>
             </div>
           </div>
         </div>
@@ -1295,7 +1295,7 @@ export default function LoginScreen({
                       required
                       value={adminEmail}
                       onChange={(e) => setAdminEmail(e.target.value)}
-                      placeholder="admin@bnb.com বা মোবাইল নম্বর"
+                      placeholder="admin@amb.com বা মোবাইল নম্বর"
                       className="block w-full px-3.5 py-2.5 bg-white border-2 border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/15 text-xs transition-all font-mono font-bold"
                     />
                   </div>
@@ -2092,7 +2092,7 @@ export default function LoginScreen({
         {/* Footer info */}
         <div className="bg-slate-50 border-t border-slate-100 px-4 py-2.5 text-center">
           <p className="text-[10px] text-slate-500 font-sans tracking-wide font-medium">
-            © {new Date().getFullYear()} BNB Business Network Bangladesh. সুরক্ষিত ও এনক্রিপ্টেড।
+            © {new Date().getFullYear()} AMB Al Mayadin Bazar. সুরক্ষিত ও এনক্রিপ্টেড।
           </p>
         </div>
       </motion.div>

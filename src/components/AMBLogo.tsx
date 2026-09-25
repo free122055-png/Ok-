@@ -1,12 +1,12 @@
 import React from 'react';
 
-interface BNBLogoProps {
+interface AMBLogoProps {
   className?: string;
   size?: number | string;
   variant?: 'white' | 'emerald' | 'currentColor' | 'black';
 }
 
-export const BNBLogo: React.FC<BNBLogoProps> = ({ 
+export const AMBLogo: React.FC<AMBLogoProps> = ({ 
   className = '', 
   size = '100%', 
   variant = 'currentColor' 
@@ -78,7 +78,7 @@ export const BNBLogo: React.FC<BNBLogoProps> = ({
         strokeLinecap="round" 
       />
 
-      {/* "BNB" word in bold typeface matching image */}
+      {/* "AMB" word in bold typeface for Al Mayadin Bazar */}
       <text 
         x="100" 
         y="126" 
@@ -88,7 +88,7 @@ export const BNBLogo: React.FC<BNBLogoProps> = ({
         letterSpacing="0.8"
         style={{ fontWeight: 950 }}
       >
-        BNB
+        AMB
       </text>
 
       {/* Left Hand cupping the center logo */}

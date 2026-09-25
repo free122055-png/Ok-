@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { X, PlusCircle, Globe, Banknote, Send, ArrowRight, Home, FileText, ChevronLeft, CreditCard, CheckCircle2, AlertCircle, Copy, Search, HelpCircle, Eye, EyeOff, ChevronDown, Lightbulb, Flame, Droplet, Wifi, Tv, Smartphone, UploadCloud, Trash2, Image, Camera, ChevronRight, RotateCcw, Briefcase, Bookmark, Info } from 'lucide-react';
-import { User, Transaction, AppConfig, SavedBnbCard, normalizePaidMonthsArray, getEffectiveBalance, generateBnbTrxId, formatShortTrxId } from '../types';
+import { User, Transaction, AppConfig, SavedAmbCard, normalizePaidMonthsArray, getEffectiveBalance, generateAmbTrxId, formatShortTrxId } from '../types';
 import { db } from '../lib/firebase';
 import { collection, addDoc, query, where, getDocs, getDoc, orderBy, limit, doc, updateDoc, onSnapshot, setDoc, deleteDoc, runTransaction } from 'firebase/firestore';
-import BnbAutoSalaryPay from './BnbAutoSalaryPay';
-import { BnbPaymentReceiptModal, PaymentReceiptData } from './BnbPaymentReceiptModal';
+import AmbAutoSalaryPay from './AmbAutoSalaryPay';
+import { AmbPaymentReceiptModal, PaymentReceiptData } from './AmbPaymentReceiptModal';
 import { useBackHandler } from '../lib/navigationManager';
 import UnifiedBackButton from './UnifiedBackButton';
 
-interface BnbMobileBankingPortalProps {
+interface AmbMobileBankingPortalProps {
   user: User;
   onClose: () => void;
   syncLiveProfile: () => void;
   appConfig?: AppConfig;
-  initialTab?: 'dashboard' | 'add_money' | 'auto_add_money' | 'bnb_to_bnb' | 'send_money' | 'bill_pay' | 'khatiyan' | 'salary';
+  initialTab?: 'dashboard' | 'add_money' | 'auto_add_money' | 'amb_to_amb' | 'send_money' | 'bill_pay' | 'khatiyan' | 'salary';
 }
 
-export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({ 
+export const AmbMobileBankingPortal: React.FC<AmbMobileBankingPortalProps> = ({ 
   user, 
   onClose, 
   syncLiveProfile,
   appConfig,
   initialTab
 }) => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'add_money' | 'auto_add_money' | 'bnb_to_bnb' | 'send_money' | 'bill_pay' | 'khatiyan' | 'salary'>(initialTab || 'dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'add_money' | 'auto_add_money' | 'amb_to_amb' | 'send_money' | 'bill_pay' | 'khatiyan' | 'salary'>(initialTab || 'dashboard');
 
   useEffect(() => {
     if (initialTab) {
@@ -38,8 +38,8 @@ export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
   const openReceiptForTx = (tx: any) => {
-    let label = 'BNB লেনদেন';
-    if (tx.type === 'transfer' || tx.type === 'bnb_to_bnb') label = 'BNB TO BNB সেন্ড মানি';
+    let label = 'AMB লেনদেন';
+    if (tx.type === 'transfer' || tx.type === 'amb_to_amb') label = 'AMB TO AMB সেন্ড মানি';
     else if (tx.type === 'send_money') label = 'সেন্ড মানি / ক্যাশ আউট';
     else if (tx.type === 'add_money' || tx.type === 'deposit') label = 'অ্যাড মানি';
     else if (tx.type === 'bill_pay') label = 'বিল পে / ইউটিলিটি';
@@ -51,7 +51,7 @@ export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({
       fee: tx.charge || 0,
       totalAmount: tx.totalDeducted || (tx.amount + (tx.charge || 0)),
       status: tx.status === 'success' || tx.status === 'approved' ? 'success' : tx.status === 'failed' || tx.status === 'rejected' ? 'failed' : 'pending',
-      beneficiaryName: tx.userName || tx.receiverName || tx.beneficiaryName || 'BNB সদস্য',
+      beneficiaryName: tx.userName || tx.receiverName || tx.beneficiaryName || 'AMB সদস্য',
       beneficiaryAccount: tx.receiverId || tx.memberId || tx.beneficiaryAccount || 'N/A',
       senderPhone: tx.phone || tx.senderPhone || user.phone,
       transactionDate: tx.createdAt ? new Date(tx.createdAt).toLocaleString('bn-BD', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) : new Date().toLocaleString('bn-BD')
@@ -425,7 +425,7 @@ export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({
 
   useEffect(() => {
     const initializeCard = async () => {
-      if (user && user.uid && (!user.bnbCardNumber || !user.bnbAccountNumber)) {
+      if (user && user.uid && (!user.ambCardNumber || !user.ambAccountNumber)) {
         try {
           const userRef = doc(db, 'users', user.uid);
           const rand1 = Math.floor(1000 + Math.random() * 9000);
@@ -443,30 +443,30 @@ export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({
           const expiry = `${mm}/${yy}`;
           
           await updateDoc(userRef, {
-            bnbCardNumber: cardNumber,
-            bnbAccountNumber: accountNumber,
-            bnbCardHolderName: (user.name || 'BNB MEMBER').toUpperCase(),
-            bnbCardExpiry: expiry,
-            bnbCardCvv: cvv,
-            bnbCardStatus: 'active',
-            bnbCardIssuedAt: now.toISOString()
+            ambCardNumber: cardNumber,
+            ambAccountNumber: accountNumber,
+            ambCardHolderName: (user.name || 'AMB MEMBER').toUpperCase(),
+            ambCardExpiry: expiry,
+            ambCardCvv: cvv,
+            ambCardStatus: 'active',
+            ambCardIssuedAt: now.toISOString()
           });
           
           if (syncLiveProfile) {
             syncLiveProfile();
           }
         } catch (e) {
-          console.error("Error initializing BNB virtual card: ", e);
+          console.error("Error initializing AMB virtual card: ", e);
         }
       }
     };
     initializeCard();
   }, [user, syncLiveProfile]);
-// 1.5 BNB to BNB States
-  const [bnbSubTab, setBnbSubTab] = useState<'send' | 'card_add'>('send');
-  const [bnbSendReceiver, setBnbSendReceiver] = useState('');
-  const [bnbSendAmount, setBnbSendAmount] = useState('');
-  const [bnbSendPin, setBnbSendPin] = useState('');
+// 1.5 AMB to AMB States
+  const [ambSubTab, setAmbSubTab] = useState<'send' | 'card_add'>('send');
+  const [ambSendReceiver, setAmbSendReceiver] = useState('');
+  const [ambSendAmount, setAmbSendAmount] = useState('');
+  const [ambSendPin, setAmbSendPin] = useState('');
 
   const [cardAddNum, setCardAddNum] = useState('');
   const [cardAddExpiry, setCardAddExpiry] = useState('');
@@ -509,7 +509,7 @@ export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({
       return;
     }
     const label = nickname && nickname.trim() ? nickname.trim() : (saveCardNicknameInput.trim() || 'প্রিয় কার্ড');
-    const currentSaved = user.savedBnbCards || [];
+    const currentSaved = user.savedAmbCards || [];
     
     if (currentSaved.length >= 5) {
       setErrorMsg('আপনি সর্বোচ্চ 5টি প্রিয় কার্ড সেভ করে রাখতে পারবেন। কোনো একটি কার্ড মুছে নতুন যোগ করুন।');
@@ -522,7 +522,7 @@ export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({
     }
 
     const exp = cardAddExpiry || (expiryMonth && expiryYear ? `${expiryMonth}/${expiryYear}` : '07/27');
-    const newSaved: SavedBnbCard = {
+    const newSaved: SavedAmbCard = {
       id: `CARD_${Date.now()}`,
       name: label,
       cardNumber: cleanNum,
@@ -531,10 +531,10 @@ export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({
     };
 
     const updated = [...currentSaved, newSaved];
-    user.savedBnbCards = updated;
+    user.savedAmbCards = updated;
     
     try {
-      await updateDoc(doc(db, 'users', user.uid), { savedBnbCards: updated });
+      await updateDoc(doc(db, 'users', user.uid), { savedAmbCards: updated });
       setSuccessMsg(`"${label}" প্রিয় কার্ড হিসেবে সেভ করা হয়েছে! ⭐`);
       setSaveCardNicknameInput('');
       setShowSaveCardModal(false);
@@ -546,11 +546,11 @@ export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({
   };
 
   const handleDeleteSavedCard = async (cardId: string) => {
-    const currentSaved = user.savedBnbCards || [];
+    const currentSaved = user.savedAmbCards || [];
     const updated = currentSaved.filter(c => c.id !== cardId);
-    user.savedBnbCards = updated;
+    user.savedAmbCards = updated;
     try {
-      await updateDoc(doc(db, 'users', user.uid), { savedBnbCards: updated });
+      await updateDoc(doc(db, 'users', user.uid), { savedAmbCards: updated });
       setSuccessMsg('প্রিয় কার্ডটি তালিকা থেকে মুছে ফেলা হয়েছে।');
       if (syncLiveProfile) syncLiveProfile();
     } catch (err: any) {
@@ -582,7 +582,7 @@ export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({
   const [sendSelectedMonth, setSendSelectedMonth] = useState<string>(
     SAMITY_MONTH_LIST[new Date().getMonth()]?.id || 'jan'
   );
-  const [sendMoneyChannel, setSendMoneyChannel] = useState<'bnb' | 'mobile_bank' | 'bank_wallet' | 'abroad' | 'remittance'>('mobile_bank');
+  const [sendMoneyChannel, setSendMoneyChannel] = useState<'amb' | 'mobile_bank' | 'bank_wallet' | 'abroad' | 'remittance'>('mobile_bank');
   const [selectedMobileOp, setSelectedMobileOp] = useState<string | null>(null);
   const [selectedBankOp, setSelectedBankOp] = useState<string | null>(null);
   const [sendTargetId, setSendTargetId] = useState('');
@@ -616,7 +616,7 @@ export const BnbMobileBankingPortal: React.FC<BnbMobileBankingPortalProps> = ({
     let flat = 0;
     let service = 0;
 
-    if (sendMoneyChannel === 'bnb') {
+    if (sendMoneyChannel === 'amb') {
       flat = 0;
       service = 0;
     } else if (sendMoneyChannel === 'mobile_bank') {
@@ -822,7 +822,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           userId: user.uid,
           userName: user.name || 'Anonymous User',
           userPhone: user.phone || '',
-          memberId: user.memberId || 'BNB000000',
+          memberId: user.memberId || 'AMB000000',
           amount: amountNum,
           type: txType,
           status: 'pending',
@@ -865,7 +865,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         fee: 0,
         totalAmount: amountNum,
         status: 'pending',
-        beneficiaryName: user.name || 'BNB MEMBER',
+        beneficiaryName: user.name || 'AMB MEMBER',
         beneficiaryAccount: user.memberId || user.phone,
         senderPhone: currentSender,
         transactionDate: new Date().toLocaleString('bn-BD', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
@@ -944,7 +944,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
     const displayIntlBanks = (hasConfiguredBanks && customIntlBanks.length > 0)
       ? customIntlBanks
       : (hasConfiguredBanks && (appConfig?.paymentBanks?.length || 0) > 0 ? [] : defaultIntlBanksList);
-    const selectedIntlBank = displayIntlBanks.find((b: any) => b.id === remitSelectedBankId) || displayIntlBanks[0];
+    const selectedIntlBank = (displayIntlBanks.find((b: any) => b.id === remitSelectedBankId) || displayIntlBanks[0]) as any;
 
     const remitCurrency = getBankCurrencyInfo(
       selectedIntlBank,
@@ -1009,7 +1009,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           userId: user.uid,
           userName: user.name || 'Anonymous User',
           userPhone: user.phone || '',
-          memberId: user.memberId || 'BNB000000',
+          memberId: user.memberId || 'AMB000000',
           amount: totalPayoutVal,
           bdtAmount: netBdt,
           grossBdtAmount: grossBdt,
@@ -1111,17 +1111,17 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
     }
   };
 
-  const handleBnbSendSubmit = async (e: React.FormEvent) => {
+  const handleAmbSendSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
 
-    if (user.bnbCardStatus === 'inactive') {
+    if (user.ambCardStatus === 'inactive') {
       setErrorMsg('দুঃখিত! আপনার ভার্চুয়াল কার্ডটি লক বা নিষ্ক্রিয় রয়েছে। অনুগ্রহ করে কার্ড আনলক করুন।');
       return;
     }
 
-    const amountNum = Number(bnbSendAmount);
+    const amountNum = Number(ambSendAmount);
     if (isNaN(amountNum) || amountNum <= 0) {
       setErrorMsg('সঠিক টাকার পরিমাণ দিন।');
       return;
@@ -1137,14 +1137,14 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
       return;
     }
 
-    if (user.pin !== bnbSendPin.trim()) {
+    if (user.pin !== ambSendPin.trim()) {
       setErrorMsg('ভুল সিকিউরিটি পিন! সঠিক 4 সংখ্যার ওয়ালেট পিন প্রদান করুন।');
       return;
     }
 
     setLoading(true);
     try {
-      const trimmedReceiver = bnbSendReceiver.trim();
+      const trimmedReceiver = ambSendReceiver.trim();
       let receiverDoc = null;
       let isVirtualSomitiAcc = false;
 
@@ -1257,7 +1257,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           type: isVirtualSomitiAcc ? 'coop_savings_deposit' : 'transfer',
           typeLabel: isVirtualSomitiAcc ? 'সমিতি ওয়ালেটে অটো ফান্ড জমা' : 'ফান্ড ট্রান্সফার',
           status: 'success',
-          paymentMethod: 'BNB Wallet',
+          paymentMethod: 'Al Mayadin Wallet',
           phone: rData.phone,
           createdAt: new Date().toISOString(),
           description: `মেম্বার ${rData.name || ''} (${rData.memberId || ''}) কে ফান্ড পাঠানো হয়েছে`
@@ -1273,7 +1273,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           type: isVirtualSomitiAcc ? 'coop_savings_deposit' : 'add_money',
           typeLabel: isVirtualSomitiAcc ? 'সমিতি একাউন্টে সঞ্চয় জমা' : 'ফান্ড গ্রহণ',
           status: 'success',
-          paymentMethod: 'BNB Wallet',
+          paymentMethod: 'Al Mayadin Wallet',
           phone: user.phone,
           createdAt: new Date().toISOString(),
           description: `মেম্বার ${user.name} (${user.memberId}) থেকে ফান্ড গ্রহণ`
@@ -1294,24 +1294,24 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
 // user.balance = finalSenderBal;
       if (syncLiveProfile) syncLiveProfile();
 
-      const generatedTxId = generateBnbTrxId('BN');
+      const generatedTxId = generateAmbTrxId('BN');
       setSuccessMsg(isVirtualSomitiAcc ? 'অভিনন্দন! সমবায় সমিতি একাউন্টে জমা সফল হয়েছে।' : 'অভিনন্দন! ফান্ড স্থানান্তর সফলভাবে সম্পন্ন হয়েছে।');
       setReceiptModalData({
-        typeLabel: isVirtualSomitiAcc ? 'BNB সমিতি ওয়ালেট জমা (Virtual Acc)' : 'BNB TO BNB সেন্ড মানি',
+        typeLabel: isVirtualSomitiAcc ? 'AMB সমিতি ওয়ালেট জমা (Virtual Acc)' : 'AMB TO AMB সেন্ড মানি',
         transactionId: generatedTxId,
         amount: amountNum,
         fee: 0,
         totalAmount: amountNum,
         status: 'success',
-        beneficiaryName: receiverData.name || 'BNB MEMBER',
+        beneficiaryName: receiverData.name || 'AMB MEMBER',
         beneficiaryAccount: isVirtualSomitiAcc ? `${receiverData.phone}0` : (receiverData.memberId || receiverData.phone),
         senderPhone: user.phone,
         transactionDate: new Date().toLocaleString('bn-BD', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
       });
       setIsReceiptOpen(true);
-      setBnbSendAmount('');
-      setBnbSendReceiver('');
-      setBnbSendPin('');
+      setAmbSendAmount('');
+      setAmbSendReceiver('');
+      setAmbSendPin('');
       setLoading(false);
     } catch (err: any) {
       console.error("Error in direct transfer: ", err);
@@ -1320,7 +1320,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
     }
   };
 
-  const handleBnbCardAddSubmit = async (e: React.FormEvent) => {
+  const handleAmbCardAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
@@ -1390,7 +1390,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         user.balance = updatedReceiverBal;
         if (syncLiveProfile) syncLiveProfile();
 
-        const generatedTxId = generateBnbTrxId('B');
+        const generatedTxId = generateAmbTrxId('B');
         setReceiptModalData({
           typeLabel: 'ভার্চুয়াল কার্ড পে এডমানি',
           transactionId: generatedTxId,
@@ -1398,7 +1398,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           fee: 0,
           totalAmount: amountNum,
           status: 'success',
-          beneficiaryName: user.name || 'BNB MEMBER',
+          beneficiaryName: user.name || 'AMB MEMBER',
           beneficiaryAccount: user.memberId || user.phone,
           senderPhone: cardOwnerData.phone || user.phone,
           transactionDate: new Date().toLocaleString('bn-BD', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
@@ -1439,7 +1439,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
             type: 'withdraw',
             typeLabel: 'কার্ড পেমেন্ট (ডেবিট)',
             status: 'success',
-            paymentMethod: 'BNB Card',
+            paymentMethod: 'AMB Card',
             phone: user.phone,
             createdAt: nowIso,
             description: `মেম্বার ${user.name} (${user.memberId}) কে কার্ডের মাধ্যমে ৳${amountNum} ফান্ড পেমেন্ট`
@@ -1454,10 +1454,10 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
             type: 'add_money',
             typeLabel: 'কার্ড এডমানি',
             status: 'success',
-            paymentMethod: 'BNB Card',
+            paymentMethod: 'AMB Card',
             phone: cardOwnerData.phone || '',
             createdAt: nowIso,
-            description: `কার্ড ${cardAddNum} (মালিক: ${cardOwnerData.name || 'BNB Card'}) থেকে ওয়ালেটে ৳${amountNum} এডমানি`
+            description: `কার্ড ${cardAddNum} (মালিক: ${cardOwnerData.name || 'AMB Card'}) থেকে ওয়ালেটে ৳${amountNum} এডমানি`
           }),
           addDoc(collection(db, 'user_notifications'), {
             userId: cardOwnerUid,
@@ -1487,7 +1487,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
       let cardOwnerData: any = null;
       let cardOwnerUid = '';
 
-      if (user.bnbCardNumber && user.bnbCardNumber.replace(/\s+/g, '') === cleanCardNum) {
+      if (user.ambCardNumber && user.ambCardNumber.replace(/\s+/g, '') === cleanCardNum) {
         cardOwnerData = user;
         cardOwnerUid = user.uid;
       } else {
@@ -1496,8 +1496,8 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           queryCardNum = `${cleanCardNum.substring(0, 4)} ${cleanCardNum.substring(4, 8)} ${cleanCardNum.substring(8, 12)} ${cleanCardNum.substring(12, 16)}`;
         }
 
-        const q = query(collection(db, 'users'), where('bnbCardNumber', '==', queryCardNum), limit(1));
-        const qFallback = query(collection(db, 'users'), where('bnbCardNumber', '==', cleanCardNum), limit(1));
+        const q = query(collection(db, 'users'), where('ambCardNumber', '==', queryCardNum), limit(1));
+        const qFallback = query(collection(db, 'users'), where('ambCardNumber', '==', cleanCardNum), limit(1));
 
         const [snap, snapFallback] = await Promise.all([
           getDocs(q).catch(() => ({ empty: true, docs: [] } as any)),
@@ -1519,14 +1519,14 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         return;
       }
 
-      if (cardAddCvv && cardOwnerData.bnbCardCvv !== cardAddCvv.trim()) {
+      if (cardAddCvv && cardOwnerData.ambCardCvv !== cardAddCvv.trim()) {
         setErrorMsg('ভুল CVV নম্বর! কার্ডের সঠিক 3 সংখ্যার CVV দিন।');
         setLoading(false);
         return;
       }
 
       const expInput = cardAddExpiry.trim() || (expiryMonth && expiryYear ? `${expiryMonth}/${expiryYear}` : '');
-      if (expInput && cardOwnerData.bnbCardExpiry !== expInput) {
+      if (expInput && cardOwnerData.ambCardExpiry !== expInput) {
         setErrorMsg('ভুল এক্সপায়ারি তারিখ! সঠিক MM/YY ফরম্যাটে দিন।');
         setLoading(false);
         return;
@@ -1538,13 +1538,13 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         return;
       }
 
-      if (cardOwnerData.bnbCardStatus !== 'active') {
+      if (cardOwnerData.ambCardStatus !== 'active') {
         setErrorMsg('দুঃখিত! এই কার্ডটি বর্তমানে লক বা নিষ্ক্রিয় রয়েছে।');
         setLoading(false);
         return;
       }
 
-      const isOtpLocked = cardOwnerData.bnbCardOtpLocked !== false;
+      const isOtpLocked = cardOwnerData.ambCardOtpLocked !== false;
 
       if (isOtpLocked) {
 // Generate OTP & send instantly ⚡
@@ -1598,7 +1598,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
       user.balance = updatedReceiverBal;
       if (syncLiveProfile) syncLiveProfile();
 
-      const generatedTxId = generateBnbTrxId('B');
+      const generatedTxId = generateAmbTrxId('B');
       setReceiptModalData({
         typeLabel: 'ভার্চুয়াল কার্ড পে এডমানি',
         transactionId: generatedTxId,
@@ -1606,7 +1606,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         fee: 0,
         totalAmount: amountNum,
         status: 'success',
-        beneficiaryName: user.name || 'BNB MEMBER',
+        beneficiaryName: user.name || 'AMB MEMBER',
         beneficiaryAccount: user.memberId || user.phone,
         senderPhone: cardOwnerData.phone || user.phone,
         transactionDate: new Date().toLocaleString('bn-BD', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
@@ -1645,7 +1645,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           type: 'withdraw',
           typeLabel: 'কার্ড পেমেন্ট (ডেবিট)',
           status: 'success',
-          paymentMethod: 'BNB Card',
+          paymentMethod: 'AMB Card',
           phone: user.phone,
           createdAt: nowIso,
           description: `মেম্বার ${user.name} (${user.memberId}) কে কার্ডের মাধ্যমে ৳${amountNum} ফান্ড পেমেন্ট`
@@ -1660,10 +1660,10 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           type: 'add_money',
           typeLabel: 'কার্ড এডমানি',
           status: 'success',
-          paymentMethod: 'BNB Card',
+          paymentMethod: 'AMB Card',
           phone: cardOwnerData.phone || '',
           createdAt: nowIso,
-          description: `কার্ড ${cardAddNum} (মালিক: ${cardOwnerData.name || 'BNB Card'}) থেকে ওয়ালেটে ৳${amountNum} এডমানি`
+          description: `কার্ড ${cardAddNum} (মালিক: ${cardOwnerData.name || 'AMB Card'}) থেকে ওয়ালেটে ৳${amountNum} এডমানি`
         }),
         addDoc(collection(db, 'user_notifications'), {
           userId: cardOwnerUid,
@@ -1698,7 +1698,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
     setErrorMsg('');
     setSuccessMsg('');
 
-    if (user.bnbCardStatus === 'inactive') {
+    if (user.ambCardStatus === 'inactive') {
       setErrorMsg('দুঃখিত! আপনার ভার্চুয়াল কার্ডটি লক বা নিষ্ক্রিয় রয়েছে। অনুগ্রহ করে কার্ড আনলক করুন।');
       return;
     }
@@ -1728,7 +1728,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
     const userRef = doc(db, 'users', user.uid);
     let writesToRun: Promise<any>[] = [];
 
-    if (sendMoneyChannel === 'bnb') {
+    if (sendMoneyChannel === 'amb') {
       if (!sendTargetId) {
         setErrorMsg('গ্রহীতা মেম্বার আইডি বা মোবাইল নম্বর প্রদান করুন।');
         return;
@@ -1829,7 +1829,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
               type: 'transfer',
               typeLabel: `সমিতি অটো সঞ্চয় স্থানান্তের (${selMonthObj.name})`,
               status: 'success',
-              paymentMethod: 'BNB 12-Digit Auto Funding',
+              paymentMethod: 'AMB 12-Digit Auto Funding',
               phone: rData.phone || sendTargetId,
               createdAt: new Date().toISOString(),
               description: `মেম্বার ${rData.name || ''} (${rData.memberId || ''})-এর 12-সংখ্যার অটো অ্যাকাউন্টে ${selMonthObj.name} মাসের সমিতি সঞ্চয় ৳${amountNum.toLocaleString('bn-BD')} জমা সফল`
@@ -1845,7 +1845,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
               type: 'samity_deposit',
               typeLabel: `সমিতি অটো সঞ্চয় জমা (${selMonthObj.name})`,
               status: 'approved',
-              paymentMethod: 'BNB 12-Digit Auto Funding',
+              paymentMethod: 'AMB 12-Digit Auto Funding',
               phone: user.phone,
               createdAt: new Date().toISOString(),
               description: `মেম্বার ${user.name} (${user.phone}) কর্তৃক 12-সংখ্যার অটো একাউন্টের মাধ্যমে ${selMonthObj.name} মাসের সমিতি সঞ্চয় ৳${amountNum.toLocaleString('bn-BD')} জমা প্রাপ্তি`
@@ -1881,9 +1881,9 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
               totalDeducted: totalRequired,
               postBalance: finalSenderBal,
               type: 'transfer',
-              typeLabel: 'BNB সেন্ড মানি',
+              typeLabel: 'AMB সেন্ড মানি',
               status: 'success',
-              paymentMethod: 'BNB Transfer',
+              paymentMethod: 'AMB Transfer',
               phone: rData.phone || sendTargetId,
               createdAt: new Date().toISOString(),
               description: `মেম্বার ${rData.name || ''} (${rData.memberId || ''}) কে ৳${amountNum.toLocaleString('bn-BD')} সেন্ড মানি সফল`
@@ -1897,9 +1897,9 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
               amount: amountNum,
               postBalance: finalReceiverBal,
               type: 'add_money',
-              typeLabel: 'BNB সেন্ড মানি লাভ',
+              typeLabel: 'AMB সেন্ড মানি লাভ',
               status: 'success',
-              paymentMethod: 'BNB Transfer',
+              paymentMethod: 'AMB Transfer',
               phone: user.phone,
               createdAt: new Date().toISOString(),
               description: `মেম্বার ${user.name} (${user.memberId}) থেকে ৳${amountNum.toLocaleString('bn-BD')} সেন্ড মানি প্রাপ্তি`
@@ -1918,16 +1918,16 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         user.balance = finalSenderBal;
         if (syncLiveProfile) syncLiveProfile();
 
-        const generatedTxId = generateBnbTrxId('BN');
+        const generatedTxId = generateAmbTrxId('BN');
         setSuccessMsg('আপনার সেন্ড মানি লেনদেন সফলভাবে সম্পন্ন হয়েছে!');
         setReceiptModalData({
-          typeLabel: 'BNB সেন্ড মানি',
+          typeLabel: 'AMB সেন্ড মানি',
           transactionId: generatedTxId,
           amount: amountNum,
           fee: chargeTotal,
           totalAmount: totalRequired,
           status: 'success',
-          beneficiaryName: receiverData.name || 'BNB MEMBER',
+          beneficiaryName: receiverData.name || 'AMB MEMBER',
           beneficiaryAccount: receiverData.memberId || receiverData.phone || sendTargetId,
           senderPhone: user.phone,
           transactionDate: new Date().toLocaleString('bn-BD', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
@@ -2110,7 +2110,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
       })
     );
 
-    const generatedTxId = generateBnbTrxId('BN');
+    const generatedTxId = generateAmbTrxId('BN');
 
     setLoading(true);
     try {
@@ -2154,7 +2154,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
     setErrorMsg('');
     setSuccessMsg('');
 
-    if (user.bnbCardStatus === 'inactive') {
+    if (user.ambCardStatus === 'inactive') {
       setErrorMsg('দুঃখিত! আপনার ভার্চুয়াল কার্ডটি লক বা নিষ্ক্রিয় রয়েছে। অনুগ্রহ করে কার্ড আনলক করুন।');
       return;
     }
@@ -2264,12 +2264,12 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         <div className="absolute right-0 top-0 translate-x-12 -translate-y-6 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
         <div className="flex justify-between items-start mb-4">
           <div>
-            <p className="text-emerald-400 text-[10px] font-black uppercase tracking-wider">BNB সমবায় ব্যাংক লিঃ</p>
-            <h2 className="text-md font-extrabold text-white">BNB Mobile Banking Portal</h2>
+            <p className="text-emerald-400 text-[10px] font-black uppercase tracking-wider">AMB সমবায় ব্যাংক লিঃ</p>
+            <h2 className="text-md font-extrabold text-white">Al Mayadin Bazar Portal</h2>
           </div>
           <div className="bg-white/10 border border-white/5 px-2.5 py-1 rounded-full text-[9px] flex items-center gap-1.5 text-slate-100 font-mono font-black">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            ID: {user.memberId || 'BNB00000000'}
+            ID: {user.memberId || 'AMB00000000'}
           </div>
         </div>
         <p className="text-slate-300/80 text-[10px] font-bold">মেইন ওয়ালেট ব্যালেন্স (WALLET BALANCE)</p>
@@ -2289,14 +2289,14 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         {[
           { id: 'dashboard', label: 'হোম ড্যাশ', icon: <Home className="w-5 h-5 text-emerald-800" />, isImg: false },
           { 
-            id: 'bnb_to_bnb', 
-            label: 'BNB to BNB', 
-            icon: appConfig?.bnbToBnbIconUrl ? (
-              <img src={appConfig.bnbToBnbIconUrl} className="w-5 h-5 object-cover rounded" alt="BNB to BNB" referrerPolicy="no-referrer" />
+            id: 'amb_to_amb', 
+            label: 'AMB to AMB', 
+            icon: appConfig?.ambToAmbIconUrl ? (
+              <img src={appConfig.ambToAmbIconUrl} className="w-5 h-5 object-cover rounded" alt="AMB to AMB" referrerPolicy="no-referrer" />
             ) : (
               <PlusCircle className="w-5 h-5 text-indigo-700" />
             ),
-            isImg: !!appConfig?.bnbToBnbIconUrl
+            isImg: !!appConfig?.ambToAmbIconUrl
           },
           { id: 'send_money', label: 'সেন্ড মানি', icon: <Send className="w-5 h-5 text-cyan-700" />, isImg: false }
         ].map((item, idx) => (
@@ -2309,7 +2309,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
               {item.isImg ? (
                 item.icon
               ) : (
-                React.cloneElement(item.icon as React.ReactElement, { className: activeTab === item.id ? 'text-white w-5 h-5' : (item.icon as React.ReactElement).props.className })
+                React.cloneElement(item.icon as React.ReactElement<any>, { className: activeTab === item.id ? 'text-white w-5 h-5' : (item.icon as any).props?.className })
               )}
             </div>
             <span className={`text-[10px] font-black tracking-tight leading-tight ${activeTab === item.id ? 'text-indigo-950 font-extrabold' : 'text-slate-650'}`}>
@@ -2359,12 +2359,12 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         </button>
       </div>
 
-      {/* 🌟 BNB লেনদেনের প্রধান সুবিধাসমূহ ও নিয়মাবলী */}
+      {/* 🌟 AMB লেনদেনের প্রধান সুবিধাসমূহ ও নিয়মাবলী */}
       <div className="bg-[#0B1528] p-4.5 rounded-3xl border border-slate-800 space-y-4">
         {/* Three Pill Badges */}
         <div className="grid grid-cols-3 gap-2">
           <div className="bg-[#E6F4EA] rounded-full py-2.5 px-1 text-center flex flex-col justify-center items-center shadow-md border border-emerald-500/20">
-            <span className="text-[8.5px] font-black text-[#137333] leading-none mb-0.5">BNB অ্যাপস থেকে ব্যাংকে নিতে</span>
+            <span className="text-[8.5px] font-black text-[#137333] leading-none mb-0.5">AMB অ্যাপস থেকে ব্যাংকে নিতে</span>
             <span className="text-[10px] sm:text-xs font-black text-[#137333] font-sans tracking-tight">
               হাজারে {(appConfig?.sendMoneyBankServiceChargePerThousand ?? 7.90).toFixed(2)}
             </span>
@@ -2376,7 +2376,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
             </span>
           </div>
           <div className="bg-[#E8F0FE] rounded-full py-2.5 px-1 text-center flex flex-col justify-center items-center shadow-md border border-indigo-500/20">
-            <span className="text-[8.5px] font-black text-[#1A73E8] leading-none mb-0.5">BNB to BNB ফি</span>
+            <span className="text-[8.5px] font-black text-[#1A73E8] leading-none mb-0.5">AMB to AMB ফি</span>
             <span className="text-[10px] sm:text-xs font-black text-[#1A73E8]">সম্পূর্ণ ফ্রি</span>
           </div>
         </div>
@@ -2385,7 +2385,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         <div className="bg-[#F3F6F5] border border-slate-200 rounded-3xl p-4.5 text-left space-y-4 shadow-inner">
           <h3 className="text-xs font-black text-slate-800 flex items-center gap-1.5">
             <span className="text-amber-500 text-sm">🌟</span>
-            <span>MY BNB লেনদেনের প্রধান সুবিধা এবং নিয়ম কানুন</span>
+            <span>MY AMB লেনদেনের প্রধান সুবিধা এবং নিয়ম কানুন</span>
           </h3>
 
           <div className="space-y-4 text-[10px] font-bold text-slate-800 leading-relaxed font-sans">
@@ -2398,16 +2398,16 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
 
             <div>
               <h4 className="font-black text-[#1D3261] mb-1">📤 Send Money</h4>
-              <p className="text-slate-800">1. BNB to BNB: সেন্ড মানি ও ক্যাশ আউট সম্পূর্ণ ফ্রি (কোনো ফি বা অতিরিক্ত টাকা কাটবে না)।</p>
-              <p className="text-slate-800">2. BNB টু  মোবাইল ব্যাংকিং (বিকাশ, নগদ, রকেট, উপায়):</p>
+              <p className="text-slate-800">1. AMB to AMB: সেন্ড মানি ও ক্যাশ আউট সম্পূর্ণ ফ্রি (কোনো ফি বা অতিরিক্ত টাকা কাটবে না)।</p>
+              <p className="text-slate-800">2. AMB টু  মোবাইল ব্যাংকিং (বিকাশ, নগদ, রকেট, উপায়):</p>
               <ul className="list-disc pl-4 space-y-1 text-slate-800">
                 <li>প্রতি ট্রানজেকশনে 3.90 পয়সা ফি, এবং 1 থেকে 1000 পর্যন্ত এক টাকা চার্জ 1001 থেকে 2 হাজার পর্যন্ত 2 টাকা চার্জ অর্থাৎ প্রতি হাজারে এক টাকা করে চার্জ কাটবে।</li>
                 <li>25,000 টাকার বেশি হলে 10 টাকা ফি।</li>
                 <li>সর্বোচ্চ লেনদেন সীমা 3 লাখ টাকা মাসে।</li>
                 <li>এছাড়া প্রতি 1,000 টাকায় 1 টাকা চার্জ প্রযোজ্য।</li>
               </ul>
-              <p className="text-slate-800">3. BNB থেকে বাংলাদেশের যেকোনো ব্যাংকে: প্রতি 1,000 টাকায় {appConfig?.sendMoneyBankServiceChargePerThousand ?? 7.90} টাকা চার্জ প্রযোজ্য।</p>
-              <p className="text-slate-800">4. BNB থেকে বিদেশে অর্থ প্রেরণ: বিশ্বের যেকোনো ব্যাংক বা অ্যাকাউন্টে টাকা পাঠানো যাবে। চার্জ ও রেট নির্ধারিত এক্সচেঞ্জ রেট অনুযায়ী প্রযোজ্য হবে।</p>
+              <p className="text-slate-800">3. AMB থেকে বাংলাদেশের যেকোনো ব্যাংকে: প্রতি 1,000 টাকায় {appConfig?.sendMoneyBankServiceChargePerThousand ?? 7.90} টাকা চার্জ প্রযোজ্য।</p>
+              <p className="text-slate-800">4. AMB থেকে বিদেশে অর্থ প্রেরণ: বিশ্বের যেকোনো ব্যাংক বা অ্যাকাউন্টে টাকা পাঠানো যাবে। চার্জ ও রেট নির্ধারিত এক্সচেঞ্জ রেট অনুযায়ী প্রযোজ্য হবে।</p>
             </div>
 
             <div>
@@ -2513,21 +2513,21 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
   );
 
 
-  const renderBnbToBnb = () => {
+  const renderAmbToAmb = () => {
      // Generate fallback card details in case states aren't saved yet
-    const displayCardNum = user.bnbCardNumber || '4840 6100 ---- ----';
-    const displayAccNum = user.bnbAccountNumber || '164.121.------';
-    const displayHolder = (user.bnbCardHolderName || user.name || 'BNB MEMBER').toUpperCase();
-    const displayExpiry = user.bnbCardExpiry || '07/27';
-    const displayCvv = user.bnbCardCvv || '---';
-    const displayStatus = user.bnbCardStatus || 'active';
-    const displayOtpLocked = user.bnbCardOtpLocked !== false;
+    const displayCardNum = user.ambCardNumber || '4840 6100 ---- ----';
+    const displayAccNum = user.ambAccountNumber || '164.121.------';
+    const displayHolder = (user.ambCardHolderName || user.name || 'AMB MEMBER').toUpperCase();
+    const displayExpiry = user.ambCardExpiry || '07/27';
+    const displayCvv = user.ambCardCvv || '---';
+    const displayStatus = user.ambCardStatus || 'active';
+    const displayOtpLocked = user.ambCardOtpLocked !== false;
 
     const handleToggleCardLock = async () => {
       try {
         const nextStatus = displayStatus === 'active' ? 'inactive' : 'active';
         await updateDoc(doc(db, 'users', user.uid), {
-          bnbCardStatus: nextStatus
+          ambCardStatus: nextStatus
         });
         if (syncLiveProfile) syncLiveProfile();
         setSuccessMsg(`ভার্চুয়াল কার্ডটি সফলভাবে ${nextStatus === 'active' ? 'আনলক' : 'লক/নিষ্ক্রিয়'} করা হয়েছে!`);
@@ -2541,7 +2541,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
       try {
         const nextOtpLocked = !displayOtpLocked;
         await updateDoc(doc(db, 'users', user.uid), {
-          bnbCardOtpLocked: nextOtpLocked
+          ambCardOtpLocked: nextOtpLocked
         });
         if (syncLiveProfile) syncLiveProfile();
         setSuccessMsg(`কার্ডের ওটিপি নিরাপত্তা সফলভাবে ${nextOtpLocked ? 'চালু (ON)' : 'বন্ধ (OFF)'} করা হয়েছে!`);
@@ -2587,7 +2587,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           <button onClick={() => setActiveTab('dashboard')} className="text-[10px] font-bold flex items-center gap-1 text-emerald-800">
             <ChevronLeft className="w-4 h-4" /> ফিরে যান
           </button>
-          <span className="text-[10px] font-black text-slate-400 font-mono tracking-widest">BNB VIRTUAL GATEWAY</span>
+          <span className="text-[10px] font-black text-slate-400 font-mono tracking-widest">AMB VIRTUAL GATEWAY</span>
         </div>
 
         {/* 1. Real Virtual Debit Card Interface */}
@@ -2646,7 +2646,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           {/* Top Row: Brand & Type */}
           <div className="flex justify-between items-start z-10">
             <div>
-              <h4 className="text-[9px] xs:text-[10px] font-black tracking-widest text-emerald-400 uppercase font-sans leading-tight">BNB CO-OPERATIVE BANK</h4>
+              <h4 className="text-[9px] xs:text-[10px] font-black tracking-widest text-emerald-400 uppercase font-sans leading-tight">AMB CO-OPERATIVE BANK</h4>
               <p className="text-[7.5px] xs:text-[8px] font-bold text-slate-300 leading-tight">বিএনবি সমবায় ব্যাংক লিমিটেড</p>
               
               {/* Dynamic Notification Badge for withdrawals (ওপরে সাদা দাগের জায়গায়) */}
@@ -2727,7 +2727,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
                 <Copy className="w-3 h-3" />
               </button>
             </div>
-            <p className="text-[6px] xs:text-[7px] font-medium tracking-wider text-slate-400 uppercase font-sans -mt-0.5">BNB Virtual Card Number</p>
+            <p className="text-[6px] xs:text-[7px] font-medium tracking-wider text-slate-400 uppercase font-sans -mt-0.5">AMB Virtual Card Number</p>
           </div>
 
           {/* Footer Details */}
@@ -2806,17 +2806,17 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         {/* 2. Mode / Option Switcher (Send Money vs Card Add Money) */}
         <div className="grid grid-cols-2 gap-2 bg-slate-100 rounded-2xl p-1 font-sans text-xs">
           <button 
-            onClick={() => { setBnbSubTab('send'); setErrorMsg(''); setSuccessMsg(''); }}
+            onClick={() => { setAmbSubTab('send'); setErrorMsg(''); setSuccessMsg(''); }}
             className={`py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-              bnbSubTab === 'send' ? 'bg-indigo-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-50'
+              ambSubTab === 'send' ? 'bg-indigo-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
             💸 ফান্ড স্থানান্তর (Send Money)
           </button>
           <button 
-            onClick={() => { setBnbSubTab('card_add'); setErrorMsg(''); setSuccessMsg(''); }}
+            onClick={() => { setAmbSubTab('card_add'); setErrorMsg(''); setSuccessMsg(''); }}
             className={`py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-              bnbSubTab === 'card_add' ? 'bg-indigo-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-50'
+              ambSubTab === 'card_add' ? 'bg-indigo-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
             💳 কার্ড এডমানি (Card Add Money)
@@ -2824,24 +2824,24 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         </div>
 
         {/* 3. Tab Form Fields */}
-        {bnbSubTab === 'send' && (
+        {ambSubTab === 'send' && (
           <div className="bg-slate-50 border border-slate-100 p-4.5 rounded-2.5xl space-y-3.5">
             <h3 className="text-xs font-black text-indigo-950 flex items-center gap-1.5">
-              🚀 BNB TO BNB ফান্ড স্থানান্তর
+              🚀 AMB TO AMB ফান্ড স্থানান্তর
             </h3>
             <p className="text-[9.5px] text-slate-500 -mt-1">
               যেকোনো নিবন্ধিত বিএনবি মেম্বার আইডি বা মোবাইল নম্বরে সরাসরি ব্যালেন্স পাঠান।
             </p>
             
-            <form onSubmit={handleBnbSendSubmit} className="space-y-3.5 pt-1.5">
+            <form onSubmit={handleAmbSendSubmit} className="space-y-3.5 pt-1.5">
               <div className="space-y-1">
                 <label className="block text-[10.5px] font-bold text-slate-600">গ্রহীতা মেম্বার আইডি বা মোবাইল নম্বর</label>
                 <input 
                   type="text" 
                   required
-                  value={bnbSendReceiver}
-                  onChange={(e) => setBnbSendReceiver(e.target.value)}
-                  placeholder="উদাঃ BNB000001008 বা মোবাইল নম্বর" 
+                  value={ambSendReceiver}
+                  onChange={(e) => setAmbSendReceiver(e.target.value)}
+                  placeholder="উদাঃ AMB000001008 বা মোবাইল নম্বর" 
                   className="w-full px-3.5 py-2.5 border border-slate-200 focus:border-indigo-500 rounded-xl text-xs font-mono" 
                 />
               </div>
@@ -2852,8 +2852,8 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
                   <input 
                     type="number" 
                     required
-                    value={bnbSendAmount}
-                    onChange={(e) => setBnbSendAmount(e.target.value)}
+                    value={ambSendAmount}
+                    onChange={(e) => setAmbSendAmount(e.target.value)}
                     placeholder="৳ সর্বনিম্ন 10 BDT" 
                     className="w-full px-3.5 py-2.5 border border-slate-200 focus:border-indigo-500 rounded-xl text-xs font-mono" 
                   />
@@ -2864,8 +2864,8 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
                     type="password" 
                     maxLength={4}
                     required
-                    value={bnbSendPin}
-                    onChange={(e) => setBnbSendPin(e.target.value)}
+                    value={ambSendPin}
+                    onChange={(e) => setAmbSendPin(e.target.value)}
                     placeholder="4 সংখ্যার পিন" 
                     className="w-full px-3.5 py-2.5 border border-slate-200 focus:border-indigo-500 rounded-xl text-xs font-mono text-center tracking-widest" 
                   />
@@ -2887,7 +2887,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
           </div>
         )}
 
-        {bnbSubTab === 'card_add' && (
+        {ambSubTab === 'card_add' && (
           <div className="bg-slate-50 border border-slate-100 p-4.5 rounded-2.5xl space-y-3.5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
               <h3 className="text-xs font-black text-indigo-950 flex items-center gap-1.5">
@@ -2913,9 +2913,9 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
                 )}
               </div>
 
-              {user.savedBnbCards && user.savedBnbCards.length > 0 ? (
+              {user.savedAmbCards && user.savedAmbCards.length > 0 ? (
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {user.savedBnbCards.map((sc, idx) => {
+                  {user.savedAmbCards.map((sc, idx) => {
                     const cleanScNum = sc.cardNumber.replace(/\s+/g, '');
                     const last4 = cleanScNum.slice(-4);
                     const isActive = cardAddNum.replace(/\s+/g, '') === cleanScNum;
@@ -2972,11 +2972,11 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
               )}
             </div>
 
-            <form onSubmit={handleBnbCardAddSubmit} className="space-y-3 pt-1.5">
+            <form onSubmit={handleAmbCardAddSubmit} className="space-y-3 pt-1.5">
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
                   <label className="block text-[10.5px] font-bold text-slate-600">কার্ড নম্বর (Card Number)</label>
-                  {cardAddNum && cardAddNum.trim().length >= 12 && (!user.savedBnbCards || !user.savedBnbCards.some(c => c.cardNumber.replace(/\s+/g, '') === cardAddNum.replace(/\s+/g, ''))) && (
+                  {cardAddNum && cardAddNum.trim().length >= 12 && (!user.savedAmbCards || !user.savedAmbCards.some(c => c.cardNumber.replace(/\s+/g, '') === cardAddNum.replace(/\s+/g, ''))) && (
                     <button
                       type="button"
                       onClick={() => setShowSaveCardModal(true)}
@@ -3176,8 +3176,8 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
 
     const remitVal = parseFloat(remitAmount) || 0;
     const remitTransferFee = Number(
-      currentRemitIntlBank?.transferFee !== undefined && currentRemitIntlBank?.transferFee !== null && currentRemitIntlBank?.transferFee !== ''
-        ? currentRemitIntlBank.transferFee
+      (currentRemitIntlBank as any)?.transferFee !== undefined && (currentRemitIntlBank as any)?.transferFee !== null && (currentRemitIntlBank as any)?.transferFee !== ''
+        ? (currentRemitIntlBank as any).transferFee
         : (remitCurrency.transferFee ?? appConfig?.remittanceTransferFee ?? appConfig?.remittanceFee ?? 15)
     );
     const remitGrossForeign = remitCurrencyMode === 'foreign'
@@ -3854,7 +3854,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
     const defaultIntlBank = displayIntlBanks[0] || defaultIntlBanks[0];
 
     const currentSelectedLocalBank = localBanks.find((b: any) => b.id === selectedBankId) || defaultLocalBank;
-    const currentSelectedIntlBank = displayIntlBanks.find((b: any) => b.id === selectedBankId) || defaultIntlBank;
+    const currentSelectedIntlBank = (displayIntlBanks.find((b: any) => b.id === selectedBankId) || defaultIntlBank) as any;
 
     const intlCurrency = getBankCurrencyInfo(
       currentSelectedIntlBank,
@@ -3874,7 +3874,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
       ? foreignVal 
       : (intlCurrency.rate > 0 ? Math.round((foreignVal / intlCurrency.rate) * 100) / 100 : 0);
 
-    const availableAddMoneyOps: { id: 'bkash' | 'nagad' | 'rocket' | 'upay'; name: string; symbol: string; circleBg: string; active: boolean; }[] = [
+    const availableAddMoneyOps: { id: string; name: string; symbol: string; circleBg: string; active: boolean; }[] = [
       { id: 'bkash', name: 'বিকাশ', symbol: 'ব', circleBg: 'bg-[#d8226e]', active: appConfig?.mfsBkashActive !== false },
       { id: 'nagad', name: 'নগদ', symbol: 'ন', circleBg: 'bg-[#f26522]', active: appConfig?.mfsNagadActive !== false },
       { id: 'rocket', name: 'রকেট', symbol: 'র', circleBg: 'bg-[#8c3494]', active: appConfig?.mfsRocketActive !== false },
@@ -3966,7 +3966,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
                         key={op.id}
                         type="button"
                         onClick={() => {
-                          setAddMoneyOperator(op.id);
+                          setAddMoneyOperator(op.id as any);
                           setErrorMsg('');
                           setSuccessMsg('');
                         }}
@@ -6053,7 +6053,7 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
               title="পিছনে যান"
             />
             <div className="text-left">
-              <h1 className="text-xs font-black text-white leading-none">BNB সমবায় ব্যাংক</h1>
+              <h1 className="text-xs font-black text-white leading-none">AMB সমবায় ব্যাংক</h1>
               <p className="text-[8px] text-white/60 leading-none mt-0.5">মোবাইল ব্যাংকিং</p>
             </div>
           </div>
@@ -6095,13 +6095,13 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         {activeTab === 'dashboard' && renderDashboard()}
         {activeTab === 'add_money' && renderAddMoney()}
         {activeTab === 'auto_add_money' && renderAutoAddMoney()}
-        {activeTab === 'bnb_to_bnb' && renderBnbToBnb()}
+        {activeTab === 'amb_to_amb' && renderAmbToAmb()}
         {activeTab === 'send_money' && renderSendMoney()}
         {activeTab === 'bill_pay' && renderBillPay()}
         {activeTab === 'khatiyan' && renderKhatiyan()}
         {activeTab === 'salary' && (
           <div className="bg-white rounded-3xl overflow-hidden text-slate-800 animate-fade-in">
-            <BnbAutoSalaryPay 
+            <AmbAutoSalaryPay 
               user={user} 
               onBack={() => setActiveTab('dashboard')} 
               syncLiveProfile={syncLiveProfile} 
@@ -6320,15 +6320,15 @@ const bankingTypes = ['add_money', 'deposit', 'withdraw', 'bill_pay', 'money_exc
         )}
 
         {/* Digital Payment Receipt Modal */}
-        <BnbPaymentReceiptModal
+        <AmbPaymentReceiptModal
           isOpen={isReceiptOpen}
           onClose={() => setIsReceiptOpen(false)}
           data={receiptModalData}
-          appLogo={appConfig?.appLogoUrl || "/bnb_logo.png"}
+          appLogo={appConfig?.appLogoUrl || "/amb_logo.png"}
         />
       </div>
     </div>
   );
 };
 
-export default BnbMobileBankingPortal;
+export default AmbMobileBankingPortal;

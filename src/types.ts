@@ -15,8 +15,8 @@ export interface User {
   mainBalance?: number; // Primary main balance
   lockedBalance?: number; // Escrow locked balance
   pendingBalance?: number; // Escrow pending balance
-  telecomBalance?: number; // BNB Telecom balance
-  superShopBalance?: number; // BNB Super Shop balance
+  telecomBalance?: number; // AMB Telecom balance
+  superShopBalance?: number; // AMB Super Shop balance
   savings: number; // Accumulated savings
   dueLoan: number; // User's outstanding loan
   nid?: string;
@@ -96,15 +96,15 @@ export interface User {
   isLoggedIn?: boolean; // Active logged in state for real-time zero device force logout
   forceLogoutAt?: string; // Force logout timestamp set by admin to force instant logout
   sessionLoggedInAt?: string; // Session login timestamp on the client side
-  bnbCardNumber?: string;
-  bnbAccountNumber?: string;
-  bnbCardHolderName?: string;
-  bnbCardExpiry?: string;
-  bnbCardCvv?: string;
-  bnbCardStatus?: 'active' | 'inactive';
-  bnbCardIssuedAt?: string;
-  bnbCardOtpLocked?: boolean;
-  savedBnbCards?: SavedBnbCard[];
+  ambCardNumber?: string;
+  ambAccountNumber?: string;
+  ambCardHolderName?: string;
+  ambCardExpiry?: string;
+  ambCardCvv?: string;
+  ambCardStatus?: 'active' | 'inactive';
+  ambCardIssuedAt?: string;
+  ambCardOtpLocked?: boolean;
+  savedAmbCards?: SavedAmbCard[];
   latitude?: number;
   longitude?: number;
   fullAddress?: string;
@@ -146,6 +146,39 @@ export interface User {
   appLockResetReason?: string; // Optional message or note for unlock request
   agreedNoticeIds?: string[]; // Array of mandatory notice IDs the user consented to
   noticeResponses?: Record<string, { agreed: boolean; respondedAt: string; feedbackText?: string }>;
+  activeCardOtp?: string;
+  activeCardOtpAmount?: number;
+  activeCardOtpRequester?: string;
+  activeCardOtpTime?: string;
+  group?: string;
+  isDemoUser?: boolean;
+  cashback?: number;
+}
+
+export interface BankAccount {
+  id: string;
+  name: string;
+  acronym: string;
+  branch?: string;
+  routingNum?: string;
+  holder: string;
+  accNum: string;
+  visaNum?: string;
+  active: boolean;
+  bgClass?: string;
+  textClass?: string;
+  logoBgClass?: string;
+  isInternational?: boolean;
+  isMobileBank?: boolean;
+  sendMoneyActive?: boolean;
+  qrCodeUrl?: string;
+  iban?: string;
+  swiftCode?: string;
+  currency?: string;
+  country?: string;
+  customRate?: number;
+  exchangeRate?: number;
+  transferFee?: number;
 }
 
 export interface MandatoryNoticeSlide {
@@ -314,6 +347,8 @@ export interface Transaction {
   beneficiaryRelation?: string;
   approvedCashback?: number;
   extraCommission?: number;
+  title?: string;
+  receiverPhone?: string;
 }
 
 export interface Notice {
@@ -464,7 +499,7 @@ export interface QardVerificationNotice {
 
 export interface QardEligibilityConfig {
   requiredActiveDays: number;
-  requiredBnbTxVolume: number;
+  requiredAmbTxVolume: number;
   trackerTitle?: string;
   trackerSubtitle?: string;
 }
@@ -594,7 +629,7 @@ export interface SamityInvestment {
   dislikedUsers?: { uid: string; name: string; memberId?: string; photoURL?: string; reactedAt?: string }[];
   viewsCount?: number;
   comments?: SamityInvestmentComment[];
-  authorName?: string; // ডিফল্ট: "BNB ইনভেস্টমেন্ট বোর্ড / ম্যানেজমেন্ট"
+  authorName?: string; // ডিফল্ট: "AMB ইনভেস্টমেন্ট বোর্ড / ম্যানেজমেন্ট"
   authorRole?: string; // ডিফল্ট: "সেন্ট্রাল ম্যানেজমেন্ট"
   authorAvatar?: string;
   isPinned?: boolean;
@@ -716,9 +751,9 @@ export interface AppConfig {
     exchangeRate?: number;
     transferFee?: number;
   }[];
-  bnbToBnbFreeActive?: boolean;
-  bnbToBnbMinLimit?: number;
-  bnbToBnbMaxLimit?: number;
+  ambToAmbFreeActive?: boolean;
+  ambToAmbMinLimit?: number;
+  ambToAmbMaxLimit?: number;
   billPayActive?: boolean;
   billPayFeePercent?: number;
   salaryPayActive?: boolean;
@@ -780,7 +815,7 @@ export interface AppConfig {
   oneSignalAppId?: string;
   oneSignalRestApiKey?: string;
   sectionIcons?: Record<string, string>;
-  bnbToBnbIconUrl?: string;
+  ambToAmbIconUrl?: string;
   softwareIntegrations?: Record<string, {
     sectionKey: string;
     softwareName: string;
@@ -809,6 +844,7 @@ export interface AppConfig {
   gridIconSizeValue?: number; // Icon size diameter in pixels
   mandatoryNotice?: MandatoryNoticeConsent;
   mandatoryNoticeResponses?: Record<string, {
+    noticeId?: string;
     userId: string;
     userName: string;
     memberId: string;
@@ -866,7 +902,7 @@ export interface PaymentMethod {
   active: boolean;
 }
 
-export interface SavedBnbCard {
+export interface SavedAmbCard {
   id: string;
   name: string; // e.g. "ভাইয়ের কার্ড"
   cardNumber: string;
@@ -1033,12 +1069,12 @@ export interface PhoneChangeRequest {
 }
 
 /**
- * Generates a short, easy-to-read BNB Transaction ID (maximum 5 or 6 characters total).
+ * Generates a short, easy-to-read AMB Transaction ID (maximum 5 or 6 characters total).
  * Rules: Exactly 1 or 2 letters at the beginning, followed by numbers.
  * Total characters: Strictly 5 or 6 characters (e.g., 'BN4829', 'B74921', 'BN8301', 'B5829').
  * Allows members to easily speak or read the number aloud over phone/support.
  */
-export const generateBnbTrxId = (preferredPrefix?: string): string => {
+export const generateAmbTrxId = (preferredPrefix?: string): string => {
   let prefix = (preferredPrefix || (Math.random() > 0.4 ? 'BN' : 'B')).toUpperCase().replace(/[^A-Z]/g, '');
   if (!prefix) prefix = 'BN';
   if (prefix.length > 2) prefix = prefix.slice(0, 2);
@@ -1054,12 +1090,12 @@ export const generateBnbTrxId = (preferredPrefix?: string): string => {
 };
 
 /**
- * Formats or cleans an internal BNB transaction number so that long internal IDs 
+ * Formats or cleans an internal AMB transaction number so that long internal IDs 
  * (such as timestamps or internal hashes) are neatly displayed as 5-6 characters (1-2 letters + numbers).
  * Note: External MFS TrxIDs provided by payment gateways (e.g. bKash 8K48AL7D9) are preserved as entered.
  */
 export const formatShortTrxId = (rawId?: string): string => {
-  if (!rawId) return generateBnbTrxId('BN');
+  if (!rawId) return generateAmbTrxId('BN');
   const str = String(rawId).trim().toUpperCase();
 
   // If already 5-6 chars with 1-2 letters and numbers, keep as-is (e.g., BN4821, B74921, B5829)
@@ -1068,7 +1104,7 @@ export const formatShortTrxId = (rawId?: string): string => {
   }
 
   // If it has a known internal prefix with long timestamp like LID..., CARD..., TXN..., REC..., TX-..., ADD..., QRD...
-  const internalMatch = str.match(/^(LID|CARD|TXN|REC|BNB|TX|ADD|QRD|SAM|TEL|SHOP|CORR)[\-_]?(\d+)/);
+  const internalMatch = str.match(/^(LID|CARD|TXN|REC|AMB|TX|ADD|QRD|SAM|TEL|SHOP|CORR)[\-_]?(\d+)/);
   if (internalMatch) {
     const letters = internalMatch[1].startsWith('B') ? 'BN' : internalMatch[1].slice(0, 2);
     const digits = internalMatch[2];
@@ -1084,20 +1120,6 @@ export const formatShortTrxId = (rawId?: string): string => {
   // If it is a typical MFS TrxID entered by user (like bKash 8K48AL7D9)
   return str;
 };
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      marquee: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-        behavior?: string;
-        direction?: string;
-        scrollamount?: string | number;
-        scrolldelay?: string | number;
-        loop?: string | number;
-      };
-    }
-  }
-}
 
 
 

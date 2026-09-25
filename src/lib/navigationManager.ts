@@ -29,15 +29,15 @@ class NavigationManager {
 
   /**
    * Arm the browser history trap with a stable 2-step state:
-   * Base state { bnb_root: true } -> Active state { bnb_active: true }
+   * Base state { amb_root: true } -> Active state { amb_active: true }
    * When Android back gesture or browser back occurs, popstate fires and we immediately re-arm.
    */
   public armBrowserHistoryTrap() {
     if (typeof window !== 'undefined' && window.history) {
       try {
         if (!this.trapArmed) {
-          window.history.replaceState({ bnb_root: true }, '');
-          window.history.pushState({ bnb_active: true }, '');
+          window.history.replaceState({ amb_root: true }, '');
+          window.history.pushState({ amb_active: true }, '');
           this.trapArmed = true;
         }
       } catch (e) {
@@ -52,7 +52,7 @@ class NavigationManager {
   public rearmHistory() {
     if (typeof window !== 'undefined' && window.history) {
       try {
-        window.history.pushState({ bnb_active: true }, '');
+        window.history.pushState({ amb_active: true }, '');
       } catch (e) {}
     }
   }

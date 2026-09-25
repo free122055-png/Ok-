@@ -195,7 +195,7 @@ export const UserTransactionsStatement: React.FC<UserTransactionsStatementProps>
           }
         }
 
-        if (!partyName) partyName = 'BNB সদস্য প্রাপক';
+        if (!partyName) partyName = 'AMB সদস্য প্রাপক';
       }
       // Case 2: Receive Money (Money In)
       else if (type === 'received_transfer' || (type === 'deposit' && isCredit && (desc.includes('হতে') || desc.includes('প্রাপ্তি')))) {
@@ -227,7 +227,7 @@ export const UserTransactionsStatement: React.FC<UserTransactionsStatementProps>
           }
         }
 
-        if (!partyName) partyName = 'BNB সদস্য প্রেরক';
+        if (!partyName) partyName = 'AMB সদস্য প্রেরক';
       }
       // Case 3: Add Money (MFS / Bank)
       else if (type === 'add_money') {
@@ -249,7 +249,7 @@ export const UserTransactionsStatement: React.FC<UserTransactionsStatementProps>
           partyName = tx.paymentMethod || 'অনলাইন ব্যাংক ডিপোজিট';
         } else {
           serviceTitle = 'মোবাইল এড মানি';
-          partyName = tx.paymentMethod || 'BNB এড মানি সিস্টেম';
+          partyName = tx.paymentMethod || 'AMB এড মানি সিস্টেম';
         }
         partyPhone = tx.senderInfo || tx.phone || '';
       }
@@ -276,8 +276,8 @@ export const UserTransactionsStatement: React.FC<UserTransactionsStatementProps>
         iconType = 'shop';
         avatarTheme = 'amber';
         categoryTag = 'সুপার শপ';
-        serviceTitle = 'BNB সুপার শপ অর্ডার';
-        partyName = 'BNB সুপার শপ ও ডেলিভারি';
+        serviceTitle = 'AMB সুপার শপ অর্ডার';
+        partyName = 'AMB সুপার শপ ও ডেলিভারি';
         partyPhone = tx.phone || '';
       }
       // Case 6: Samity Savings Deposit / DPS
@@ -285,7 +285,7 @@ export const UserTransactionsStatement: React.FC<UserTransactionsStatementProps>
         iconType = 'savings';
         avatarTheme = 'emerald';
         categoryTag = 'সমবায় সঞ্চয়';
-        serviceTitle = 'BNB সমবায় সমিতি সঞ্চয় কিস্তি';
+        serviceTitle = 'AMB সমবায় সমিতি সঞ্চয় কিস্তি';
         partyName = 'সমবায় সঞ্চয় ফান্ড খতিয়ান';
         partyPhone = user.phone || '';
       }
@@ -295,19 +295,19 @@ export const UserTransactionsStatement: React.FC<UserTransactionsStatementProps>
         avatarTheme = 'emerald';
         categoryTag = 'কর্জ ঋণ গ্রহণ';
         serviceTitle = 'কর্জে হাসানা ঋণ মঞ্জুরি';
-        partyName = 'BNB কর্জে হাসানা ফান্ড';
+        partyName = 'AMB কর্জে হাসানা ফান্ড';
       } else if (type === 'loan_repayment' || type === 'qard_loan_repayment') {
         iconType = 'loan';
         avatarTheme = 'indigo';
         categoryTag = 'ঋণ কিস্তি পরিশোধ';
         serviceTitle = 'কর্জে হাসানা ঋণ কিস্তি পরিশোধ';
-        partyName = 'BNB কর্জে হাসানা ফান্ড';
+        partyName = 'AMB কর্জে হাসানা ফান্ড';
       } else if (type === 'qard_donation') {
         iconType = 'loan';
         avatarTheme = 'purple';
         categoryTag = 'কর্জ অনুদান';
         serviceTitle = 'কর্জে হাসানা ফান্ডে অনুদান';
-        partyName = 'BNB কর্জে হাসানা ফান্ড';
+        partyName = 'AMB কর্জে হাসানা ফান্ড';
       }
       // Case 8: Withdraw / Cash Out
       else if (type === 'withdraw' || type === 'cashout') {
@@ -324,7 +324,7 @@ export const UserTransactionsStatement: React.FC<UserTransactionsStatementProps>
         avatarTheme = 'rose';
         categoryTag = 'বিলম্ব জরিমানা';
         serviceTitle = 'অটো জরিমানা ও বিলম্ব ফি কর্তন';
-        partyName = 'BNB শৃঙ্খলা ফান্ড';
+        partyName = 'AMB শৃঙ্খলা ফান্ড';
       }
       // Case 10: Cashback / Bonus
       else if (desc.includes('ক্যাশব্যাক') || desc.includes('বোনাস') || desc.includes('পুরস্কার')) {
@@ -332,12 +332,12 @@ export const UserTransactionsStatement: React.FC<UserTransactionsStatementProps>
         avatarTheme = 'purple';
         categoryTag = 'ক্যাশব্যাক বোনাস';
         serviceTitle = 'রিচার্জ ও লেনদেন ক্যাশব্যাক';
-        partyName = 'BNB রিওয়ার্ড ওয়ালেট';
+        partyName = 'AMB রিওয়ার্ড ওয়ালেট';
       }
       // Default
       else {
-        serviceTitle = tx.typeLabel || 'BNB ওয়ালেট লেনদেন';
-        partyName = tx.userName || 'BNB ডিজিটাল ওয়ালেট';
+        serviceTitle = tx.typeLabel || 'AMB ওয়ালেট লেনদেন';
+        partyName = tx.userName || 'AMB ডিজিটাল ওয়ালেট';
         partyPhone = tx.phone || '';
       }
 

@@ -254,7 +254,7 @@ export const syncAgentLocationToFirestore = async (
 
   const record: AgentLocationRecord = {
     userId: userId,
-    name: userInfo.name || 'BNB Member',
+    name: userInfo.name || 'AMB Member',
     phone: userInfo.phone || '',
     memberId: userInfo.memberId || '',
     role: userInfo.role || 'Member',

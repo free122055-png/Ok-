@@ -179,7 +179,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
 
   // Reusable 100% accurate visual representation of the Digital Ration Card
   const renderBeautifulRationCard = (rcData: any, scaleClass = "") => {
-    const cNo = rcData?.cardNo || liveUser?.memberId || 'BNB00000000';
+    const cNo = rcData?.cardNo || liveUser?.memberId || 'AMB00000000';
     
     // Setup color scheme dynamically based on Card Type
     const cardType = rcData?.cardType || 'Standard';
@@ -232,7 +232,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
       <RationCardContainer>
         <div 
           ref={cardRef}
-          id="bnb-ration-card-canvas"
+          id="amb-ration-card-canvas"
           className={`w-[680px] h-[382px] text-zinc-900 rounded-[1.75rem] shadow-2xl overflow-hidden font-sans flex flex-col justify-between border-[6px] p-0 relative select-none ${bgGradientClass} ${scaleClass}`}
           style={{ borderColor: borderHex }}
         >
@@ -249,21 +249,21 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
                 <path d="M 90 98 C 80 81 69 68 59 62" stroke="#015335" strokeWidth="3.2" strokeLinecap="round" style={{ stroke: mainColorHex }} />
                 <path d="M 109 100 C 138 92 158 70 155 42 C 138 36 118 58 109 100 Z" fillRule="evenodd" />
                 <path d="M 110 98 C 120 81 131 68 141 62" stroke="#015335" strokeWidth="3.2" strokeLinecap="round" style={{ stroke: mainColorHex }} />
-                <text x="100" y="126" textAnchor="middle" className="font-sans font-black text-[25px]" style={{ fontWeight: 955, fill: mainColorHex }}>BNB</text>
+                <text x="100" y="126" textAnchor="middle" className="font-sans font-black text-[25px]" style={{ fontWeight: 955, fill: mainColorHex }}>AMB</text>
                 <path d="M 89 178 L 63 178 C 63 150 48 125 34 100 C 23 80 18 64 25 54 C 29 46 38 48 43 58 C 47 68 55 90 62 112 C 63 118 65 122 67 122 C 70 122 74 108 78 96 C 81 86 85 78 90 78 C 94 78 98 84 98 92 C 98 108 89 135 89 178 Z" strokeWidth="1.2" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M 111 178 L 137 178 C 137 150 152 125 166 100 C 177 80 182 64 175 54 C 171 46 162 48 157 58 C 153 68 145 90 138 112 C 137 118 135 122 133 122 C 130 122 126 108 122 96 C 119 86 115 78 110 78 C 106 78 102 84 102 92 C 102 108 111 135 111 178 Z" strokeWidth="1.2" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
             <div className="text-left font-sans">
-              <h2 className="text-[30px] font-black leading-none tracking-tight" style={{ color: mainColorHex }}>BNB</h2>
-              <p className="text-[10px] text-zinc-650 font-extrabold tracking-widest leading-none mt-1 uppercase font-sans">Business Network Bangladesh</p>
+              <h2 className="text-[30px] font-black leading-none tracking-tight" style={{ color: mainColorHex }}>AMB</h2>
+              <p className="text-[10px] text-zinc-650 font-extrabold tracking-widest leading-none mt-1 uppercase font-sans">Al Mayadin Bazar</p>
             </div>
           </div>
           
           {/* Right Ration Card Title */}
           <div className="text-right font-sans">
             <div className="flex items-center justify-end gap-1 text-xl font-black tracking-tight leading-none" style={{ color: mainColorHex }}>
-              <span>BNB RATION CARD</span>
+              <span>AMB RATION CARD</span>
               <span className="text-lg">{accentEmoji}</span>
             </div>
             <p className="text-[10px] text-zinc-500 font-extrabold mt-1">সবার জন্য পুষ্টিকর খাদ্য, সুস্থ ও সমৃদ্ধ আগামী</p>
@@ -431,7 +431,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
               <QrCode className="w-4.5 h-4.5" style={{ color: mainColorHex }} />
             </div>
             <p className="text-[8.5px] text-[#E9F2ED] leading-snug font-black max-w-2xl truncate sm:whitespace-normal font-sans">
-              BNB এর এই {cardTypeLabelBn}ধারী ন্যায্যমূল্যে নিত্যপ্রয়োজনীয় পণ্য গ্রহণের যোগ্যতা রাখেন। এই কার্ড অন্যকে হস্তান্তরযোগ্য নয়।
+              AMB এর এই {cardTypeLabelBn}ধারী ন্যায্যমূল্যে নিত্যপ্রয়োজনীয় পণ্য গ্রহণের যোগ্যতা রাখেন। এই কার্ড অন্যকে হস্তান্তরযোগ্য নয়।
             </p>
           </div>
           
@@ -488,7 +488,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
         const blobUrl = URL.createObjectURL(blob);
 
         const link = document.createElement('a');
-        link.download = `BNB-Ration-Card-${rationCard?.cardNo || liveUser?.memberId}.png`;
+        link.download = `AMB-Ration-Card-${rationCard?.cardNo || liveUser?.memberId}.png`;
         link.href = blobUrl;
         document.body.appendChild(link);
         link.click();
@@ -538,7 +538,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
     const shareUrl = `${window.location.origin}?verify=${rationCard?.cardNo || liveUser?.memberId}`;
     if (navigator.share) {
       navigator.share({
-        title: 'BNB Ration Card Verification',
+        title: 'AMB Ration Card Verification',
         text: `বিএনবি কো-অপারেটিভ রেশন আইডিঃ ${rationCard?.cardNo || liveUser?.memberId} এর ডিজিটাল রেশন ভেরিফিকেশন ভিউ।`,
         url: shareUrl
       }).catch(err => console.error(err));
@@ -559,7 +559,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
     setSubmittingReg(true);
     try {
       const timestamp = new Date().toISOString();
-      const cardNo = liveUser.memberId || `BNB${String(Math.floor(10000000 + Math.random() * 90000000))}`;
+      const cardNo = liveUser.memberId || `AMB${String(Math.floor(10000000 + Math.random() * 90000000))}`;
       
       await addDoc(collection(db, 'ration_cards'), {
         userId: liveUser.uid,
@@ -824,7 +824,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
     setSubmittingReg(true);
     try {
       const timestamp = new Date().toISOString();
-      const cardNo = `BNB-RC-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(100000 + Math.random() * 900000)}`;
+      const cardNo = `AMB-RC-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(100000 + Math.random() * 900000)}`;
       
       // 1. Save to Firebase
       await addDoc(collection(db, 'ration_cards'), {
@@ -1019,7 +1019,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
             </span>
             <h2 className="text-xl font-black text-slate-900 pt-2">আপনার রেশন কার্ডের আবেদনটি যাচাই করা হচ্ছে</h2>
             <p className="text-xs text-slate-600 font-bold leading-relaxed pt-1">
-              আসসালামু আলাইকুম! আপনার রেশন কার্ডের আবেদনটি আমাদের কাছে সফলভাবে পৌঁছেছে। BNB এডমিন প্যানেল আপনার তথ্যগুলো গভীরভাবে ভেরিফাই করছে।
+              আসসালামু আলাইকুম! আপনার রেশন কার্ডের আবেদনটি আমাদের কাছে সফলভাবে পৌঁছেছে। AMB এডমিন প্যানেল আপনার তথ্যগুলো গভীরভাবে ভেরিফাই করছে।
             </p>
             <p className="text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-100/60 p-3.5 rounded-2xl font-bold leading-relaxed">
               এডমিন আপনার আবেদনটি রিভিউ করার সময় আপনার জন্য একটি ডিজিটাল কার্ড নম্বর, ইস্যু/মেয়াদ উত্তীর্ণের তারিখ এবং অনুমোদনকারী স্বাক্ষর সেট করে এপ্রুভ করবেন। এপ্রুভ হওয়া মাত্রই আপনি এই পেজে আপনার ডিজিটাল কার্ড এবং ভর্তুকি মূল্যে রেশন পণ্য অর্ডার করার সুবিধা পাবেন।
@@ -1053,10 +1053,10 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
             />
           )}
           <div className="w-8 h-8 bg-emerald-950 rounded-lg flex items-center justify-center font-black text-rose-50 border border-teal-800">
-            <span className="text-white text-xs tracking-tighter">BNB</span>
+            <span className="text-white text-xs tracking-tighter">AMB</span>
           </div>
           <div className="text-left font-sans">
-            <h1 className="text-xs sm:text-[13.5px] font-black text-emerald-950 tracking-tight leading-none">BNB রেশন কার্ড পোর্টাল</h1>
+            <h1 className="text-xs sm:text-[13.5px] font-black text-emerald-950 tracking-tight leading-none">AMB রেশন কার্ড পোর্টাল</h1>
           </div>
         </div>
 
@@ -1369,7 +1369,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
                     {[
                       { text: `আপনি সর্বমোট ${appConfig?.rationTotalItemsText || "10"}টি আইটেমের মধ্যে থেকে সর্বোচ্চ ${englishToBengali(appConfig?.rationMaxSelectLimit || 5)}টি বেছে নিতে পারবেন।` },
                       { text: "বাজার মূল্যের তুলনায় আমাদের পণ্যের দাম কম।" },
-                      { text: "অর্ডার করার পর নিকটস্থ BNB সেন্টার থেকে পণ্য সংগ্রহ করুন।" },
+                      { text: "অর্ডার করার পর নিকটস্থ AMB সেন্টার থেকে পণ্য সংগ্রহ করুন।" },
                       { text: "কার্ডের মেয়াদ শেষ হলে পুনরায় রিনিউ করতে হবে।", alert: true },
                       { text: "যেকোনো সমস্যায় সাপোর্টে যোগাযোগ করুন।" }
                     ].map((item, idx) => (
@@ -1478,7 +1478,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
                         <div className="flex-1 flex flex-col justify-between">
                           <div className="flex items-center justify-between">
                             <div className="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center font-black text-white border border-amber-400 shadow-3xs">
-                              <span className="text-[9px] tracking-tighter">BNB</span>
+                              <span className="text-[9px] tracking-tighter">AMB</span>
                             </div>
                             <span className="text-[8px] sm:text-[9.5px] text-amber-850 font-black tracking-tight leading-none">VIP GOLD 👑</span>
                           </div>
@@ -1491,7 +1491,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
                           </div>
                           
                           <div className="mt-2 flex items-center justify-between text-[7px] sm:text-[8px] font-bold text-amber-600">
-                            <span>BNB-VIP-GOLD</span>
+                            <span>AMB-VIP-GOLD</span>
                             <span className="text-[6.5px] text-amber-750 font-extrabold bg-amber-50 px-1.5 py-0.5 rounded">গ্যালারি আপলোড</span>
                           </div>
                         </div>
@@ -1506,7 +1506,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
                     <div className="flex-1 flex flex-col justify-between">
                       <div className="flex items-center justify-between">
                         <div className="w-8 h-8 bg-[#006A4E] rounded-lg flex items-center justify-center font-black text-white border border-teal-800 shadow-3xs">
-                          <span className="text-[9px] tracking-tighter">BNB</span>
+                          <span className="text-[9px] tracking-tighter">AMB</span>
                         </div>
                         <span className="text-[8px] sm:text-[9.5px] text-emerald-850 font-black tracking-tight leading-none">PREMIUM 💎</span>
                       </div>
@@ -1519,7 +1519,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
                       </div>
                       
                       <div className="mt-2 flex items-center justify-between text-[7px] sm:text-[8px] font-bold text-emerald-600">
-                        <span>BNB-PREM-GREEN</span>
+                        <span>AMB-PREM-GREEN</span>
                         <span className="text-[6.5px] text-emerald-850 font-extrabold bg-emerald-50 px-1.5 py-0.5 rounded">অটো ডিজাইন</span>
                       </div>
                     </div>
@@ -1809,7 +1809,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
               <div className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 space-y-4 shadow-3xs">
                 <h3 className="text-xs font-black text-gray-900 uppercase tracking-widest border-b border-slate-100 pb-2.5">গ্রাহক সেবা ও বিতরণ কেন্দ্র সহায়তা</h3>
                 <p className="text-xs text-slate-500 font-bold leading-relaxed">
-                  আপনার রেশন কার্ড, অর্ডার সংগ্রহ, বা পেমেন্ট সংক্রান্ত কোনো সমস্যা হলে আমাদের কাস্টমার হটলাইন অথবা সরাসরি নিকটস্থ বিতরণ কর্মকর্তা বা BNB সাভার হেমায়েতপুর মেইন সেন্টারে যোগাযোগ করুন।
+                  আপনার রেশন কার্ড, অর্ডার সংগ্রহ, বা পেমেন্ট সংক্রান্ত কোনো সমস্যা হলে আমাদের কাস্টমার হটলাইন অথবা সরাসরি নিকটস্থ বিতরণ কর্মকর্তা বা AMB সাভার হেমায়েতপুর মেইন সেন্টারে যোগাযোগ করুন।
                 </p>
 
                 <div className="space-y-3 pt-2 text-xs font-bold">
@@ -1837,7 +1837,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
                     <MessageCircle className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-black text-gray-900 uppercase tracking-widest">BNB লাইভ কাস্টমার চ্যাট</h3>
+                    <h3 className="text-xs font-black text-gray-900 uppercase tracking-widest">AMB লাইভ কাস্টমার চ্যাট</h3>
                     <p className="text-[10px] text-[#006A4E] font-black">সরাসরি সাপোর্ট রুম (রেশন সেক্টর)</p>
                   </div>
                 </div>
@@ -1851,7 +1851,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
                         className={`flex flex-col max-w-[85%] ${msg.sender === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'}`}
                       >
                         <span className="text-[8px] text-slate-400 font-bold mb-0.5 px-1">
-                          {msg.sender === 'user' ? 'আপনি' : 'BNB সাপোর্ট'}
+                          {msg.sender === 'user' ? 'আপনি' : 'AMB সাপোর্ট'}
                         </span>
                         <div className={`p-2.5 rounded-2xl text-[11px] leading-relaxed font-semibold shadow-3xs ${
                           msg.sender === 'user' 
@@ -1866,7 +1866,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
 
                     {isChatTyping && (
                       <div className="mr-auto items-start max-w-[85%] flex flex-col animate-pulse">
-                        <span className="text-[8px] text-slate-400 font-bold mb-0.5 px-1">BNB সাপোর্ট টাইপ করছে...</span>
+                        <span className="text-[8px] text-slate-400 font-bold mb-0.5 px-1">AMB সাপোর্ট টাইপ করছে...</span>
                         <div className="p-2.5 rounded-2xl bg-white text-slate-500 border border-slate-200 rounded-tl-xs shadow-3xs flex items-center gap-1">
                           <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" />
                           <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
@@ -2018,7 +2018,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
             <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm bg-slate-50 p-2 max-h-[220px] overflow-y-auto flex items-center justify-center">
               <img 
                 src={generatedCardUrl} 
-                alt="BNB Digital Ration Card" 
+                alt="AMB Digital Ration Card" 
                 className="max-w-full max-h-[180px] object-contain rounded-xl"
                 referrerPolicy="no-referrer"
               />
@@ -2026,7 +2026,7 @@ export default function RationCardView({ liveUser, syncLiveProfile, appConfig, o
             
             <a 
               href={generatedCardUrl} 
-              download={`BNB-Ration-Card-${rationCard?.cardNo || liveUser?.memberId}.png`}
+              download={`AMB-Ration-Card-${rationCard?.cardNo || liveUser?.memberId}.png`}
               className="block w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black transition cursor-pointer text-center shadow-3xs"
             >
               📥 সরাসরি গ্যালারিতে সেভ করুন

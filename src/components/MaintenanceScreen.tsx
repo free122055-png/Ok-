@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Clock, ShieldAlert, Settings, Wrench, AlertTriangle } from 'lucide-react';
 import { AppConfig, User } from '../types';
-import { BNBLogo } from './BNBLogo';
+import { AMBLogo } from './AMBLogo';
 
 interface MaintenanceScreenProps {
   appConfig: AppConfig;
@@ -30,19 +30,19 @@ export default function MaintenanceScreen({ appConfig, currentUser, onBypassAdmi
           {appConfig.maintenanceLogoUrl || appConfig.logoUrl ? (
             <img 
               src={appConfig.maintenanceLogoUrl || appConfig.logoUrl} 
-              alt="BNB Logo" 
+              alt="AMB Logo" 
               className="h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]"
               referrerPolicy="no-referrer"
             />
           ) : (
             <div className="drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-              <BNBLogo className="h-16 w-auto" />
+              <AMBLogo className="h-16 w-auto" />
             </div>
           )}
         </div>
         
         <h2 className="text-amber-500 text-xs font-black tracking-[0.2em] uppercase mt-3 drop-shadow-sm font-sans">
-          BNB BUSINESS
+          AMB BUSINESS
         </h2>
         <p className="text-slate-400 text-[10px] font-semibold tracking-wider -mt-0.5">
           Network Bangladesh

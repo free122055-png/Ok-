@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, Transaction, Notice, Offer, AppConfig, Product, UserNotification, SAMITY_MONTHS, SAMITY_YEARS, normalizePaidMonthsArray, getEffectivePaidMonthsList, getEffectiveBalance, generateBnbTrxId, formatShortTrxId } from '../types';
+import { User, Transaction, Notice, Offer, AppConfig, Product, UserNotification, SAMITY_MONTHS, SAMITY_YEARS, normalizePaidMonthsArray, getEffectivePaidMonthsList, getEffectiveBalance, generateAmbTrxId, formatShortTrxId } from '../types';
 import { sortTransactionsNewestFirst } from '../lib/transactionUtils';
 import UserTransactionsStatement from './UserTransactionsStatement';
 import TransactionExchangeIcon from './TransactionExchangeIcon';
@@ -80,9 +80,9 @@ import {
   Banknote
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BNBLogo } from './BNBLogo';
+import { AMBLogo } from './AMBLogo';
 import SafeDealsEscrowView from './SafeDealsEscrowView';
-import BNBTelecomScreen from './BNBTelecomScreen';
+import AMBTelecomScreen from './AMBTelecomScreen';
 import SamityScreen from './SamityScreen';
 import SamityRequestForm from './SamityRequestForm';
 import QardScreen from './QardScreen';
@@ -91,13 +91,13 @@ import { QardLiveTicker } from './QardLiveTicker';
 import ProfileView from './ProfileView';
 import { formatBanglaAmount, hasCompletedSamityProfile } from '../lib/memberUtils';
 import MoneyExchangeModule from './MoneyExchangeModule';
-import { BnbMobileBankingPortal } from './BnbMobileBankingPortal';
+import { AmbMobileBankingPortal } from './AmbMobileBankingPortal';
 import RationCardView from './RationCardView';
-import BnbAutoSalaryPay from './BnbAutoSalaryPay';
-import BnbEducationCenter from './BnbEducationCenter';
+import AmbAutoSalaryPay from './AmbAutoSalaryPay';
+import AmbEducationCenter from './AmbEducationCenter';
 import SmartExchange from './SmartExchange';
 import SafiPremiumShop from './SafiPremiumShop';
-import BnbCorporateGuide from './BnbCorporateGuide';
+import AmbCorporateGuide from './AmbCorporateGuide';
 import { DashboardSubViews } from './dashboard/DashboardSubViews';
 import { useBackHandler } from '../lib/navigationManager';
 
@@ -356,14 +356,14 @@ export default function Dashboard({
         // App Core Labels & Tabs
         'হোম': 'Home',
         'সেন্ড মানি': 'Send Money',
-        'BNB এড মানি': 'BNB Add Money',
+        'AMB এড মানি': 'AMB Add Money',
         'অ্যাড মানি': 'Add Money',
         'লেনদেন': 'Transactions',
         'ইতিহাস': 'Transactions',
         'প্রোফাইল': 'Profile',
         'সক্রিয়': 'ACTIVE',
         'পেন্ডিং': 'PENDING',
-        'নিরাপদ ও সুদমুক্ত সামাজিক ব্যাংকিং প্ল্যাটফর্ম': 'Interest-free Social Banking Platform',
+        'নিরাপদ ও সুদমুক্ত সামাজিক প্ল্যাটফর্ম': 'Interest-free Social Platform',
         'মোট সঞ্চয়': 'Total Savings',
         'চলতি আমানত': 'Total Savings',
         'মূল ব্যালেন্স': 'Main Balance',
@@ -384,7 +384,7 @@ export default function Dashboard({
         'লোন সুবিধা': 'Loan Panel',
         'সমিতি ফান্ড': 'Samity Fund',
         'সদস্য সঞ্চয়': 'Samity General',
-        'বি এন বি পে': 'BNB Pay',
+        'আল মায়াদিন পে': 'Al Mayadin Pay',
         'পেমেন্ট করুন': 'Scan & Pay',
         'টেলিকম রিচার্জ': 'Mobile Recharge',
         'রিচার্জ প্যানেল': 'Telecom Panel',
@@ -469,7 +469,7 @@ export default function Dashboard({
     {
       id: 1,
       tag: "সঞ্চয় ও বিনিয়োগ",
-      title: "Business Network Bangladesh",
+      title: "Al Mayadin Bazar",
       description: "নিরাপদে আপনার আমানত সঞ্চয় করুন ও সহজ ঋণের সুবিধা গ্রহণ করুন।",
       bgGradient: "from-emerald-950 via-emerald-900 to-teal-950",
       image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=650"
@@ -477,7 +477,7 @@ export default function Dashboard({
     {
       id: 2,
       tag: "টেলিকম অফার",
-      title: "BNB টেলিকম রিচার্জ",
+      title: "AMB টেলিকম রিচার্জ",
       description: "সব অপারেটরে আকর্ষণীয় ক্যাশব্যাক ও সুপার ফাস্ট ফ্লেক্সিলোড ড্রাইভে অফার!",
       bgGradient: "from-slate-950 via-cyan-950 to-emerald-950",
       image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=650"
@@ -512,7 +512,7 @@ export default function Dashboard({
   const [liveUser, setLiveUser] = useState<User>(user);
   const [allTransactions, setAllTransactions] = useState<Transaction[]>(() => {
     try {
-      const cacheKey = `bnb_tx_cache_${user.memberId || user.phone || user.uid}`;
+      const cacheKey = `amb_tx_cache_${user.memberId || user.phone || user.uid}`;
       const saved = localStorage.getItem(cacheKey);
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -812,23 +812,23 @@ export default function Dashboard({
     const isServiceActive = serviceKey === 'qard' ? true : (appConfig?.serviceStatus?.[serviceKey] !== false);
     if (!isServiceActive) {
       const serviceNamesBengali: Record<string, string> = {
-        samity: 'BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর',
-        bank: 'MY BNB লেনদেন (রেমিট্যান্স)',
-        telecom: 'BNB টেলিকম (ফ্লেক্সিলোড)',
-        shop: 'BNB সুপার শপ (পণ্য অর্ডার)',
+        samity: 'AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর',
+        bank: 'MY AMB লেনদেন (রেমিট্যান্স)',
+        telecom: 'AMB টেলিকম (ফ্লেক্সিলোড)',
+        shop: 'AMB সুপার শপ (পণ্য অর্ডার)',
         qard: 'করযে হাসানা (সুদমুক্ত ঋণ)',
         safedeals: 'নিরাপদ লেনদেন (ভেরিফাইড পাইকারি)',
         safi: 'প্রিমিয়াম Safi (খাঁটি পণ্য)',
-        ration: 'BNB রেশন কার্ড (পাইকারি ছাড়)',
+        ration: 'AMB রেশন কার্ড (পাইকারি ছাড়)',
         chat: 'লাইভ চ্যাট (সাপোর্ট রুম)',
-        agent: 'BNB এজেন্ট (ক্যারিয়ার পোর্টাল)',
+        agent: 'AMB এজেন্ট (ক্যারিয়ার পোর্টাল)',
         about: 'আমাদের সম্পর্কে (পরিচিতি)',
         bap: 'বাংলাদেশ এডমিন প্যানেল',
-        hisab: 'BNB হিসাব খাতা',
-        bill_pay: 'BNB বিল পে',
-        salary: 'BNB স্যালারি পে',
-        auto_recharge: 'BNB অটো রিচার্জ',
-        edu: 'BNB জ্ঞান ও শিক্ষা কেন্দ্র'
+        hisab: 'AMB হিসাব খাতা',
+        bill_pay: 'AMB বিল পে',
+        salary: 'AMB স্যালারি পে',
+        auto_recharge: 'AMB অটো রিচার্জ',
+        edu: 'AMB জ্ঞান ও শিক্ষা কেন্দ্র'
       };
       setMaintenanceServiceName(serviceNamesBengali[serviceKey] || 'চিহ্নিত সেকশন');
       setShowMaintenanceModal(true);
@@ -853,7 +853,7 @@ export default function Dashboard({
     }
   }, [selectedAction, setSelectedAction]);
 
-  // New state variables for BNB agent registration, about us and live chat
+  // New state variables for AMB agent registration, about us and live chat
   const [agentPhone, setAgentPhone] = useState('');
   const [agentDistrict, setAgentDistrict] = useState('');
   const [agentExperience, setAgentExperience] = useState('নেই');
@@ -862,7 +862,7 @@ export default function Dashboard({
   const [hasSubmittedAgent, setHasSubmittedAgent] = useState(false);
 
   const [chatMessages, setChatMessages] = useState<any[]>([
-    { id: '1', sender: 'support', text: 'আসসালামু আলাইকুম! Business Network Bangladesh (BNB) সাপোর্ট সেন্টারে আপনাকে স্বাগতম। আমি আপনার ডিজিটাল সহকারী। আমাদের সমিতি, ঋণ, টেলিকম বা সুপার শপ সম্পর্কে যেকোনো প্রশ্ন করতে পারেন।', timestamp: '10:30 AM' }
+    { id: '1', sender: 'support', text: 'আসসালামু আলাইকুম! Al Mayadin Bazar (AMB) সাপোর্ট সেন্টারে আপনাকে স্বাগতম। আমি আপনার ডিজিটাল সহকারী। আমাদের সমিতি, ঋণ, টেলিকম বা সুপার শপ সম্পর্কে যেকোনো প্রশ্ন করতে পারেন।', timestamp: '10:30 AM' }
   ]);
   const [chatInputText, setChatInputText] = useState('');
   const [noticeSearchQuery, setNoticeSearchQuery] = useState('');
@@ -1017,7 +1017,7 @@ export default function Dashboard({
       const combined = sortTransactionsNewestFirst(Array.from(mergedMap.values()));
       setAllTransactions(combined);
       try {
-        const cacheKey = `bnb_tx_cache_${user.memberId || user.phone || user.uid}`;
+        const cacheKey = `amb_tx_cache_${user.memberId || user.phone || user.uid}`;
         localStorage.setItem(cacheKey, JSON.stringify(combined.slice(0, 150)));
       } catch (e) {}
     };
@@ -1498,7 +1498,7 @@ export default function Dashboard({
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [investAmount, setInvestAmount] = useState('');
 
-  // BNB Bank Transfer States
+  // AMB Bank Transfer States
   const [transferType, setTransferType] = useState<'member' | 'bank' | 'mobile_fs'>('member');
   const [transferSector, setTransferSector] = useState<'telecom' | 'shop' | 'samity'>('telecom');
   const [selfTransferTarget, setSelfTransferTarget] = useState<'telecom' | 'shop' | 'savings'>('telecom');
@@ -1564,7 +1564,7 @@ export default function Dashboard({
         
         try {
           const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=bn`, {
-            headers: { 'User-Agent': 'BNB-Cooperative-App' }
+            headers: { 'User-Agent': 'AMB-Cooperative-App' }
           });
           if (res.ok) {
             const data = await res.json();
@@ -1614,7 +1614,7 @@ export default function Dashboard({
   // Shop Gadgets items definition
   const shopItems = [
     { id: 'item-1', name: 'Premium Airpods Max', price: 1200, icon: '🎧', description: 'হাই-ফাই নয়েজ ক্যানসেলিং হেডফোন' },
-    { id: 'item-2', name: 'BNB Smart-Watch v5', price: 2500, icon: '⌚', description: 'হার্ট রেট এবং হেলথ ট্র্যাকার' },
+    { id: 'item-2', name: 'AMB Smart-Watch v5', price: 2500, icon: '⌚', description: 'হার্ট রেট এবং হেলথ ট্র্যাকার' },
     { id: 'item-3', name: 'Virtual VR Glass Pro', price: 4500, icon: '🥽', description: 'কো-অপারেটিভ 3ডি মেটাভার্স ভিউয়ার' },
   ];
 
@@ -1777,7 +1777,7 @@ export default function Dashboard({
     setCheckedGates([]);
     
     const checkpoints = [
-      '1. BNB লেনদেন কোর API সংযোগ ও গেটওয়ে রিসোর্স... সম্পন্ন ✔',
+      '1. AMB লেনদেন কোর API সংযোগ ও গেটওয়ে রিসোর্স... সম্পন্ন ✔',
       '2. মোবাইল ব্যাংকিং (bKash/Nagad/Rocket) লাইভ আইপিএন নোটিফিকেশন... সম্পন্ন ✔',
       '3. ক্লাউড ফায়ারস্টোর প্রডাকশন ডেটাবেস লাইভ সিঙ্ক স্টেট... সম্পন্ন ✔',
       '4. মাসিক ইন্টারেস্ট ও ডিপিএস লেজার অটোমেশন কন্ট্রোল... সম্পন্ন ✔'
@@ -2075,7 +2075,7 @@ export default function Dashboard({
         status: 'success',
         description: `ওয়ালেট ব্যালেন্স হতে সুদমুক্ত করযে হাসানা ঋণ পরিশোধ সফল সম্পন্ন (3 মাসের কুলডাউন কাউন্ট শুরু)।`,
         createdAt: nowIso,
-        paymentMethod: 'BNB Wallet',
+        paymentMethod: 'Al Mayadin Wallet',
         receiptNo: `REC-${Math.floor(100000 + Math.random() * 900000)}`
       };
 
@@ -2217,7 +2217,7 @@ export default function Dashboard({
                 status: 'success',
                 description: `নিজের মেইন ব্যালেন্স হতে মেম্বার টেলিকম ওয়ালেটে স্থানান্তর সফল।`,
                 createdAt: new Date().toISOString(),
-                paymentMethod: 'BNB Wallet',
+                paymentMethod: 'Al Mayadin Wallet',
                 receiptNo: `REC-${Math.floor(10000 + Math.random() * 90000)}`,
                 transferSector: 'telecom'
               };
@@ -2243,7 +2243,7 @@ export default function Dashboard({
                 status: 'success',
                 description: `নিজের মেইন ব্যালেন্স হতে মেম্বার সুপার শপ ওয়ালেটে স্থানান্তর সফল।`,
                 createdAt: new Date().toISOString(),
-                paymentMethod: 'BNB Wallet',
+                paymentMethod: 'Al Mayadin Wallet',
                 receiptNo: `REC-${Math.floor(100000 + Math.random() * 900000)}`,
                 transferSector: 'shop'
               };
@@ -2269,7 +2269,7 @@ export default function Dashboard({
                 status: 'success',
                 description: `নিজের মেইন ব্যালেন্স হতে কো-অপারেтивной সঞ্চয় তহবিলে জমার আবেদন সফল।`,
                 createdAt: new Date().toISOString(),
-                paymentMethod: 'BNB Wallet',
+                paymentMethod: 'Al Mayadin Wallet',
                 receiptNo: `REC-${Math.floor(100000 + Math.random() * 900000)}`,
                 transferSector: 'samity'
               };
@@ -2301,7 +2301,7 @@ export default function Dashboard({
               status: 'success',
               description: `নিজের টেলিকম ওয়ালেট হতে মেইন ব্যালেন্সে স্থানান্তর সফল।`,
               createdAt: new Date().toISOString(),
-              paymentMethod: 'BNB Telecom Wallet',
+              paymentMethod: 'AMB Telecom Wallet',
               receiptNo: `REC-${Math.floor(100000 + Math.random() * 900000)}`,
               transferSector: 'samity'
             };
@@ -2334,7 +2334,7 @@ export default function Dashboard({
               status: 'success',
               description: `নিজের সুপার শপ ওয়ালেট হতে মেইন ব্যালেন্সে স্থানান্তর সফল।`,
               createdAt: new Date().toISOString(),
-              paymentMethod: 'BNB Super Shop Wallet',
+              paymentMethod: 'AMB Super Shop Wallet',
               receiptNo: `REC-${Math.floor(100000 + Math.random() * 900000)}`,
               transferSector: 'samity'
             };
@@ -2346,7 +2346,7 @@ export default function Dashboard({
           // CASE B: Transfer to another member
           const receiverRef = doc(db, 'users', searchedMember.uid);
           if (transferSector === 'telecom') {
-            const cleanTrxId = generateBnbTrxId('BN');
+            const cleanTrxId = generateAmbTrxId('BN');
             const now = new Date();
             const formattedTime = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
@@ -2397,7 +2397,7 @@ export default function Dashboard({
                 status: 'success',
                 description: `সদস্য ${searchedMember.name} (আইডি: ${searchedMember.memberId}) কে টেলিকম ব্যালেন্স পাঠানো সফল। TrxID: ${cleanTrxId}`,
                 createdAt: now.toISOString(),
-                paymentMethod: 'BNB Telecom Wallet',
+                paymentMethod: 'AMB Telecom Wallet',
                 receiptNo: cleanTrxId,
                 transactionId: cleanTrxId,
                 transferSector: 'telecom'
@@ -2414,7 +2414,7 @@ export default function Dashboard({
                 status: 'success',
                 description: `সদস্য ${liveUser.name} (আইডি: ${liveUser.memberId}) হতে টেলিকম ব্যালেন্স প্রাপ্তি। TrxID: ${cleanTrxId}`,
                 createdAt: now.toISOString(),
-                paymentMethod: 'BNB Telecom Wallet',
+                paymentMethod: 'AMB Telecom Wallet',
                 receiptNo: cleanTrxId,
                 transactionId: cleanTrxId,
                 transferSector: 'telecom'
@@ -2450,7 +2450,7 @@ export default function Dashboard({
             setFormSuccess(`অভিনন্দন! সফলভাবে সদস্য ${searchedMember.name} কে ৳ ${amt.toLocaleString('bn-BD')} টেলিকম ব্যালেন্স স্থানান্তর করা হয়েছে।`);
 
           } else if (transferSector === 'shop') {
-            const cleanTrxId = generateBnbTrxId('BN');
+            const cleanTrxId = generateAmbTrxId('BN');
             const now = new Date();
             const formattedTime = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
@@ -2499,7 +2499,7 @@ export default function Dashboard({
                 status: 'success',
                 description: `সদস্য ${searchedMember.name} (আইডি: ${searchedMember.memberId}) কে সুপার শপ ব্যালেন্স পাঠানো সফল। TrxID: ${cleanTrxId}`,
                 createdAt: now.toISOString(),
-                paymentMethod: 'BNB Super Shop Wallet',
+                paymentMethod: 'AMB Super Shop Wallet',
                 receiptNo: cleanTrxId,
                 transactionId: cleanTrxId,
                 transferSector: 'shop'
@@ -2516,7 +2516,7 @@ export default function Dashboard({
                 status: 'success',
                 description: `সদস্য ${liveUser.name} (আইডি: ${liveUser.memberId}) হতে সুপার শপ ব্যালেন্স প্রাপ্তি। TrxID: ${cleanTrxId}`,
                 createdAt: now.toISOString(),
-                paymentMethod: 'BNB Super Shop Wallet',
+                paymentMethod: 'AMB Super Shop Wallet',
                 receiptNo: cleanTrxId,
                 transactionId: cleanTrxId,
                 transferSector: 'shop'
@@ -2552,7 +2552,7 @@ export default function Dashboard({
             setFormSuccess(`অভিনন্দন! সফলভাবে সদস্য ${searchedMember.name} কে ৳ ${amt.toLocaleString('bn-BD')} সুপার শপ ব্যালেন্স স্থানান্তর করা হয়েছে।`);
 
           } else {
-            // BNB to BNB Transfer: Automatic direct transfer based on destination account!
+            // AMB to AMB Transfer: Automatic direct transfer based on destination account!
             // If recipient target is Samity Virtual Account (phone + '0' / 12 digits / isVirtualSomitiTarget): goes to SAMITY SAVINGS balance!
             // If recipient target is standard 11-digit phone number or Member ID: goes to MAIN balance!
             const rawTargetInput = transferTargetPhoneorId.trim();
@@ -2561,7 +2561,7 @@ export default function Dashboard({
               cleanDigits.length === 12 && cleanDigits.endsWith('0')
             );
 
-            const cleanTrxId = generateBnbTrxId('BN');
+            const cleanTrxId = generateAmbTrxId('BN');
             const now = new Date();
             const formattedTime = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
@@ -2624,7 +2624,7 @@ export default function Dashboard({
                   ? `সদস্য ${searchedMember.name} (আইডি: ${searchedMember.memberId}) এর সমিতি সঞ্চয় একাউন্টে (লাস্টে 0) ৳${amt} পাঠানো সফল। TrxID: ${cleanTrxId}`
                   : `সদস্য ${searchedMember.name} (আইডি: ${searchedMember.memberId}) কে মেইন ব্যালেন্সে ৳${amt} পাঠানো সফল। TrxID: ${cleanTrxId}`,
                 createdAt: now.toISOString(),
-                paymentMethod: 'BNB Wallet',
+                paymentMethod: 'Al Mayadin Wallet',
                 receiptNo: cleanTrxId,
                 transactionId: cleanTrxId,
                 receiverUid: searchedMember.uid,
@@ -2648,7 +2648,7 @@ export default function Dashboard({
                   ? `সদস্য ${liveUser.name} (আইডি: ${liveUser.memberId}) হতে সমিতি সঞ্চয় একাউন্টে জমা প্রাপ্তি। TrxID: ${cleanTrxId}`
                   : `সদস্য ${liveUser.name} (আইডি: ${liveUser.memberId}) হতে মেইন ব্যালেন্সে জমা প্রাপ্তি। TrxID: ${cleanTrxId}`,
                 createdAt: now.toISOString(),
-                paymentMethod: 'BNB Wallet',
+                paymentMethod: 'Al Mayadin Wallet',
                 receiptNo: cleanTrxId,
                 transactionId: cleanTrxId,
                 transferSector: isSamityVirtualTarget ? 'samity' : 'main'
@@ -2773,7 +2773,7 @@ export default function Dashboard({
       }
 
       // Generate virtual card number
-      const cardNo = `BNB-RC-${Math.floor(100000 + Math.random() * 900000)}`;
+      const cardNo = `AMB-RC-${Math.floor(100000 + Math.random() * 900000)}`;
 
       const newCard = {
         userId: liveUser.uid,
@@ -2914,7 +2914,7 @@ export default function Dashboard({
       } else if (textLower.includes('এজেন্ট') || textLower.includes('কাজ')) {
         replyText = 'আমাদের সম্মানিত এজেন্ট হিসেবে কাজ শুরু করতে চাইলে সার্ভিস গ্রিডের "এজেন্ট রেজিস্টার" অপশনে গিয়ে আপনার আবেদনটি দাখিল করুন। এডমিন প্যানেল আপনার আবেদনটি রিভিও করে যোগাযোগ করবে।';
       } else {
-        replyText = 'আসসালামু আলাইকুম! আপনার মেসেজটি সফলভাবে বাংলাদেশ নেটওয়ার্ক (BNB) সাপোর্ট সেন্টারে রেকর্ড করা হয়েছে। যেকোনো তথ্যের জন্য আমাদের সাপোর্ট নম্বরে যোগাযোগ করতে পারেন অথবা এডমিনের ফিরতি উত্তরের জন্য অপেক্ষা করুন।';
+        replyText = 'আসসালামু আলাইকুম! আপনার মেসেজটি সফলভাবে বাংলাদেশ নেটওয়ার্ক (AMB) সাপোর্ট সেন্টারে রেকর্ড করা হয়েছে। যেকোনো তথ্যের জন্য আমাদের সাপোর্ট নম্বরে যোগাযোগ করতে পারেন অথবা এডমিনের ফিরতি উত্তরের জন্য অপেক্ষা করুন।';
       }
 
       const replyMsg = { 
@@ -3642,7 +3642,7 @@ export default function Dashboard({
               </div>
 
               <div className="grid grid-cols-4 gap-1 xs:gap-1.5 sm:gap-2.5 md:gap-3">
-                {/* 1. BNB কোম্পানি ইনভেস্টর */}
+                {/* 1. AMB কোম্পানি ইনভেস্টর */}
                 <div 
                   onClick={() => handleServiceClick('samity', () => setModalType('samity'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3656,12 +3656,12 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardSamityTitle', 'BNB কোম্পানি ইনভেস্টর')}
+                      {getTxt('cardSamityTitle', 'AMB কোম্পানি ইনভেস্টর')}
                     </h4>
                   </div>
                 </div>
 
-                {/* 2. BNB নিরাপদ লেনদেন */}
+                {/* 2. AMB নিরাপদ লেনদেন */}
                 <div 
                   onClick={() => handleServiceClick('safedeals', () => setModalType('safedeals'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3675,12 +3675,12 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardSafeDealsTitle', 'BNB নিরাপদ লেনদেন')}
+                      {getTxt('cardSafeDealsTitle', 'AMB নিরাপদ লেনদেন')}
                     </h4>
                   </div>
                 </div>
 
-                {/* 3. BNB কর্জে হাসানা */}
+                {/* 3. AMB কর্জে হাসানা */}
                 <div 
                   onClick={() => handleServiceClick('qard', () => setModalType('qard'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3694,12 +3694,12 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardQardTitle', 'BNB কর্জে হাসানা')}
+                      {getTxt('cardQardTitle', 'AMB কর্জে হাসানা')}
                     </h4>
                   </div>
                 </div>
 
-                {/* 4. BNB লেনদেন */}
+                {/* 4. AMB লেনদেন */}
                 <div 
                   onClick={() => handleServiceClick('bank', () => setModalType('bank'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3713,12 +3713,12 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardBankTitle', 'BNB লেনদেন')}
+                      {getTxt('cardBankTitle', 'AMB লেনদেন')}
                     </h4>
                   </div>
                 </div>
 
-                {/* 5. BNB টেলিকম */}
+                {/* 5. AMB টেলিকম */}
                 <div 
                   onClick={() => handleServiceClick('telecom', () => setModalType('telecom'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3732,12 +3732,12 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardTelecomTitle', 'BNB টেলিকম')}
+                      {getTxt('cardTelecomTitle', 'AMB টেলিকম')}
                     </h4>
                   </div>
                 </div>
 
-                {/* 6. BNB রেশন কার্ড */}
+                {/* 6. AMB রেশন কার্ড */}
                 <div 
                   onClick={() => handleServiceClick('ration', () => setModalType('ration'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3751,12 +3751,12 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardRationTitle', 'BNB রেশন কার্ড')}
+                      {getTxt('cardRationTitle', 'AMB রেশন কার্ড')}
                     </h4>
                   </div>
                 </div>
 
-                {/* 7. BNB সেলারি পে */}
+                {/* 7. AMB সেলারি পে */}
                 <div 
                   onClick={() => handleServiceClick('salary', () => setModalType('salary'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3770,7 +3770,7 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardSalaryTitle', 'BNB সেলারি পে')}
+                      {getTxt('cardSalaryTitle', 'AMB সেলারি পে')}
                     </h4>
                   </div>
                 </div>
@@ -3794,7 +3794,7 @@ export default function Dashboard({
                   </div>
                 </div>
 
-                {/* 9. BNB অটো রিচার্জ */}
+                {/* 9. AMB অটো রিচার্জ */}
                 <div 
                   onClick={() => handleServiceClick('auto_recharge', () => setModalType('auto_recharge'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3808,12 +3808,12 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardAutoRechargeTitle', 'BNB অটো রিচার্জ')}
+                      {getTxt('cardAutoRechargeTitle', 'AMB অটো রিচার্জ')}
                     </h4>
                   </div>
                 </div>
 
-                {/* 10. BNB বিল পে */}
+                {/* 10. AMB বিল পে */}
                 <div 
                   onClick={() => handleServiceClick('bill_pay', () => setModalType('bill_pay'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3827,12 +3827,12 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardBillPayTitle', 'BNB বিল পে')}
+                      {getTxt('cardBillPayTitle', 'AMB বিল পে')}
                     </h4>
                   </div>
                 </div>
 
-                {/* 11. BNB এজেন্ট */}
+                {/* 11. AMB এজেন্ট */}
                 <div 
                   onClick={() => handleServiceClick('agent', () => setModalType('agent'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3846,12 +3846,12 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardAgentTitle', 'BNB এজেন্ট')}
+                      {getTxt('cardAgentTitle', 'AMB এজেন্ট')}
                     </h4>
                   </div>
                 </div>
 
-                {/* 12. BNB আমাদের লক্ষ */}
+                {/* 12. AMB আমাদের লক্ষ */}
                 <div 
                   onClick={() => handleServiceClick('about', () => setModalType('about'))}
                   className="p-0.5 xs:p-1 sm:p-1.5 flex flex-col justify-start items-center text-center cursor-pointer transition-all duration-200 active:scale-95 min-h-[86px] xs:min-h-[98px] sm:min-h-[125px] md:min-h-[140px] relative group"
@@ -3865,7 +3865,7 @@ export default function Dashboard({
                   </div>
                   <div className="w-full mt-2 sm:mt-2.5 font-sans">
                     <h4 className="text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13.5px] font-black text-slate-800 leading-tight tracking-tight line-clamp-2 text-center">
-                      {getTxt('cardAboutTitle', 'BNB আমাদের লক্ষ')}
+                      {getTxt('cardAboutTitle', 'AMB আমাদের লক্ষ')}
                     </h4>
                   </div>
                 </div>
@@ -3883,7 +3883,7 @@ export default function Dashboard({
           </div>
         )}
 
-        {/* Active Send Money Segment Tab (BNB to BNB Transfer) */}
+        {/* Active Send Money Segment Tab (AMB to AMB Transfer) */}
         {(activeTab === 'deposit' || activeTab === 'send_money') && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -3899,11 +3899,11 @@ export default function Dashboard({
                 <h3 className="text-sm font-black text-slate-900 flex items-center gap-1.5">
                   সেন্ড মানি (Send Money)
                   <span className="text-[9px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/60 px-2 py-0.5 rounded-full">
-                    BNB ⚡ BNB
+                    AMB ⚡ AMB
                   </span>
                 </h3>
                 <p className="text-[10.5px] text-slate-500 font-medium leading-tight">
-                  BNB অ্যাকাউন্ট থেকে অন্য যেকোনো BNB সদস্যের অ্যাকাউন্টে সরাসরি টাকা পাঠান
+                  AMB অ্যাকাউন্ট থেকে অন্য যেকোনো AMB সদস্যের অ্যাকাউন্টে সরাসরি টাকা পাঠান
                 </p>
               </div>
             </div>
@@ -3912,7 +3912,7 @@ export default function Dashboard({
             <div className="bg-gradient-to-r from-emerald-800 via-emerald-900 to-teal-900 p-4 rounded-2.5xl text-white shadow-sm flex items-center justify-between">
               <div className="space-y-0.5">
                 <span className="text-[10px] text-emerald-200 font-bold block uppercase tracking-wider">
-                  আপনার বর্তমান BNB ওয়ালেট ব্যালেন্স
+                  আপনার বর্তমান AMB ওয়ালেট ব্যালেন্স
                 </span>
                 <span className="text-xl font-black font-mono tracking-tight block">
                   ৳ {(liveUser?.balance || 0).toLocaleString('bn-BD')} BDT
@@ -3929,7 +3929,7 @@ export default function Dashboard({
               <div>
                 <span>নিরাপত্তা নির্দেশিকাঃ </span>
                 <span className="font-medium text-slate-700">
-                  সেন্ড মানি শুধুমাত্র একটি <strong className="text-amber-950 font-black">BNB সদস্য অ্যাকাউন্ট থেকে অন্য BNB সদস্য অ্যাকাউন্টে</strong> করা যাবে। অন্য কোনো বাহ্যিক ব্যাংক বা অ্যাকাউন্টে টাকা পাঠানো যাবে না।
+                  সেন্ড মানি শুধুমাত্র একটি <strong className="text-amber-950 font-black">AMB সদস্য অ্যাকাউন্ট থেকে অন্য AMB সদস্য অ্যাকাউন্টে</strong> করা যাবে। অন্য কোনো বাহ্যিক ব্যাংক বা অ্যাকাউন্টে টাকা পাঠানো যাবে না।
                 </span>
               </div>
             </div>
@@ -3953,7 +3953,7 @@ export default function Dashboard({
             <div className="bg-slate-50 border border-slate-150 p-4 rounded-2.5xl space-y-3">
               <label className="text-xs font-black text-slate-800 flex items-center gap-1.5">
                 <UserCircle className="w-4 h-4 text-emerald-700" />
-                1. প্রাপক BNB সদস্যের মোবাইল নাম্বার বা আইডি টাইপ করুনঃ
+                1. প্রাপক AMB সদস্যের মোবাইল নাম্বার বা আইডি টাইপ করুনঃ
               </label>
               
               <div className="flex gap-2">
@@ -3968,7 +3968,7 @@ export default function Dashboard({
                       setTransferTargetPhoneorId(e.target.value);
                       if (searchedMember) setSearchedMember(null);
                     }}
-                    placeholder="যেমনঃ BNB102030 অথবা 017xxxxxxxx"
+                    placeholder="যেমনঃ AMB102030 অথবা 017xxxxxxxx"
                     className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 text-xs font-mono font-bold focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 text-slate-800"
                   />
                 </div>
@@ -4306,14 +4306,14 @@ export default function Dashboard({
                 ) : (
                   <>
                     <Send className="w-4 h-4 stroke-[2.5]" />
-                    সেন্ড মানি নিশ্চিত করুন ⚡ (BNB to BNB)
+                    সেন্ড মানি নিশ্চিত করুন ⚡ (AMB to AMB)
                   </>
                 )}
               </button>
             </form>
           </motion.div>
         )}
-        {/* Active BNB Add Money Segment Tab */}
+        {/* Active AMB Add Money Segment Tab */}
         {activeTab === 'add_money' && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -4328,7 +4328,7 @@ export default function Dashboard({
                 </div>
                 <div>
                   <h3 className="text-sm font-black text-slate-900 flex items-center gap-1.5">
-                    BNB এড মানি (Add Money)
+                    AMB এড মানি (Add Money)
                     <span className="text-[9px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/60 px-2 py-0.5 rounded-full">
                       মেইন ওয়ালেট ফান্ড
                     </span>
@@ -4340,8 +4340,8 @@ export default function Dashboard({
               </div>
             </div>
 
-            {/* Integrated BnbMobileBankingPortal directly set to Add Money tab */}
-            <BnbMobileBankingPortal 
+            {/* Integrated AmbMobileBankingPortal directly set to Add Money tab */}
+            <AmbMobileBankingPortal 
               user={liveUser}
               onClose={() => setActiveTab('home')}
               syncLiveProfile={syncLiveProfile}
@@ -4632,14 +4632,14 @@ export default function Dashboard({
                 <div className="flex justify-between items-start gap-4">
                   <div className="text-left">
                     <p className="text-[9px] uppercase tracking-widest text-slate-350 font-bold leading-none">Smart Virtual Debit Card</p>
-                    <h4 className="text-xs font-black tracking-normal mt-1 leading-none">BNB MULTIPURPOSE DEBIT</h4>
+                    <h4 className="text-xs font-black tracking-normal mt-1 leading-none">AMB MULTIPURPOSE DEBIT</h4>
                   </div>
-                  <span className="px-2 py-1 bg-white/20 rounded-lg border border-white/10 font-mono tracking-widest italic shrink-0">BNB bank</span>
+                  <span className="px-2 py-1 bg-white/20 rounded-lg border border-white/10 font-mono tracking-widest italic shrink-0">AMB bank</span>
                 </div>
 
                 <div className="flex items-center justify-between bg-black/40 p-2.5 rounded-xl border border-white/10 my-1 text-center">
                   <span className="font-mono text-xs tracking-wider font-extrabold text-amber-305 text-amber-300">
-                    Account: {liveUser.memberId || 'BNB00000000'}
+                    Account: {liveUser.memberId || 'AMB00000000'}
                   </span>
                   <span className="font-mono text-[9px] text-slate-350">CVV: <strong className="text-slate-100 font-bold">{cvvRevealed ? '582' : '•••'}</strong></span>
                 </div>
@@ -4761,7 +4761,7 @@ export default function Dashboard({
                   {transferType === 'member' && (
                     <div className="space-y-1.5 p-3.5 bg-indigo-50/70 border border-indigo-150/40 rounded-2xl">
                       <label className="block text-xs font-black text-indigo-950 uppercase tracking-wide">ফান্ড স্থানান্তরের উৎস সেকশন (Source Wallet)</label>
-                      <p className="text-[9px] text-emerald-700 font-bold">BNB সদস্য থেকে সদস্য (মেইন ব্যালেন্স ও সমিতি ভার্চুয়াল একাউন্ট) এবং টেলিকম/শপ ওয়ালেটে সরাসরি ইনস্ট্যান্ট স্থানান্তরিত হয় (100% অটোমেটিক)।</p>
+                      <p className="text-[9px] text-emerald-700 font-bold">AMB সদস্য থেকে সদস্য (মেইন ব্যালেন্স ও সমিতি ভার্চুয়াল একাউন্ট) এবং টেলিকম/শপ ওয়ালেটে সরাসরি ইনস্ট্যান্ট স্থানান্তরিত হয় (100% অটোমেটিক)।</p>
                       <div className="grid grid-cols-3 gap-2 mt-2">
                         {[
                           { id: 'samity', label: 'সমিতি', desc: `৳ ${(liveUser.balance || 0).toLocaleString('bn-BD')}` },
@@ -4786,7 +4786,7 @@ export default function Dashboard({
                     </div>
                   )}
 
-                  {/* 2. To BNB Cooperative member */}
+                  {/* 2. To AMB Cooperative member */}
                   {transferType === 'member' && (
                     <div className="space-y-2">
                       <label className="block text-xs font-bold text-slate-705">ডিজিটাল আইডি বা মোবাইল নম্বর</label>
@@ -4795,7 +4795,7 @@ export default function Dashboard({
                           type="text"
                           value={transferTargetPhoneorId}
                           onChange={(e) => setTransferTargetPhoneorId(e.target.value)}
-                          placeholder="সদস্য মোবাইল বা অ্যাকাউন্ট নম্বর যেমনঃ BNB00005327"
+                          placeholder="সদস্য মোবাইল বা অ্যাকাউন্ট নম্বর যেমনঃ AMB00005327"
                           className="flex-1 px-3 py-1.5 bg-white border border-slate-205 rounded-xl text-xs font-mono text-slate-850"
                         />
                         <button
@@ -5109,7 +5109,7 @@ export default function Dashboard({
             </button>
           )}
 
-          {/* Tab Send Money (BNB to BNB Transfer) */}
+          {/* Tab Send Money (AMB to AMB Transfer) */}
           {(isTabActive('deposit') || isTabActive('send_money')) && (
             <button 
               onClick={() => { setActiveTab('deposit'); setSelectedAction(null); }}
@@ -5161,7 +5161,7 @@ export default function Dashboard({
               <span className={`text-[9.5px] sm:text-[10px] transition-colors duration-200 ${
                 activeTab === 'add_money' ? 'text-emerald-700 font-black' : 'text-emerald-800 font-extrabold'
               }`}>
-                {t('BNB এড মানি')}
+                {t('AMB এড মানি')}
               </span>
             </button>
           )}

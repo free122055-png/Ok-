@@ -25,14 +25,14 @@ import { User, Transaction, Notice, Offer, BapReport, BapGroup, BapAdminRequest,
 import { normalizeMemberId, formatBanglaAmount, normalizePhoneNumber, findUserInFirestoreByPhone, getNextSequentialMemberId, deleteUserCompletelyFromDatabase, convertBengaliToEnglishDigits } from '../../lib/memberUtils';
 import { sortTransactionsNewestFirst, getTxTime } from '../../lib/transactionUtils';
 import { saveAppConfig, saveSectionIcon, DEFAULT_QARD_CONFIG } from '../../lib/config';
-import { BNBLogo } from '../BNBLogo';
+import { AMBLogo } from '../AMBLogo';
 import { HeaderPendingModal } from '../HeaderPendingModal';
 import SamityScreen from '../SamityScreen';
 import UnifiedBackButton from '../UnifiedBackButton';
 import SamityAdmin from '../SamityAdmin';
 import SafiPremiumShop from '../SafiPremiumShop';
 import TelecomAdmin from '../TelecomAdmin';
-import BnbSalaryAdmin from '../BnbSalaryAdmin';
+import AmbSalaryAdmin from '../AmbSalaryAdmin';
 import { HistoryRetentionSettings } from '../HistoryRetentionSettings';
 import { runWalletEndToEndTests, TestResultItem } from '../../lib/walletTests';
 import { 
@@ -829,7 +829,7 @@ export function AdminDashboardOverview(props: any) {
                         savings: Number(u.savings !== undefined ? u.savings : u.dpsBalance) || 0,
                         amount: Number(u.savings !== undefined ? u.savings : u.dpsBalance) || 0,
                         type: 'সমিতি আমানত',
-                        status: (u.samityStatus === 'approved' || u.samityApproved === true || u.isSamityMember === true) ? 'সমবায় সমিতি সদস্য' : 'নরমাল সদস্য (BNB ইনভেস্টার)'
+                        status: (u.samityStatus === 'approved' || u.samityApproved === true || u.isSamityMember === true) ? 'সমবায় সমিতি সদস্য' : 'নরমাল সদস্য (AMB ইনভেস্টার)'
                       })).sort((a, b) => b.amount - a.amount)
                     })}
                     className="bg-teal-50/90 border border-teal-200 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl text-slate-800 flex flex-col justify-between shadow-2xs cursor-pointer hover:bg-teal-100/90 transition active:scale-98 min-h-[56px] sm:min-h-[68px]"
@@ -1194,7 +1194,7 @@ export function AdminDashboardOverview(props: any) {
                         সমবায় পোর্টাল
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardSamityTitle || 'BNB কোম্পানি ইনভেস্টর'}
+                        {appConfig?.globalTexts?.cardSamityTitle || 'AMB কোম্পানি ইনভেস্টর'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         মুনাফা ও সঞ্চয় কন্ট্রোল
@@ -1221,7 +1221,7 @@ export function AdminDashboardOverview(props: any) {
                         গ্রুপ বাই ডিল
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardSafeDealsTitle || 'BNB নিরাপদ লেনদেন'}
+                        {appConfig?.globalTexts?.cardSafeDealsTitle || 'AMB নিরাপদ লেনদেন'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         পাইকারি লেনদেন এডমিন
@@ -1248,7 +1248,7 @@ export function AdminDashboardOverview(props: any) {
                         সুদমুক্ত ঋণ
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardQardTitle || 'BNB কর্জে হাসানা'}
+                        {appConfig?.globalTexts?.cardQardTitle || 'AMB কর্জে হাসানা'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         কল্যাণ তহবিল লেজার
@@ -1275,7 +1275,7 @@ export function AdminDashboardOverview(props: any) {
                         রেমিট্যান্স & ব্যাংকিং
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardBankTitle || 'BNB লেনদেন'}
+                        {appConfig?.globalTexts?.cardBankTitle || 'AMB লেনদেন'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         লেনদেন ও ডিপোজিট
@@ -1302,7 +1302,7 @@ export function AdminDashboardOverview(props: any) {
                         রিচার্জ প্যাক
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardTelecomTitle || 'BNB টেলিকম'}
+                        {appConfig?.globalTexts?.cardTelecomTitle || 'AMB টেলিকম'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         ফ্লেক্সিলোড ও অফার
@@ -1329,7 +1329,7 @@ export function AdminDashboardOverview(props: any) {
                         কার্ড হোল্ডার
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardRationTitle || 'BNB রেশন কার্ড'}
+                        {appConfig?.globalTexts?.cardRationTitle || 'AMB রেশন কার্ড'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         রেশন কার্ড বন্টন সেটিংস
@@ -1356,7 +1356,7 @@ export function AdminDashboardOverview(props: any) {
                         স্যালারি পে
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardSalaryTitle || 'BNB সেলারি পে'}
+                        {appConfig?.globalTexts?.cardSalaryTitle || 'AMB সেলারি পে'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         প্রতিষ্ঠানের কর্মী বেতন
@@ -1392,7 +1392,7 @@ export function AdminDashboardOverview(props: any) {
                   </div>
                 )}
 
-                {/* 9. BNB Auto Recharge Admin */}
+                {/* 9. AMB Auto Recharge Admin */}
                 {(hasPermission('auto_recharge_admin') || hasPermission('telecom') || hasPermission('general')) && (
                   <div 
                     onClick={() => { setAdminTab('auto_recharge_admin'); setViewingGrid(false); }}
@@ -1410,7 +1410,7 @@ export function AdminDashboardOverview(props: any) {
                         অটো রিচার্জ গেটওয়ে
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardAutoRechargeTitle || 'BNB অটো রিচার্জ'}
+                        {appConfig?.globalTexts?.cardAutoRechargeTitle || 'AMB অটো রিচার্জ'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         স্বয়ংক্রিয় রিচার্জ সেটিংস
@@ -1419,7 +1419,7 @@ export function AdminDashboardOverview(props: any) {
                   </div>
                 )}
 
-                {/* 10. BNB Bill Pay Admin */}
+                {/* 10. AMB Bill Pay Admin */}
                 {(hasPermission('bill_pay_admin') || hasPermission('bank_admin') || hasPermission('config') || hasPermission('general')) && (
                   <div 
                     onClick={() => { setAdminTab('bill_pay_admin'); setViewingGrid(false); }}
@@ -1437,7 +1437,7 @@ export function AdminDashboardOverview(props: any) {
                         ইউটিলিটি বিল
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardBillPayTitle || 'BNB বিল পে'}
+                        {appConfig?.globalTexts?.cardBillPayTitle || 'AMB বিল পে'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         বিদ্যুৎ ও গ্যাস বিল
@@ -1469,7 +1469,7 @@ export function AdminDashboardOverview(props: any) {
                         এজেন্ট পোর্টাল
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardAgentTitle || 'BNB এজেন্ট'}
+                        {appConfig?.globalTexts?.cardAgentTitle || 'AMB এজেন্ট'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         ড্রপ পয়েন্ট ও সেটিংস
@@ -1478,7 +1478,7 @@ export function AdminDashboardOverview(props: any) {
                   </div>
                 )}
 
-                {/* 12. Company Profile / Notices (BNB আমাদের লক্ষ) */}
+                {/* 12. Company Profile / Notices (AMB আমাদের লক্ষ) */}
                 {hasPermission('notices') && (
                   <div 
                     onClick={() => { setAdminTab('notices'); setViewingGrid(false); }}
@@ -1496,7 +1496,7 @@ export function AdminDashboardOverview(props: any) {
                         পরিচিতি ও গাইড
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center truncate">
-                        {appConfig?.globalTexts?.cardAboutTitle || 'BNB আমাদের লক্ষ'}
+                        {appConfig?.globalTexts?.cardAboutTitle || 'AMB আমাদের লক্ষ'}
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         কোম্পানি প্রোফাইল এডিট
@@ -1523,7 +1523,7 @@ export function AdminDashboardOverview(props: any) {
                         পণ্য অর্ডার
                       </span>
                       <h4 className="text-xs sm:text-sm font-black text-slate-800 leading-tight block tracking-tight text-center">
-                        BNB সুপার শপ
+                        AMB সুপার শপ
                       </h4>
                       <p className="text-[8px] sm:text-[9.5px] text-slate-400 font-extrabold leading-none truncate">
                         আমানত দিয়ে ক্রয়
@@ -1764,7 +1764,7 @@ export function AdminDashboardOverview(props: any) {
                   {cfgLogoUrl ? (
                     <img src={cfgLogoUrl} alt="App Logo" className="w-full h-full object-cover rounded-2xl" referrerPolicy="no-referrer" />
                   ) : (
-                    <BNBLogo size={42} variant="emerald" />
+                    <AMBLogo size={42} variant="emerald" />
                   )}
                 </div>
                 <div>
@@ -1866,18 +1866,18 @@ export function AdminDashboardOverview(props: any) {
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {[
-                  { key: 'samity', titleKey: 'cardSamityTitle', labelBng: 'BNB কোম্পানি ইনভেস্টর', labelEng: 'BNB Company Investor' },
-                  { key: 'safedeals', titleKey: 'cardSafeDealsTitle', labelBng: 'BNB নিরাপদ লেনদেন', labelEng: 'BNB Safe Deals' },
-                  { key: 'qard', titleKey: 'cardQardTitle', labelBng: 'BNB কর্জে হাসানা', labelEng: 'BNB Qard Hasana' },
-                  { key: 'bank', titleKey: 'cardBankTitle', labelBng: 'BNB লেনদেন', labelEng: 'BNB Transactions' },
-                  { key: 'telecom', titleKey: 'cardTelecomTitle', labelBng: 'BNB টেলিকম', labelEng: 'BNB Telecom' },
-                  { key: 'ration', titleKey: 'cardRationTitle', labelBng: 'BNB রেশন কার্ড', labelEng: 'BNB Ration Card' },
-                  { key: 'salary', titleKey: 'cardSalaryTitle', labelBng: 'BNB সেলারি পে', labelEng: 'BNB Salary Pay' },
+                  { key: 'samity', titleKey: 'cardSamityTitle', labelBng: 'AMB কোম্পানি ইনভেস্টর', labelEng: 'AMB Company Investor' },
+                  { key: 'safedeals', titleKey: 'cardSafeDealsTitle', labelBng: 'AMB নিরাপদ লেনদেন', labelEng: 'AMB Safe Deals' },
+                  { key: 'qard', titleKey: 'cardQardTitle', labelBng: 'AMB কর্জে হাসানা', labelEng: 'AMB Qard Hasana' },
+                  { key: 'bank', titleKey: 'cardBankTitle', labelBng: 'AMB লেনদেন', labelEng: 'AMB Transactions' },
+                  { key: 'telecom', titleKey: 'cardTelecomTitle', labelBng: 'AMB টেলিকম', labelEng: 'AMB Telecom' },
+                  { key: 'ration', titleKey: 'cardRationTitle', labelBng: 'AMB রেশন কার্ড', labelEng: 'AMB Ration Card' },
+                  { key: 'salary', titleKey: 'cardSalaryTitle', labelBng: 'AMB সেলারি পে', labelEng: 'AMB Salary Pay' },
                   { key: 'safi', titleKey: 'cardSafiTitle', labelBng: 'al safi', labelEng: 'Al Safi Brand' },
-                  { key: 'auto_recharge', titleKey: 'cardAutoRechargeTitle', labelBng: 'BNB অটো রিচার্জ', labelEng: 'BNB Auto Recharge' },
-                  { key: 'bill_pay', titleKey: 'cardBillPayTitle', labelBng: 'BNB বিল পে', labelEng: 'BNB Bill Pay' },
-                  { key: 'agent', titleKey: 'cardAgentTitle', labelBng: 'BNB এজেন্ট', labelEng: 'BNB Agent' },
-                  { key: 'about', titleKey: 'cardAboutTitle', labelBng: 'BNB আমাদের লক্ষ', labelEng: 'BNB Target & Mission' },
+                  { key: 'auto_recharge', titleKey: 'cardAutoRechargeTitle', labelBng: 'AMB অটো রিচার্জ', labelEng: 'AMB Auto Recharge' },
+                  { key: 'bill_pay', titleKey: 'cardBillPayTitle', labelBng: 'AMB বিল পে', labelEng: 'AMB Bill Pay' },
+                  { key: 'agent', titleKey: 'cardAgentTitle', labelBng: 'AMB এজেন্ট', labelEng: 'AMB Agent' },
+                  { key: 'about', titleKey: 'cardAboutTitle', labelBng: 'AMB আমাদের লক্ষ', labelEng: 'AMB Target & Mission' },
                 ].map((sect) => {
                   const customIcon = appConfig?.sectionIcons?.[sect.key];
                   const currentTitle = appConfig?.globalTexts?.[sect.titleKey] || sect.labelBng;
@@ -2045,7 +2045,7 @@ export function AdminDashboardOverview(props: any) {
                         type="text"
                         value={editTitleInput}
                         onChange={(e) => setEditTitleInput(e.target.value)}
-                        placeholder="যেমন: BNB কোম্পানি ইনভেস্টর"
+                        placeholder="যেমন: AMB কোম্পানি ইনভেস্টর"
                         className="w-full bg-slate-50 focus:bg-white border border-slate-250 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none transition shadow-inner"
                         autoFocus
                       />
@@ -2059,7 +2059,7 @@ export function AdminDashboardOverview(props: any) {
                         type="text"
                         value={editEngInput}
                         onChange={(e) => setEditEngInput(e.target.value)}
-                        placeholder="যেমন: BNB Company Investor"
+                        placeholder="যেমন: AMB Company Investor"
                         className="w-full bg-slate-50 focus:bg-white border border-slate-250 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none transition shadow-inner"
                       />
                     </div>

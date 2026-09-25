@@ -46,14 +46,14 @@ import { User, Transaction, Notice, Offer, BapReport, BapGroup, BapAdminRequest,
 import { normalizeMemberId, formatBanglaAmount, normalizePhoneNumber, findUserInFirestoreByPhone, getNextSequentialMemberId, deleteUserCompletelyFromDatabase, convertBengaliToEnglishDigits } from '../lib/memberUtils';
 import { sortTransactionsNewestFirst, getTxTime } from '../lib/transactionUtils';
 import { saveAppConfig, DEFAULT_QARD_CONFIG } from '../lib/config';
-import { BNBLogo } from './BNBLogo';
+import { AMBLogo } from './AMBLogo';
 import { HeaderPendingModal } from './HeaderPendingModal';
 import SamityScreen from './SamityScreen';
 import UnifiedBackButton from './UnifiedBackButton';
 import SamityAdmin from './SamityAdmin';
 import SafiPremiumShop from './SafiPremiumShop';
 import TelecomAdmin from './TelecomAdmin';
-import BnbSalaryAdmin from './BnbSalaryAdmin';
+import AmbSalaryAdmin from './AmbSalaryAdmin';
 import { HistoryRetentionSettings } from './HistoryRetentionSettings';
 import { runWalletEndToEndTests, TestResultItem } from '../lib/walletTests';
 import { 
@@ -153,10 +153,10 @@ export const triggerAdminCrossSync = () => {
   try {
     if (typeof window !== 'undefined') {
       const now = Date.now().toString();
-      localStorage.setItem('bnb_admin_sync_tick', now);
-      window.dispatchEvent(new CustomEvent('bnb_admin_sync_tick', { detail: { time: now } }));
+      localStorage.setItem('amb_admin_sync_tick', now);
+      window.dispatchEvent(new CustomEvent('amb_admin_sync_tick', { detail: { time: now } }));
       if ('BroadcastChannel' in window) {
-        const bc = new BroadcastChannel('bnb_admin_sync_channel');
+        const bc = new BroadcastChannel('amb_admin_sync_channel');
         bc.postMessage({ type: 'SYNC_TRANSACTIONS', time: now });
         bc.close();
       }
@@ -270,7 +270,7 @@ export const isMainAdminUser = (usr: any) => Boolean(
     usr.phone === '+8800011112222' ||
     usr.normalizedPhone === '+8800011112222' ||
     usr.memberId === 'MAIN_ADMIN' ||
-    usr.name === 'Bangladesh BNB Administrator'
+    usr.name === 'Bangladesh AMB Administrator'
   )
 );
 
@@ -383,15 +383,15 @@ export default function AdminPanel(props: AdminPanelProps) {
   const [cfgSupportPhone, setCfgSupportPhone] = useState(appConfig.supportPhone);
   const [cfgSamityTerms, setCfgSamityTerms] = useState(appConfig.samityTerms);
   const [cfgTickerText, setCfgTickerText] = useState(appConfig.tickerText);
-  const [cfgSamityTicker, setCfgSamityTicker] = useState(appConfig.samityTicker || "BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সাধারণ ফান্ডে স্বাগতম। আপনি এখান থেকে সঞ্চয় জমা দিতে পারেন, ঋণ আবেদন এবং মুনাফার শেয়ার তুলতে পারেন।");
+  const [cfgSamityTicker, setCfgSamityTicker] = useState(appConfig.samityTicker || "AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সাধারণ ফান্ডে স্বাগতম। আপনি এখান থেকে সঞ্চয় জমা দিতে পারেন, ঋণ আবেদন এবং মুনাফার শেয়ার তুলতে পারেন।");
   const [cfgQardTicker, setCfgQardTicker] = useState(appConfig.qardTicker || "সুদমুক্ত করযে হাসানা কল্যাণ তহবিলে আপনাকে স্বাগতম। আপনার সামর্থ্য অনুযায়ী দান করে ফান্ড সমৃদ্ধ করুন অথবা প্রয়োজনের সময়ে সুদমুক্ত করযে স্বস্তির নিঃশ্বাস ফেলুন।");
   const [cfgTelecomTicker, setCfgTelecomTicker] = useState(appConfig.telecomTicker || "টেলিকম ফ্লেক্সিলোড ও সুপার ফাস্ট ড্রাইভ অফার গাইডঃ সব অপারেটরের ড্রাইভ ও সাধারণ রিচার্জ অফারগুলো সহজে ক্রয় করতে পারবেন।");
   const [cfgSafiTicker, setCfgSafiTicker] = useState(appConfig.safiTicker || "প্রিমিয়াম Safi ব্র্যান্ডের শতভাগ খাঁটি পণ্য সম্ভার! আমাদের নিজস্ব তত্ত্বাবধানে প্রস্তুতকৃত ভেজালমুক্ত প্রিমিয়াম পণ্যসমূহ সরাসরি মেইন ব্যালেন্স থেকে সহজেই ক্রয় করুন।");
-  const [cfgEscrowTicker, setCfgEscrowTicker] = useState(appConfig.escrowTicker || "BNB নিরাপদ লেনদেনঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।");
+  const [cfgEscrowTicker, setCfgEscrowTicker] = useState(appConfig.escrowTicker || "AMB নিরাপদ লেনদেনঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।");
   const [cfgRationTicker, setCfgRationTicker] = useState(appConfig.rationTicker || "কো-অপারেティブ ডিজিটাল রেশন কার্ড সেবাঃ ভর্তুকি মূল্যে নিত্যপ্রয়োজনীয় চাল, ডাল, তেল ও অন্যান্য পণ্যসামগ্রী ক্রয়ের সুবিধা উপভোগ করুন।");
-  const [cfgAgentTicker, setCfgAgentTicker] = useState(appConfig.agentTicker || "BNB এজেন্ট প্যানেলঃ আপনার এলাকায় নিজস্ব প্রতিনিধি হিসেবে নিবন্ধিত হয়ে আকর্ষণীয় কমিশন উপার্জন করুন।");
-  const [cfgCourierTicker, setCfgCourierTicker] = useState(appConfig.courierTicker || "BNB ইনস্ট্যান্ট কুরিয়ার সেবাঃ সুলভ মূল্যে দ্রুততম সময়ে সারা দেশে আপনার পার্সেল পৌঁছে দেওয়ার নির্ভরযোগ্য প্ল্যাটফর্ম।");
-  const [cfgGatewayTicker, setCfgGatewayTicker] = useState(appConfig.gatewayTicker || "BNB ন্যাশনাল গেটওয়েঃ ব্যাংক ডিপোজিট ও নিরাপদ লেনদেনের ভেরিফাইড গেটওয়ে সার্ভিস।");
+  const [cfgAgentTicker, setCfgAgentTicker] = useState(appConfig.agentTicker || "AMB এজেন্ট প্যানেলঃ আপনার এলাকায় নিজস্ব প্রতিনিধি হিসেবে নিবন্ধিত হয়ে আকর্ষণীয় কমিশন উপার্জন করুন।");
+  const [cfgCourierTicker, setCfgCourierTicker] = useState(appConfig.courierTicker || "AMB ইনস্ট্যান্ট কুরিয়ার সেবাঃ সুলভ মূল্যে দ্রুততম সময়ে সারা দেশে আপনার পার্সেল পৌঁছে দেওয়ার নির্ভরযোগ্য প্ল্যাটফর্ম।");
+  const [cfgGatewayTicker, setCfgGatewayTicker] = useState(appConfig.gatewayTicker || "AMB ন্যাশনাল গেটওয়েঃ ব্যাংক ডিপোজিট ও নিরাপদ লেনদেনের ভেরিফাইড গেটওয়ে সার্ভিস।");
   const [cfgExchangeRatePerThousand, setCfgExchangeRatePerThousand] = useState(appConfig.exchangeRatePerThousand || 1150);
   const [walletTestResults, setWalletTestResults] = useState<TestResultItem[] | null>(null);
   const [isRunningWalletTests, setIsRunningWalletTests] = useState(false);
@@ -419,7 +419,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     }
   );
   const [cfgLogoUrl, setCfgLogoUrl] = useState(appConfig.logoUrl || '');
-  const [cfgBnbToBnbIconUrl, setCfgBnbToBnbIconUrl] = useState(appConfig.bnbToBnbIconUrl || '');
+  const [cfgAmbToAmbIconUrl, setCfgAmbToAmbIconUrl] = useState(appConfig.ambToAmbIconUrl || '');
   const [cfgServiceStatus, setCfgServiceStatus] = useState<Record<string, boolean>>(
     appConfig.serviceStatus || {
       samity: true, bank: true, telecom: true, shop: true, qard: true,
@@ -754,9 +754,9 @@ export default function AdminPanel(props: AdminPanelProps) {
   const [cfgForceUpdateActive, setCfgForceUpdateActive] = useState(appConfig.forceUpdateActive || false);
   const [cfgMinAppVersion, setCfgMinAppVersion] = useState(appConfig.minAppVersion || "2.0");
   const [cfgLatestAppVersion, setCfgLatestAppVersion] = useState(appConfig.latestAppVersion || "2.0");
-  const [cfgDownloadLink, setCfgDownloadLink] = useState(appConfig.downloadLink || "https://play.google.com/store/apps/details?id=com.bnb.business");
+  const [cfgDownloadLink, setCfgDownloadLink] = useState(appConfig.downloadLink || "https://play.google.com/store/apps/details?id=com.amb.business");
   const [cfgUpdateTitle, setCfgUpdateTitle] = useState(appConfig.updateTitle || "নতুন সংস্করণ উপলব্ধ!");
-  const [cfgUpdateDescription, setCfgUpdateDescription] = useState(appConfig.updateDescription || "BNB BUSINESS Network Bangladesh-এর নতুন আপডেট প্রকাশিত হয়েছে। অ্যাপ ব্যবহার চালিয়ে যেতে হলে নতুন ভার্সন ইনস্টল করা বাধ্যতামূলক।");
+  const [cfgUpdateDescription, setCfgUpdateDescription] = useState(appConfig.updateDescription || "AMB BUSINESS Network Bangladesh-এর নতুন আপডেট প্রকাশিত হয়েছে। অ্যাপ ব্যবহার চালিয়ে যেতে হলে নতুন ভার্সন ইনস্টল করা বাধ্যতামূলক।");
 
   const [cfgSuccess, setCfgSuccess] = useState(false);
   const [cfgError, setCfgError] = useState('');
@@ -767,7 +767,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     { id: 'mf-1', accountName: 'ইসলামী ব্যাংক বাংলাদেশ লিমিটেড', accountNumber: '205012345678', amount: 500000, category: 'bank', note: 'মেইন প্রারম্ভিক ডিপোজিট' },
     { id: 'mf-2', accountName: 'বিকাশ ও নগদ মাষ্টার মার্চেন্ট ওয়ালেট', accountNumber: '01712345678', amount: 300000, category: 'mfs', note: 'টেলিকম ও লোড ওয়ার্কিং ব্যালেন্স' },
     { id: 'mf-3', accountName: 'ব্যক্তিগত পাওনা (ভাইয়ের নিকট গচ্ছিত)', accountNumber: '01800000000', amount: 200000, category: 'receivable', note: 'ইমার্জেন্সি নগদ ক্যাশ তহবিল' },
-    { id: 'mf-4', accountName: 'মার্কেট ইনভেস্টমেন্ট ও স্থায়ী সম্পদ', accountNumber: 'INV-BNB-01', amount: 200000, category: 'investment', note: 'কোম্পানি প্রারম্ভিক বিনিয়োগ' }
+    { id: 'mf-4', accountName: 'মার্কেট ইনভেস্টমেন্ট ও স্থায়ী সম্পদ', accountNumber: 'INV-AMB-01', amount: 200000, category: 'investment', note: 'কোম্পানি প্রারম্ভিক বিনিয়োগ' }
   ];
 
   const [masterAccounts, setMasterAccounts] = useState<any[]>(
@@ -1018,15 +1018,15 @@ export default function AdminPanel(props: AdminPanelProps) {
   };
 
   // Bank Admin Box-based replica state & Tx Modal
-  const [adminBankBoxTab, setAdminBankBoxTab] = useState<'bnb_to_bnb' | 'send_money' | 'bill_pay' | 'salary' | 'remittance'>('bnb_to_bnb');
+  const [adminBankBoxTab, setAdminBankBoxTab] = useState<'amb_to_amb' | 'send_money' | 'bill_pay' | 'salary' | 'remittance'>('amb_to_amb');
   const [adminSendMoneySubTab, setAdminSendMoneySubTab] = useState<'mobile_bank' | 'bank_wallet' | 'abroad'>('mobile_bank');
   const [adminAddMoneySubTab, setAdminAddMoneySubTab] = useState<'mobile_bank' | 'bank_wallet' | 'abroad'>('mobile_bank');
   const [editingTxModal, setEditingTxModal] = useState<Transaction | null>(null);
 
   // Additional Bank Service Box States
-  const [cfgBnbToBnbFreeActive, setCfgBnbToBnbFreeActive] = useState(appConfig.bnbToBnbFreeActive !== false);
-  const [cfgBnbToBnbMinLimit, setCfgBnbToBnbMinLimit] = useState(appConfig.bnbToBnbMinLimit || 10);
-  const [cfgBnbToBnbMaxLimit, setCfgBnbToBnbMaxLimit] = useState(appConfig.bnbToBnbMaxLimit || 50000);
+  const [cfgAmbToAmbFreeActive, setCfgAmbToAmbFreeActive] = useState(appConfig.ambToAmbFreeActive !== false);
+  const [cfgAmbToAmbMinLimit, setCfgAmbToAmbMinLimit] = useState(appConfig.ambToAmbMinLimit || 10);
+  const [cfgAmbToAmbMaxLimit, setCfgAmbToAmbMaxLimit] = useState(appConfig.ambToAmbMaxLimit || 50000);
 
   // Member Profile Self Edit Toggle State
   const [cfgAllowProfileSelfEdit, setCfgAllowProfileSelfEdit] = useState<boolean>(appConfig.allowProfileSelfEdit !== false);
@@ -1066,7 +1066,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     cards_manager: false,
     tx_ledger: false,
     remit_rates: false,
-    bnb_to_bnb: true,
+    amb_to_amb: true,
     bill_pay: true,
     salary: true,
   });
@@ -1104,7 +1104,7 @@ export default function AdminPanel(props: AdminPanelProps) {
   const [qardNoticeWarning, setQardNoticeWarning] = useState(appConfig.qardConfig?.verificationNotice?.warningNote || DEFAULT_QARD_CONFIG.verificationNotice.warningNote);
 
   const [qardReqDays, setQardReqDays] = useState(appConfig.qardConfig?.eligibilityConfig?.requiredActiveDays ?? DEFAULT_QARD_CONFIG.eligibilityConfig.requiredActiveDays);
-  const [qardReqTxVol, setQardReqTxVol] = useState(appConfig.qardConfig?.eligibilityConfig?.requiredBnbTxVolume ?? DEFAULT_QARD_CONFIG.eligibilityConfig.requiredBnbTxVolume);
+  const [qardReqTxVol, setQardReqTxVol] = useState(appConfig.qardConfig?.eligibilityConfig?.requiredAmbTxVolume ?? DEFAULT_QARD_CONFIG.eligibilityConfig.requiredAmbTxVolume);
   const [qardMinLoan, setQardMinLoan] = useState(appConfig.qardConfig?.minLoanAmount ?? DEFAULT_QARD_CONFIG.minLoanAmount);
   const [qardMaxLoan, setQardMaxLoan] = useState(appConfig.qardConfig?.maxLoanAmount ?? DEFAULT_QARD_CONFIG.maxLoanAmount);
   const [qardMaxDuration, setQardMaxDuration] = useState(appConfig.qardConfig?.maxDurationMonths ?? DEFAULT_QARD_CONFIG.maxDurationMonths);
@@ -1175,11 +1175,11 @@ export default function AdminPanel(props: AdminPanelProps) {
       setCfgSupportPhone(appConfig.supportPhone);
       setCfgSamityTerms(appConfig.samityTerms);
       setCfgTickerText(appConfig.tickerText);
-      setCfgSamityTicker(appConfig.samityTicker || "BNB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সাধারণ ফান্ডে স্বাগতম। আপনি এখান থেকে সঞ্চয় জমা দিতে পারেন, ঋণ আবেদন এবং মুনাফার শেয়ার তুলতে পারেন।");
+      setCfgSamityTicker(appConfig.samityTicker || "AMB ম্যানেজমেন্ট কোম্পানি ইনভেস্টর সাধারণ ফান্ডে স্বাগতম। আপনি এখান থেকে সঞ্চয় জমা দিতে পারেন, ঋণ আবেদন এবং মুনাফার শেয়ার তুলতে পারেন।");
       setCfgQardTicker(appConfig.qardTicker || "সুদমুক্ত করযে হাসানা কল্যাণ তহবিলে আপনাকে স্বাগতম। আপনার সামর্থ্য অনুযায়ী দান করে ফান্ড সমৃদ্ধ করুন অথবা প্রয়োজনের সময়ে সুদমুক্ত করযে স্বস্তির নিঃশ্বাস ফেলুন।");
       setCfgTelecomTicker(appConfig.telecomTicker || "টেলিকম ফ্লেক্সিলোড ও সুপার ফাস্ট ড্রাইভ অফার গাইডঃ সব অপারেটরের ইনস্ট্যান্ট ক্যাশব্যাক ও বেস্ট ডিসকাউন্টেড অফার ড্রাইভ প্যাকেজ সমূহ সচল রয়েছে। অটোমেটেড রিচার্জ 10 সেকেন্ড থেকে 5 মিনিটের মধ্যে সচলভাবে সম্পন্ন হয়।");
       setCfgSafiTicker(appConfig.safiTicker || "প্রিমিয়াম Safi ব্র্যান্ডের শতভাগ খাঁটি পণ্য সম্ভার! আমাদের নিজস্ব তত্ত্বাবধানে প্রস্তুতকৃত ভেজালমুক্ত প্রিমিয়াম পণ্যসমূহ সরাসরি মেইন ব্যালেন্স থেকে সহজেই ক্রয় করুন।");
-      setCfgEscrowTicker(appConfig.escrowTicker || "BNB নিরাপদ লেনদেনঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।");
+      setCfgEscrowTicker(appConfig.escrowTicker || "AMB নিরাপদ লেনদেনঃ যেকোনো প্রোডাক্ট কুরিয়ার কন্ডিশনে ক্রয়ের পূর্বে এসক্রো ডিল বুকিং করে আপনার মেইন ব্যালেন্সের পেমেন্ট নিরাপদ করুন।");
       setCfgRationTicker(appConfig.rationTicker || "কো-অপারেティブ ডিজিটাল রেশন কার্ড সেবাঃ ভর্তুকি মূল্যে নিত্যপ্রয়োজনীয় চাল, ডাল, তেল ও অন্যান্য পণ্যসামগ্রী ক্রয়ের সুবিধা উপভোগ করুন।");
       setCfgRationMaxSelectLimit(appConfig.rationMaxSelectLimit || 5);
       setCfgRationTitleText(appConfig.rationTitleText || "10টি আইটেমের মধ্যে থেকে যেকোনো 5টি নিতে পারবেন");
@@ -1209,7 +1209,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         });
       }
       setCfgLogoUrl(appConfig.logoUrl || '');
-      setCfgBnbToBnbIconUrl(appConfig.bnbToBnbIconUrl || '');
+      setCfgAmbToAmbIconUrl(appConfig.ambToAmbIconUrl || '');
       setCfgServiceStatus(appConfig.serviceStatus || {
         samity: true, bank: true, telecom: true, shop: true, qard: true,
         safedeals: true, safi: true, ration: true, chat: true, agent: true,
@@ -1225,9 +1225,9 @@ export default function AdminPanel(props: AdminPanelProps) {
       setCfgForceUpdateActive(appConfig.forceUpdateActive || false);
       setCfgMinAppVersion(appConfig.minAppVersion || "2.0");
       setCfgLatestAppVersion(appConfig.latestAppVersion || "2.0");
-      setCfgDownloadLink(appConfig.downloadLink || "https://play.google.com/store/apps/details?id=com.bnb.business");
+      setCfgDownloadLink(appConfig.downloadLink || "https://play.google.com/store/apps/details?id=com.amb.business");
       setCfgUpdateTitle(appConfig.updateTitle || "নতুন সংস্করণ উপলব্ধ!");
-      setCfgUpdateDescription(appConfig.updateDescription || "BNB BUSINESS Network Bangladesh-এর নতুন আপডেট প্রকাশিত হয়েছে। অ্যাপ ব্যবহার চালিয়ে যেতে হলে নতুন ভার্সন ইনস্টল করা বাধ্যতামূলক।");
+      setCfgUpdateDescription(appConfig.updateDescription || "AMB BUSINESS Network Bangladesh-এর নতুন আপডেট প্রকাশিত হয়েছে। অ্যাপ ব্যবহার চালিয়ে যেতে হলে নতুন ভার্সন ইনস্টল করা বাধ্যতামূলক।");
       
       // Sync layout configuration
       setCfgBannerHeightType(appConfig.bannerHeightType || '16:9');
@@ -1249,7 +1249,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         }
         if (appConfig.qardConfig.eligibilityConfig) {
           setQardReqDays(appConfig.qardConfig.eligibilityConfig.requiredActiveDays ?? DEFAULT_QARD_CONFIG.eligibilityConfig.requiredActiveDays);
-          setQardReqTxVol(appConfig.qardConfig.eligibilityConfig.requiredBnbTxVolume ?? DEFAULT_QARD_CONFIG.eligibilityConfig.requiredBnbTxVolume);
+          setQardReqTxVol(appConfig.qardConfig.eligibilityConfig.requiredAmbTxVolume ?? DEFAULT_QARD_CONFIG.eligibilityConfig.requiredAmbTxVolume);
         }
         setQardMinLoan(appConfig.qardConfig.minLoanAmount ?? DEFAULT_QARD_CONFIG.minLoanAmount);
         setQardMaxLoan(appConfig.qardConfig.maxLoanAmount ?? DEFAULT_QARD_CONFIG.maxLoanAmount);
@@ -1299,7 +1299,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         },
         eligibilityConfig: {
           requiredActiveDays: Number(qardReqDays) || 60,
-          requiredBnbTxVolume: Number(qardReqTxVol) || 20000,
+          requiredAmbTxVolume: Number(qardReqTxVol) || 20000,
           trackerTitle: "আপনার করযে হাসানা যোগ্যতা ট্র্যাকার",
           trackerSubtitle: "ঋণের আবেদন করার জন্য নিম্নলিখিত শর্তাবলী পূরণ করা আবশ্যকঃ"
         },
@@ -1458,7 +1458,7 @@ export default function AdminPanel(props: AdminPanelProps) {
           { amount: Number(cfgSlab4Amt) || 500, cashback: Number(cfgSlab4Cb) || 0 }
         ],
         logoUrl: cfgLogoUrl,
-        bnbToBnbIconUrl: cfgBnbToBnbIconUrl,
+        ambToAmbIconUrl: cfgAmbToAmbIconUrl,
         serviceStatus: cfgServiceStatus,
         maintenanceMode: !!cfgMaintenanceMode,
         maintenanceTitle: cfgMaintenanceTitle,
@@ -1703,18 +1703,18 @@ export default function AdminPanel(props: AdminPanelProps) {
     }
   };
 
-  const handleDirectUpdateBnbToBnbIcon = async (newIconUrl: string) => {
+  const handleDirectUpdateAmbToAmbIcon = async (newIconUrl: string) => {
     try {
       const updatedConfig: AppConfig = {
         ...appConfig,
-        bnbToBnbIconUrl: newIconUrl
+        ambToAmbIconUrl: newIconUrl
       };
       await saveAppConfig(updatedConfig);
       onChangeConfig(updatedConfig);
-      setCfgBnbToBnbIconUrl(newIconUrl);
-      alert('অভিনন্দন! BNB to BNB আইকনটি সফলভাবে আপলোড ও আপডেট করা হয়েছে।');
+      setCfgAmbToAmbIconUrl(newIconUrl);
+      alert('অভিনন্দন! AMB to AMB আইকনটি সফলভাবে আপলোড ও আপডেট করা হয়েছে।');
     } catch (err) {
-      console.error('Error saving bnb to bnb icon directly:', err);
+      console.error('Error saving amb to amb icon directly:', err);
       alert('আইকন আপডেট করতে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।');
     }
   };
@@ -1747,7 +1747,7 @@ export default function AdminPanel(props: AdminPanelProps) {
       }
       if (Object.keys(headersObj).length === 0) {
         headersObj = {
-          "X-Source": "BNB-Bangladesh",
+          "X-Source": "AMB-Bangladesh",
           "Accept": "application/json"
         };
       }
@@ -1842,7 +1842,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         }
         if (Object.keys(headersObj).length === 0) {
           headersObj = {
-            "X-Source": "BNB-Bangladesh",
+            "X-Source": "AMB-Bangladesh",
             "Accept": "application/json"
           };
         }
@@ -2939,7 +2939,7 @@ export default function AdminPanel(props: AdminPanelProps) {
           setEditRationDistrict(rd.district || u.district || '');
           setEditRationIssueDate(rd.issueDate || '2026-01-01');
           setEditRationExpiryDate(rd.expiryDate || '2030-12-31');
-          setEditRationSignature(rd.signature || 'BNB Ration Authority');
+          setEditRationSignature(rd.signature || 'AMB Ration Authority');
           setEditRationSecurityCode(rd.securityCode || '1234');
           setEditRationPhotoUrl(rd.photoUrl || '');
         } else {
@@ -2953,7 +2953,7 @@ export default function AdminPanel(props: AdminPanelProps) {
           setEditRationDistrict((u as any).rationDistrict || u.district || '');
           setEditRationIssueDate((u as any).rationIssueDate || '2026-01-01');
           setEditRationExpiryDate((u as any).rationExpiryDate || '2030-12-31');
-          setEditRationSignature((u as any).rationSignature || 'BNB Ration Authority');
+          setEditRationSignature((u as any).rationSignature || 'AMB Ration Authority');
           setEditRationSecurityCode((u as any).rationSecurityCode || '1234');
           setEditRationPhotoUrl((u as any).rationPhotoUrl || '');
         }
@@ -3030,7 +3030,7 @@ export default function AdminPanel(props: AdminPanelProps) {
 
   // Multi-tab sub-view state
   // Supported tabs: general (directory/registration), approvals (verifications), samity (ledger/recon), telecom (offers/purchases), notices (alerts), bap (whatsapp/fraud BAP ledger), config (dynamic app parameters), bank_admin, shop_admin, qard_admin, banners_admin, agent_admin, ration_admin, safedeals_admin, courier_admin, all_history_admin, safi_admin, system_reset
-  const [adminTab, setAdminTab] = useState<'general' | 'approvals' | 'samity' | 'telecom' | 'notices' | 'bap' | 'config' | 'bank_admin' | 'shop_admin' | 'qard_admin' | 'banners_admin' | 'agent_admin' | 'ration_admin' | 'safedeals_admin' | 'courier_admin' | 'all_history_admin' | 'safi_admin' | 'edu_admin' | 'hisab_khata' | 'integration_admin' | 'salary_admin' | 'receipt_admin' | 'push_admin' | 'system_reset'>('general');
+  const [adminTab, setAdminTab] = useState<any>('general');
   const [viewingGrid, setViewingGrid] = useState(true);
   const [currentAdSlide, setCurrentAdSlide] = useState(0);
   const [showAddMemberForm, setShowAddMemberForm] = useState(false);
@@ -3222,7 +3222,7 @@ export default function AdminPanel(props: AdminPanelProps) {
           shares: 0
         })));
       } else if (resetMode === 'delete_members') {
-        setUsers(prev => prev.filter(u => u.role === 'admin' || u.role === 'super_admin' || u.uid === currentUser.uid).map((u, idx) => ({
+        setUsers(prev => prev.filter(u => (u.role as string) === 'admin' || (u.role as string) === 'super_admin' || u.uid === currentUser.uid).map((u, idx) => ({
           ...u,
           balance: 0,
           pendingBalance: 0,
@@ -3394,7 +3394,7 @@ export default function AdminPanel(props: AdminPanelProps) {
 
   // Receipt Admin States
   const [receiptHeaderTitle, setReceiptHeaderTitle] = useState('ডিজিটাল পেমেন্ট রসিদ');
-  const [receiptCompanyName, setReceiptCompanyName] = useState('বিজনেস নেটওয়ার্ক বাংলাদেশ (BNB)');
+  const [receiptCompanyName, setReceiptCompanyName] = useState('বিজনেস নেটওয়ার্ক বাংলাদেশ (AMB)');
   const [receiptOrganizationDetails, setReceiptOrganizationDetails] = useState('মাল্টিপারপাস কো-অপারেটিভ সোসাইটি লিমিটেড \nনিবন্ধন নংঃ ডিএনবি-98220 | হেমায়েতপুর, সাভার');
   const [receiptOfficialTagText, setReceiptOfficialTagText] = useState('অফিসিয়াল কপি');
   const [receiptAdminSignatureName, setReceiptAdminSignatureName] = useState('');
@@ -3419,7 +3419,7 @@ export default function AdminPanel(props: AdminPanelProps) {
   const [rcptTelecomNotice, setRcptTelecomNotice] = useState('ফ্লেক্সিলোড/অফার প্যাক সফলভাবে প্রসেস হয়েছে।');
 
   const [rcptShopTheme, setRcptShopTheme] = useState<'emerald' | 'purple' | 'indigo' | 'amber' | 'rose' | 'slate'>('amber');
-  const [rcptShopTitle, setRcptShopTitle] = useState('BNB সুপার শপ কেনাকাটা রসিদ');
+  const [rcptShopTitle, setRcptShopTitle] = useState('AMB সুপার শপ কেনাকাটা রসিদ');
   const [rcptShopNotice, setRcptShopNotice] = useState('পণ্য ক্রয়ের জন্য আপনাকে ধন্যবাদ।');
 
   const [rcptDepositTheme, setRcptDepositTheme] = useState<'emerald' | 'purple' | 'indigo' | 'amber' | 'rose' | 'slate'>('emerald');
@@ -3557,8 +3557,8 @@ export default function AdminPanel(props: AdminPanelProps) {
     currentUser?.phone === '+8800011112222' ||
     currentUser?.phone?.endsWith('00011112222') ||
     currentUser?.phone?.endsWith('11112222') ||
-    currentUser?.email === 'networkbangladeshbnbbusiness@gmail.com' ||
-    (typeof window !== 'undefined' && localStorage.getItem('bnb_admin_mode') === 'true' && currentUser?.role !== 'sub_admin') ||
+    currentUser?.email === 'networkbangladeshambbusiness@gmail.com' ||
+    (typeof window !== 'undefined' && localStorage.getItem('amb_admin_mode') === 'true' && currentUser?.role !== 'sub_admin') ||
     true
   );
 
@@ -3656,7 +3656,7 @@ export default function AdminPanel(props: AdminPanelProps) {
   const [newProdIcon, setNewProdIcon] = useState('🌾');
   const [newProdDescription, setNewProdDescription] = useState('');
   const [newProdMinOrder, setNewProdMinOrder] = useState('1 Unit');
-  const [newProdSupplier, setNewProdSupplier] = useState('BNB Wholesale Trade Ltd.');
+  const [newProdSupplier, setNewProdSupplier] = useState('AMB Wholesale Trade Ltd.');
   const [newProdFlag, setNewProdFlag] = useState('🇧🇩');
   const [newProdShipTime, setNewProdShipTime] = useState('3-5 দিন');
   const [newProdImageUrl, setNewProdImageUrl] = useState('');
@@ -3753,7 +3753,7 @@ export default function AdminPanel(props: AdminPanelProps) {
   const [integWebhook, setIntegWebhook] = useState<string>('');
   const [integMethod, setIntegMethod] = useState<string>('POST');
   const [integContentType, setIntegContentType] = useState<string>('application/json');
-  const [integHeaders, setIntegHeaders] = useState<string>('{\n  "X-Source": "BNB-Bangladesh",\n  "Accept": "application/json"\n}');
+  const [integHeaders, setIntegHeaders] = useState<string>('{\n  "X-Source": "AMB-Bangladesh",\n  "Accept": "application/json"\n}');
   const [integMappedFields, setIntegMappedFields] = useState<string>('{\n  "user_phone": "phone",\n  "order_amount": "amount",\n  "transaction_id": "txid"\n}');
   const [integIsActive, setIntegIsActive] = useState<boolean>(true);
   const [integRawJson, setIntegRawJson] = useState<string>('');
@@ -3976,8 +3976,8 @@ export default function AdminPanel(props: AdminPanelProps) {
 
   useEffect(() => {
     const banners = dbQardBanners.length > 0 ? dbQardBanners : [
-      { id: 1, tag: "সঞ্চয় ও বিনিয়োগ", title: "Business Network Bangladesh", description: "নিরাপদে আপনার আমানত সঞ্চয় করুন ও সহজ ঋণের সুবিধা গ্রহণ করুন।", image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=650" },
-      { id: 2, tag: "টেলিকম অফার", title: "BNB টেলিকম রিচার্জ", description: "সব অপারেটরে আকর্ষণীয় ক্যাশব্যাক ও সুপার ফাস্ট ফ্লেক্সিলোড ড্রাইভে অফার!", image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=650" },
+      { id: 1, tag: "সঞ্চয় ও বিনিয়োগ", title: "Al Mayadin Bazar", description: "নিরাপদে আপনার আমানত সঞ্চয় করুন ও সহজ ঋণের সুবিধা গ্রহণ করুন।", image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=650" },
+      { id: 2, tag: "টেলিকম অফার", title: "AMB টেলিকম রিচার্জ", description: "সব অপারেটরে আকর্ষণীয় ক্যাশব্যাক ও সুপার ফাস্ট ফ্লেক্সিলোড ড্রাইভে অফার!", image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=650" },
       { id: 3, tag: "সুদমুক্ত ঋণ", title: "করযে হাসানা কল্যাণ তহবিল", description: "সব মেম্বারদের জন্য বিপদের সময়ে স্বস্তি ও সুদমুক্ত করযে হাসানা ঋণ সমাধান!", image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=650" }
     ];
     if (banners.length <= 1) return;
@@ -4890,7 +4890,7 @@ export default function AdminPanel(props: AdminPanelProps) {
       return;
     }
 
-    const mId = String(targetUser.memberId || autoGenerateMemberId() || ('BNB-' + Math.floor(100000 + Math.random() * 900000)));
+    const mId = String(targetUser.memberId || autoGenerateMemberId() || ('AMB-' + Math.floor(100000 + Math.random() * 900000)));
 
     // Optimistically update memory state immediately (< 0.1s UI response)
     setUsers(prev => prev.map((u, idx) => (u.uid === targetUid || u.id === targetUid) ? { 
@@ -5304,7 +5304,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         // Foreign & International Remittance Gateway Banks
         { id: 'SNB (সৌদি ব্যাংক)', name: 'SAUDI NATIONAL BANK (SNB ALAHLI)', acronym: 'SNB', branch: 'Riyadh Main Branch', routingNum: 'NCBKSA21', holder: 'BUSINESS NETWORK BANGLADESH', accNum: '640000010006087881869', iban: 'SA50 8000 0640 6080 1788 1869', visaNum: '', active: true, bgClass: 'bg-indigo-50 hover:bg-indigo-100 border-indigo-200', textClass: 'text-indigo-800', logoBgClass: 'bg-indigo-200', isInternational: true },
         { id: 'ENBD (দুবাই ব্যাংক)', name: 'EMIRATES NBD BANK (DUBAI)', acronym: 'ENBD', branch: 'Deira Branch, Dubai', routingNum: 'EBILAE2X', holder: 'BUSINESS NETWORK BANGLADESH', accNum: '120220000987456321458', iban: 'AE12 0220 0009 8745 6321 458', visaNum: '', active: true, bgClass: 'bg-indigo-50 hover:bg-indigo-100 border-indigo-200', textClass: 'text-indigo-800', logoBgClass: 'bg-indigo-200', isInternational: true },
-        { id: 'Western Union (ওয়েস্টার্ন ইউনিয়ন)', name: 'Western Union Remittance Gateway', acronym: 'WU', branch: 'Global Direct Wire', routingNum: 'SWIFT-WU-GLOBAL', holder: 'BNB OVERSEAS REMITTANCE', accNum: 'WU-8801965911728', iban: 'WU-8801965911728', visaNum: '', active: true, bgClass: 'bg-amber-50 hover:bg-amber-100 border-amber-200', textClass: 'text-amber-800', logoBgClass: 'bg-amber-200', isInternational: true }
+        { id: 'Western Union (ওয়েস্টার্ন ইউনিয়ন)', name: 'Western Union Remittance Gateway', acronym: 'WU', branch: 'Global Direct Wire', routingNum: 'SWIFT-WU-GLOBAL', holder: 'AMB OVERSEAS REMITTANCE', accNum: 'WU-8801965911728', iban: 'WU-8801965911728', visaNum: '', active: true, bgClass: 'bg-amber-50 hover:bg-amber-100 border-amber-200', textClass: 'text-amber-800', logoBgClass: 'bg-amber-200', isInternational: true }
       ];
       const updatedConfig = {
         ...appConfig,
@@ -5463,12 +5463,12 @@ export default function AdminPanel(props: AdminPanelProps) {
       setLoading(true);
       const userRef = doc(db, 'users', editingCardUser.uid);
       await updateDoc(userRef, {
-        bnbCardNumber: editCardNo.trim(),
-        bnbAccountNumber: editCardAcc.trim(),
-        bnbCardHolderName: editCardHolder.trim().toUpperCase(),
-        bnbCardExpiry: editCardExpiry.trim(),
-        bnbCardCvv: editCardCvv.trim(),
-        bnbCardStatus: editCardStatus
+        ambCardNumber: editCardNo.trim(),
+        ambAccountNumber: editCardAcc.trim(),
+        ambCardHolderName: editCardHolder.trim().toUpperCase(),
+        ambCardExpiry: editCardExpiry.trim(),
+        ambCardCvv: editCardCvv.trim(),
+        ambCardStatus: editCardStatus
       });
 
       // Submit automatic real-time notification
@@ -5497,7 +5497,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     try {
       setLoading(true);
       
-      let currentExp = targetUser.bnbCardExpiry || '';
+      let currentExp = targetUser.ambCardExpiry || '';
       let nextExpiry = '';
       const now = new Date();
       
@@ -5515,8 +5515,8 @@ export default function AdminPanel(props: AdminPanelProps) {
 
       const userRef = doc(db, 'users', targetUser.uid);
       await updateDoc(userRef, {
-        bnbCardExpiry: nextExpiry,
-        bnbCardStatus: 'active'
+        ambCardExpiry: nextExpiry,
+        ambCardStatus: 'active'
       });
 
       await addDoc(collection(db, 'user_notifications'), {
@@ -5695,7 +5695,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         price: Number(sdPrice),
         minQty: sdMinQty || '1 পিস',
         emoji: sdEmoji || '📦',
-        supplier: sdSupplier || 'BNB Wholesalers',
+        supplier: sdSupplier || 'AMB Wholesalers',
         status: 'active',
         createdAt: new Date().toISOString()
       };
@@ -5780,7 +5780,7 @@ export default function AdminPanel(props: AdminPanelProps) {
       const updateData: any = { status: newStatus };
       if (rId) {
         updateData.riderId = rId;
-        updateData.riderName = rName || 'BNB Rider';
+        updateData.riderName = rName || 'AMB Rider';
         updateData.riderPhone = rPhone || '';
       }
       if (newStatus === 'delivered') {
@@ -5839,7 +5839,7 @@ export default function AdminPanel(props: AdminPanelProps) {
       const res = await fetch(url, {
         headers: {
           'Accept-Language': 'bn,en',
-          'User-Agent': 'BNB-Cooperative-Admin-Panel-Geocoding'
+          'User-Agent': 'AMB-Cooperative-Admin-Panel-Geocoding'
         }
       });
       const data = await res.json();
@@ -5855,7 +5855,7 @@ export default function AdminPanel(props: AdminPanelProps) {
           const secondRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(secondQuery)}&limit=1`, {
             headers: {
               'Accept-Language': 'bn,en',
-              'User-Agent': 'BNB-Cooperative-Admin-Panel-Geocoding'
+              'User-Agent': 'AMB-Cooperative-Admin-Panel-Geocoding'
             }
           });
           const secondData = await secondRes.json();
@@ -5937,7 +5937,7 @@ export default function AdminPanel(props: AdminPanelProps) {
   const handleCreateRationCardManually = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const docId = rcNewCardNo.trim() || `BNB-RC-${Date.now()}`;
+      const docId = rcNewCardNo.trim() || `AMB-RC-${Date.now()}`;
       const newCard = {
         id: docId,
         userId: rcNewUserId.trim() || `man-${Date.now()}`,
@@ -6292,9 +6292,9 @@ export default function AdminPanel(props: AdminPanelProps) {
     const onCrossSyncTick = () => {
       fetchTransactionsFromDb();
     };
-    window.addEventListener('bnb_admin_sync_tick', onCrossSyncTick);
+    window.addEventListener('amb_admin_sync_tick', onCrossSyncTick);
     const onStorageSync = (e: StorageEvent) => {
-      if (e.key === 'bnb_admin_sync_tick') {
+      if (e.key === 'amb_admin_sync_tick') {
         fetchTransactionsFromDb();
       }
     };
@@ -6306,7 +6306,7 @@ export default function AdminPanel(props: AdminPanelProps) {
       clearInterval(txHeartbeat);
       window.removeEventListener('focus', onWindowFocusOrVisible);
       document.removeEventListener('visibilitychange', onVisibilityChange);
-      window.removeEventListener('bnb_admin_sync_tick', onCrossSyncTick);
+      window.removeEventListener('amb_admin_sync_tick', onCrossSyncTick);
       window.removeEventListener('storage', onStorageSync);
       if (unsubTransactions) {
         try { unsubTransactions(); } catch (e) {}
@@ -6526,7 +6526,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         id: doc.id,
         ...doc.data()
       }));
-      setBapAdminReqs(reqsList);
+      setBapAdminReqs(reqsList as any);
     }, (err) => {
       handleQueryError(err, "bap admin requests listener");
     });
@@ -7003,7 +7003,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     {
       id: 1,
       tag: "সঞ্চয় ও বিনিয়োগ",
-      title: "Business Network Bangladesh",
+      title: "Al Mayadin Bazar",
       description: "নিরাপদে আপনার আমানত সঞ্চয় করুন ও সহজ ঋণের সুবিধা গ্রহণ করুন।",
       bgGradient: "from-emerald-950 via-emerald-900 to-teal-950",
       image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=650"
@@ -7011,7 +7011,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     {
       id: 2,
       tag: "টেলিকম অফার",
-      title: "BNB টেলিকম রিচার্জ",
+      title: "AMB টেলিকম রিচার্জ",
       description: "সব অপারেটরে আকর্ষণীয় ক্যাশব্যাক ও সুপার ফাস্ট ফ্লেক্সিলোড ড্রাইভে অফার!",
       bgGradient: "from-slate-950 via-cyan-950 to-emerald-950",
       image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=650"
@@ -7041,7 +7041,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     {
       id: 1,
       tag: "সঞ্চয় ও বিনিয়োগ",
-      title: "Business Network Bangladesh",
+      title: "Al Mayadin Bazar",
       description: "নিরাপদে আপনার আমানত সঞ্চয় করুন ও সহজ ঋণের সুবিধা গ্রহণ করুন।",
       bgGradient: "from-emerald-950 via-emerald-900 to-teal-950",
       image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=650"
@@ -7049,7 +7049,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     {
       id: 2,
       tag: "টেলিকম অফার",
-      title: "BNB টেলিকম রিচার্জ",
+      title: "AMB টেলিকম রিচার্জ",
       description: "সব অপারেটরে আকর্ষণীয় ক্যাশব্যাক ও সুপার ফাস্ট ফ্লেক্সিলোড ড্রাইভে অফার!",
       bgGradient: "from-slate-950 via-cyan-950 to-emerald-950",
       image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=650"
@@ -7095,7 +7095,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     {
       id: 1,
       tag: "টেলিকম অফার",
-      title: "BNB টেলিকম রিচার্জ",
+      title: "AMB টেলিকম রিচার্জ",
       description: "সব অপারেটরে আকর্ষণীয় ক্যাশব্যাক ও সুপার ফাস্ট ফ্লেক্সিলোড ড্রাইভে অফার!",
       bgGradient: "from-slate-950 via-cyan-950 to-emerald-950",
       image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=650"
@@ -7103,7 +7103,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     {
       id: 2,
       tag: "সঞ্চয় ও বিনিয়োগ",
-      title: "Business Network Bangladesh",
+      title: "Al Mayadin Bazar",
       description: "নিরাপদে আপনার আমানত সঞ্চয় করুন ও সহজ ঋণের সুবিধা গ্রহণ করুন।",
       bgGradient: "from-emerald-950 via-emerald-900 to-teal-950",
       image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=650"
@@ -7130,7 +7130,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     {
       id: 2,
       tag: "সঞ্চয় ও বিনিয়োগ",
-      title: "Business Network Bangladesh",
+      title: "Al Mayadin Bazar",
       description: "নিরাপদে আপনার আমানত সঞ্চয় করুন ও সহজ ঋণের সুবিধা গ্রহণ করুন।",
       bgGradient: "from-emerald-950 via-emerald-900 to-teal-950",
       image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=650"
@@ -7138,7 +7138,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     {
       id: 3,
       tag: "টেলিকম অফার",
-      title: "BNB টেলিকম রিচার্জ",
+      title: "AMB টেলিকম রিচার্জ",
       description: "সব অপারেটরে আকর্ষণীয় ক্যাশব্যাক ও সুপার ফাস্ট ফ্লেক্সিলোড ড্রাইভে অফার!",
       bgGradient: "from-slate-950 via-cyan-950 to-emerald-950",
       image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=650"
@@ -7179,7 +7179,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     {
       id: 1,
       tag: "এজেন্ট পয়েন্ট",
-      title: "BNB এজেন্ট প্রতিনিধি পোর্টাল",
+      title: "AMB এজেন্ট প্রতিনিধি পোর্টাল",
       description: "আপনার এলাকায় প্রতিনিধি হিসেবে যোগ দিন এবং আকর্ষণীয় কমিশন আয় করুন।",
       bgGradient: "from-indigo-950 via-slate-900 to-indigo-950",
       image: "https://images.unsplash.com/photo-1556742049-0a6755490795?auto=format&fit=crop&q=80&w=650"
@@ -7190,7 +7190,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     {
       id: 1,
       tag: "কুরিয়ার সার্ভিস",
-      title: "BNB ইনস্ট্যান্ট কুরিয়ার ও পার্সেল",
+      title: "AMB ইনস্ট্যান্ট কুরিয়ার ও পার্সেল",
       description: "দেশজুড়ে নিরাপদ ও দ্রুততম ডেলিভারি সেবায় আপনার পার্সেল পাঠান।",
       bgGradient: "from-cyan-950 via-slate-900 to-blue-950",
       image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=650"
@@ -7471,8 +7471,8 @@ export default function AdminPanel(props: AdminPanelProps) {
     const totalCount = Array.isArray(users) ? users.length : 0;
     if (Array.isArray(users)) {
       users.forEach((u) => {
-        if (u.memberId && u.memberId.startsWith('BNB')) {
-          const serialPart = u.memberId.replace('BNB', '');
+        if (u.memberId && u.memberId.startsWith('AMB')) {
+          const serialPart = u.memberId.replace('AMB', '');
           const serialNum = parseInt(serialPart, 10);
           if (!isNaN(serialNum) && serialNum > maxSerial) {
             maxSerial = serialNum;
@@ -7481,16 +7481,16 @@ export default function AdminPanel(props: AdminPanelProps) {
       });
     }
     const nextSerial = Math.max(maxSerial, totalCount) + 1;
-    const nextId = `BNB${String(nextSerial).padStart(8, '0')}`;
+    const nextId = `AMB${String(nextSerial).padStart(8, '0')}`;
     setNewMemberId(nextId);
     return nextId;
   };
 
-  // Re-sequence all existing member IDs to start cleanly from 1..N (BNB00000001, BNB00000002...)
+  // Re-sequence all existing member IDs to start cleanly from 1..N (AMB00000001, AMB00000002...)
   const handleResequenceAllMemberIds = async () => {
     requestConfirm(
       '🔢 সদস্য সিরিয়াল 1 থেকে ঠিক ও সাজিয়ে দিন',
-      `আপনি কি বর্তমান সকল ${users.length} জন সদস্যের সিরিয়াল আইডি 1 থেকে পরপর (BNB00000001, BNB00000002... BNB${String(users.length).padStart(8, '0')}) নতুন করে সাজাতে চান?\n\nএটি সম্পন্ন হলে সমস্ত সদস্যের সিরিয়াল আইডি 1 থেকে 1,00,000 পর্যন্ত সঠিকভাবে বিন্যস্ত থাকবে এবং এলোমেলো নম্বরগুলো সংশোধন হয়ে যাবে।`,
+      `আপনি কি বর্তমান সকল ${users.length} জন সদস্যের সিরিয়াল আইডি 1 থেকে পরপর (AMB00000001, AMB00000002... AMB${String(users.length).padStart(8, '0')}) নতুন করে সাজাতে চান?\n\nএটি সম্পন্ন হলে সমস্ত সদস্যের সিরিয়াল আইডি 1 থেকে 1,00,000 পর্যন্ত সঠিকভাবে বিন্যস্ত থাকবে এবং এলোমেলো নম্বরগুলো সংশোধন হয়ে যাবে।`,
       async () => {
         setIsResequencing(true);
         try {
@@ -7547,7 +7547,7 @@ export default function AdminPanel(props: AdminPanelProps) {
           // Assign serial numbers strictly 1..N for regular members
           regularMembers.forEach((uObj, idx) => {
             const serialNum = idx + 1;
-            const newMemberId = `BNB${String(serialNum).padStart(8, '0')}`;
+            const newMemberId = `AMB${String(serialNum).padStart(8, '0')}`;
             updatedUserMap[uObj.id] = newMemberId;
 
             updatePromises.push(
@@ -7571,7 +7571,7 @@ export default function AdminPanel(props: AdminPanelProps) {
             memberId: updatedUserMap[u.uid] || u.memberId
           })));
 
-          const successMsg = `🎉 সফলভাবে ${regularMembers.length} জন সাধারণ সদস্যের সিরিয়াল নম্বর 1 থেকে পরপর পুনরায় সাজানো হয়েছে!\nপ্রারম্ভিক আইডি: BNB00000001\nশেষের আইডি: BNB${String(regularMembers.length).padStart(8, '0')}\n(মেইন এডমিন একাউন্টে কোনো সিরিয়াল নম্বর রাখা হয়নি)`;
+          const successMsg = `🎉 সফলভাবে ${regularMembers.length} জন সাধারণ সদস্যের সিরিয়াল নম্বর 1 থেকে পরপর পুনরায় সাজানো হয়েছে!\nপ্রারম্ভিক আইডি: AMB00000001\nশেষের আইডি: AMB${String(regularMembers.length).padStart(8, '0')}\n(মেইন এডমিন একাউন্টে কোনো সিরিয়াল নম্বর রাখা হয়নি)`;
           requestAlert('সিরিয়াল আইডি সংশোধন সম্পন্ন', successMsg);
         } catch (err: any) {
           console.error("Resequence error:", err);
@@ -7927,7 +7927,7 @@ export default function AdminPanel(props: AdminPanelProps) {
             return { ...u, balance: curBal + approvedAmount, mainBalance: curBal + approvedAmount };
           } else if (tx.type === 'coop_savings_deposit' || tx.type === 'samity_deposit') {
             const curBal = getEffectiveBalance(u);
-            const isMainWalletPay = !tx.paymentMethod || tx.paymentMethod === 'Main Balance' || tx.paymentMethod === 'BNB Wallet' || tx.paymentMethod === 'মেইন ব্যালেন্স' || tx.paymentMethod === 'Wallet' || tx.paymentMethod === 'ক্যাশ/মেইন ওয়ালেট';
+            const isMainWalletPay = !tx.paymentMethod || tx.paymentMethod === 'Main Balance' || tx.paymentMethod === 'Al Mayadin Wallet' || tx.paymentMethod === 'মেইন ব্যালেন্স' || tx.paymentMethod === 'Wallet' || tx.paymentMethod === 'ক্যাশ/মেইন ওয়ালেট';
             const newBal = isMainWalletPay ? Math.max(0, curBal - approvedAmount) : curBal;
             const newSav = (u.savings || 0) + approvedAmount;
             const newPaid = normalizePaidMonthsArray(u.samityPaidMonths || [], newSav, u.monthlySavingsTarget || 1000);
@@ -8017,7 +8017,7 @@ export default function AdminPanel(props: AdminPanelProps) {
             const existingPaid = freshUser.samityPaidMonths || [];
             const updatedPaid = normalizePaidMonthsArray(existingPaid, newSavings, targetRate);
             
-            const isMainWalletPay = !tx.paymentMethod || tx.paymentMethod === 'Main Balance' || tx.paymentMethod === 'BNB Wallet' || tx.paymentMethod === 'মেইন ব্যালেন্স' || tx.paymentMethod === 'Wallet' || tx.paymentMethod === 'ক্যাশ/মেইন ওয়ালেট';
+            const isMainWalletPay = !tx.paymentMethod || tx.paymentMethod === 'Main Balance' || tx.paymentMethod === 'Al Mayadin Wallet' || tx.paymentMethod === 'মেইন ব্যালেন্স' || tx.paymentMethod === 'Wallet' || tx.paymentMethod === 'ক্যাশ/মেইন ওয়ালেট';
             if (isMainWalletPay) {
               liveBal = Math.max(0, liveBal - approvedAmount);
             }
@@ -8039,7 +8039,7 @@ export default function AdminPanel(props: AdminPanelProps) {
             });
           } else if (tx.type === 'loan_repayment') {
             const currentDue = Number(freshUser.dueLoan) || 0;
-            const isMainWalletPay = !tx.paymentMethod || tx.paymentMethod === 'Main Balance' || tx.paymentMethod === 'BNB Wallet' || tx.paymentMethod === 'মেইন ব্যালেন্স' || tx.paymentMethod === 'Wallet';
+            const isMainWalletPay = !tx.paymentMethod || tx.paymentMethod === 'Main Balance' || tx.paymentMethod === 'Al Mayadin Wallet' || tx.paymentMethod === 'মেইন ব্যালেন্স' || tx.paymentMethod === 'Wallet';
             if (isMainWalletPay) {
               liveBal = Math.max(0, liveBal - approvedAmount);
             }
@@ -8107,7 +8107,7 @@ export default function AdminPanel(props: AdminPanelProps) {
                 typeLabel: 'সমিতি স্থানান্তর ব্যালেন্স লাভ',
                 status: 'success',
                 isApproved: true,
-                paymentMethod: 'BNB Wallet',
+                paymentMethod: 'Al Mayadin Wallet',
                 phone: (tx as any).userPhone || '',
                 createdAt: new Date().toISOString(),
                 description: `মেম্বার ${tx.userName || ''} (${tx.memberId || ''}) হতে স্থানান্তর ব্যালেন্স গ্রহণ`
@@ -8371,7 +8371,7 @@ export default function AdminPanel(props: AdminPanelProps) {
           targetTx.type === 'bill_pay' as any ||
           (targetTx.type === 'coop_savings_deposit' as any && (
             targetTx.paymentMethod === 'Main Balance' || 
-            targetTx.paymentMethod === 'BNB Wallet' || 
+            targetTx.paymentMethod === 'Al Mayadin Wallet' || 
             targetTx.paymentMethod === 'মেইন ব্যালেন্স'
           ));
 
@@ -8853,7 +8853,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         await updateDoc(userRef, { role: 'admin' });
       }
       
-      alert('আবেদনকারীকে সফলভাবে BAP/BNB এডমিন মডিউল অনুমোদন দেওয়া হয়েছে!');
+      alert('আবেদনকারীকে সফলভাবে BAP/AMB এডমিন মডিউল অনুমোদন দেওয়া হয়েছে!');
     } catch (err) {
       console.error(err);
     }
@@ -9025,7 +9025,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         rationDistrict: editRationEnabled ? safeTrim(editRationDistrict) : '',
         rationIssueDate: editRationEnabled ? (safeTrim(editRationIssueDate) || '2026-01-01') : '',
         rationExpiryDate: editRationEnabled ? (safeTrim(editRationExpiryDate) || '2030-12-31') : '',
-        rationSignature: editRationEnabled ? (safeTrim(editRationSignature) || 'BNB Ration Authority') : '',
+        rationSignature: editRationEnabled ? (safeTrim(editRationSignature) || 'AMB Ration Authority') : '',
         rationSecurityCode: editRationEnabled ? (safeTrim(editRationSecurityCode) || '1234') : '',
         rationPhotoUrl: editRationEnabled ? safeTrim(editRationPhotoUrl) : ''
       };
@@ -9320,7 +9320,7 @@ export default function AdminPanel(props: AdminPanelProps) {
           securityCode: editRationSecurityCode || '1234',
           issueDate: editRationIssueDate || '2026-01-01',
           expiryDate: editRationExpiryDate || '2030-12-31',
-          signature: editRationSignature || 'BNB Ration Authority',
+          signature: editRationSignature || 'AMB Ration Authority',
           photoUrl: editRationPhotoUrl || '',
           status: 'active',
           updatedAt: serverTimestamp()
@@ -9397,7 +9397,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         String((tx as any).paymentMethod || '').toLowerCase().includes('transfer');
     }
     if (filterTxType === 'loan_repayment') return type === 'loan_repayment' || type.includes('loan');
-    if (filterTxType === 'telecom') return type === 'telecom' || type.includes('recharge');
+    if ((filterTxType as any) === 'telecom' || filterTxType === 'telecom_recharge') return type === 'telecom' || type.includes('recharge');
     return tx.type === filterTxType;
   });
 
@@ -9871,7 +9871,7 @@ export default function AdminPanel(props: AdminPanelProps) {
   // Auto-Deductions & Section Notification System (অটো কর্তন নোটিশ সিস্টেম - হুবহু নোটিফিকেশন রেপ্লিকা)
   const [adminSeenNoticeIds, setAdminSeenNoticeIds] = useState<string[]>(() => {
     try {
-      const stored = localStorage.getItem('bnb_admin_seen_notice_ids');
+      const stored = localStorage.getItem('amb_admin_seen_notice_ids');
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
@@ -9886,7 +9886,7 @@ export default function AdminPanel(props: AdminPanelProps) {
     setAdminSeenNoticeIds(prev => {
       const next = Array.from(new Set([...prev, ...toAdd]));
       try {
-        localStorage.setItem('bnb_admin_seen_notice_ids', JSON.stringify(next));
+        localStorage.setItem('amb_admin_seen_notice_ids', JSON.stringify(next));
       } catch (e) {
         console.error(e);
       }
@@ -10189,15 +10189,15 @@ export default function AdminPanel(props: AdminPanelProps) {
 
   // Expose window handlers for global back button step-by-step navigation
   useEffect(() => {
-    (window as any).bnb_admin_modal_open = activeModalCount > 0;
-    (window as any).bnb_admin_close_modal = closeAllAdminModals;
-    (window as any).bnb_admin_viewing_grid = viewingGrid;
-    (window as any).bnb_admin_set_viewing_grid = setViewingGrid;
+    (window as any).amb_admin_modal_open = activeModalCount > 0;
+    (window as any).amb_admin_close_modal = closeAllAdminModals;
+    (window as any).amb_admin_viewing_grid = viewingGrid;
+    (window as any).amb_admin_set_viewing_grid = setViewingGrid;
     return () => {
-      delete (window as any).bnb_admin_modal_open;
-      delete (window as any).bnb_admin_close_modal;
-      delete (window as any).bnb_admin_viewing_grid;
-      delete (window as any).bnb_admin_set_viewing_grid;
+      delete (window as any).amb_admin_modal_open;
+      delete (window as any).amb_admin_close_modal;
+      delete (window as any).amb_admin_viewing_grid;
+      delete (window as any).amb_admin_set_viewing_grid;
     };
   }, [activeModalCount, viewingGrid, closeAllAdminModals]);
 
@@ -11333,7 +11333,7 @@ export default function AdminPanel(props: AdminPanelProps) {
             <button
               type="button"
               onClick={() => {
-                localStorage.setItem('bnb_admin_mode', 'true');
+                localStorage.setItem('amb_admin_mode', 'true');
                 onBack();
               }}
               className="px-2.5 sm:px-3 py-1 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-full text-[10px] sm:text-xs flex items-center gap-1 shadow-md transition active:scale-95 cursor-pointer shrink-0 border border-amber-300"

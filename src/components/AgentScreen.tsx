@@ -21,7 +21,7 @@ import {
   ArrowRight, 
   CheckCircle,
   Eye,
-  Map,
+  Map as LucideMap,
   User,
   Heart,
   Send,
@@ -138,13 +138,13 @@ export default function AgentScreen({ user, onBack, appConfig }: AgentScreenProp
 
   // Privacy: Share My Location toggle
   const [isSharingLocation, setIsSharingLocation] = useState<boolean>(() => {
-    return localStorage.getItem('bnb_share_location') !== 'false';
+    return localStorage.getItem('amb_share_location') !== 'false';
   });
 
   // Favorites state
   const [favorites, setFavorites] = useState<string[]>([]);
   useEffect(() => {
-    const saved = localStorage.getItem('bnb_favorite_agents');
+    const saved = localStorage.getItem('amb_favorite_agents');
     if (saved) {
       try {
         setFavorites(JSON.parse(saved));
@@ -159,7 +159,7 @@ export default function AgentScreen({ user, onBack, appConfig }: AgentScreenProp
       ? favorites.filter(id => id !== agentId)
       : [...favorites, agentId];
     setFavorites(updated);
-    localStorage.setItem('bnb_favorite_agents', JSON.stringify(updated));
+    localStorage.setItem('amb_favorite_agents', JSON.stringify(updated));
   };
 
   // Agent Reporting States
@@ -207,7 +207,7 @@ export default function AgentScreen({ user, onBack, appConfig }: AgentScreenProp
   // Multi-Language translations dictionary
   const trans = {
     bn: {
-      title: 'BNB এজেন্ট ম্যাপ',
+      title: 'AMB এজেন্ট ম্যাপ',
       subtitle: 'বিশ্বজুড়ে আমাদের অনুমোদিত এজেন্ট নেটওয়ার্ক',
       onlineBadge: '24/7 লাইভ',
       locateBtn: 'লোকেশন সনাক্ত করুন 📍',
@@ -265,7 +265,7 @@ export default function AgentScreen({ user, onBack, appConfig }: AgentScreenProp
       saveProfileBtn: 'প্রোফাইল তথ্য সংরক্ষণ করুন 💾'
     },
     en: {
-      title: 'BNB Agent Map Portal',
+      title: 'AMB Agent Map Portal',
       subtitle: 'Our Approved Cooperative Agent Network Worldwide',
       onlineBadge: '24/7 Live',
       locateBtn: 'Detect Location 📍',
@@ -828,7 +828,7 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
 
   const fetchAgents = async () => {
     try {
-      const agentsMap = new Map<string, Agent>();
+      const agentsMap = new globalThis.Map<string, Agent>();
 
       const processDataAndAdd = (docId: string, data: any) => {
         if (!data) return;
@@ -1165,7 +1165,7 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
       const newAgentObj = {
         id: newAgentId,
         name: app.userName,
-        role: app.role || 'BNB Co-op Agent',
+        role: app.role || 'AMB Co-op Agent',
         country: app.country || 'Bangladesh',
         flag: '🇧🇩',
         city: app.area || 'ঢাকা',
@@ -1723,7 +1723,7 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
   const filteredAgents = useMemo(() => {
     return agentsList.filter(agent => {
       const queryLower = searchQuery.toLowerCase();
-      const agentIdStr = `BNB-AGT-${agent.id.substring(0,6).toUpperCase()}`;
+      const agentIdStr = `AMB-AGT-${agent.id.substring(0,6).toUpperCase()}`;
       const matchesSearch = 
         agent.name.toLowerCase().includes(queryLower) ||
         agent.country.toLowerCase().includes(queryLower) ||
@@ -1782,7 +1782,7 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
   const handleToggleSharing = async () => {
     const nextState = !isSharingLocation;
     setIsSharingLocation(nextState);
-    localStorage.setItem('bnb_share_location', nextState ? 'true' : 'false');
+    localStorage.setItem('amb_share_location', nextState ? 'true' : 'false');
     if (!nextState && user?.uid) {
       await stopSharingAgentLocation(user.uid);
     }
@@ -2058,7 +2058,7 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
                     <span>কল করুন</span>
                   </a>
                   <a 
-                    href={`https://wa.me/${processedAgents[0].whatsapp ? processedAgents[0].whatsapp.replace(/[^0-9]/g, '') : processedAgents[0].phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('আসসালামু আলাইকুম, আমি BNB কো-অপারেটিভ অ্যাপ থেকে আপনার কাছে সার্ভিস নিতে যোগাযোগ করছি।')}`}
+                    href={`https://wa.me/${processedAgents[0].whatsapp ? processedAgents[0].whatsapp.replace(/[^0-9]/g, '') : processedAgents[0].phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('আসসালামু আলাইকুম, আমি AMB কো-অপারেটিভ অ্যাপ থেকে আপনার কাছে সার্ভিস নিতে যোগাযোগ করছি।')}`}
                     target="_blank"
                     rel="noreferrer"
                     className="py-2 bg-[#25D366] hover:bg-[#20ba56] text-white rounded-xl text-[9.5px] font-black flex items-center justify-center gap-1 transition shadow-xs text-center cursor-pointer"
@@ -2104,10 +2104,10 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
                   <div className="bg-gradient-to-r from-[#0D9488] to-teal-800 rounded-2xl p-4 text-white space-y-1">
                     <h3 className="text-xs font-black text-white flex items-center gap-1.5">
                       <Briefcase className="w-4.5 h-4.5 text-emerald-250 shrink-0" />
-                      BNB কো-অপারেটিভ এজেন্ট আবেদনপত্র
+                      AMB কো-অপারেটিভ এজেন্ট আবেদনপত্র
                     </h3>
                     <p className="text-[10px] text-emerald-100 font-semibold leading-relaxed">
-                      আপনার এলাকার ক্ষুদ্র ক্ষুদ্র সঞ্চয়কে গতিশীল করতে এবং রেমিট্যান্স কালেকশনে BNB এজেন্ট হিসেবে ক্যারিয়ার শুরু করুন। নিচের ফর্মটি সতর্কতার সাথে পূরণ করুন।
+                      আপনার এলাকার ক্ষুদ্র ক্ষুদ্র সঞ্চয়কে গতিশীল করতে এবং রেমিট্যান্স কালেকশনে AMB এজেন্ট হিসেবে ক্যারিয়ার শুরু করুন। নিচের ফর্মটি সতর্কতার সাথে পূরণ করুন।
                     </p>
                   </div>
 
@@ -2567,7 +2567,7 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
                     <div className="grid grid-cols-2 gap-1">
                       {/* WhatsApp Button */}
                       <a 
-                        href={`https://wa.me/${agent.whatsapp ? agent.whatsapp.replace(/[^0-9]/g, '') : agent.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('আসসালামু আলাইকুম, আমি BNB কো-অপারেটিভ অ্যাপ থেকে যোগাযোগ করছি।')}`}
+                        href={`https://wa.me/${agent.whatsapp ? agent.whatsapp.replace(/[^0-9]/g, '') : agent.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('আসসালামু আলাইকুম, আমি AMB কো-অপারেটিভ অ্যাপ থেকে যোগাযোগ করছি।')}`}
                         target="_blank"
                         rel="noreferrer"
                         className="py-1.5 bg-[#25D366] hover:bg-[#20ba56] text-white text-[8.5px] font-black rounded-xl flex items-center justify-center gap-1 transition text-center shadow-3xs cursor-pointer"
@@ -2774,7 +2774,7 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
             <div className="bg-white border border-slate-150 rounded-2.5xl p-5 shadow-3xs space-y-4">
               <h2 className="text-xs font-black text-slate-800 uppercase tracking-widest border-b pb-2 flex items-center gap-1.5">
                 <Globe className="w-4.5 h-4.5 text-[#0D9488]" />
-                BNB কো-অপারেটিভ আন্তর্জাতিক এজেন্ট কার্ড
+                AMB কো-অপারেটিভ আন্তর্জাতিক এজেন্ট কার্ড
               </h2>
 
               {/* Digital Agent Identity Card */}
@@ -2784,7 +2784,7 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
                 
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-sm font-black text-slate-100 font-sans tracking-tight mb-0.5">BNB Business Co-operative Ltd.</h3>
+                    <h3 className="text-sm font-black text-slate-100 font-sans tracking-tight mb-0.5">AMB Business Co-operative Ltd.</h3>
                     <p className="text-[7.5px] text-[#22C55E] uppercase font-black tracking-widest font-mono">OFFICIAL GLOBAL AGENT</p>
                   </div>
                   {/* Flag / status symbol */}
@@ -2802,7 +2802,7 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
                   <div>
                     <h4 className="text-[11.5px] font-black text-white leading-tight font-sans">{user.name || 'সম্মানিত সদস্য'}</h4>
                     <p className="text-[8px] text-slate-350 leading-tight block truncate mt-0.5">District Agent (Candidate)</p>
-                    <p className="text-[8px] text-yellow-350 font-mono mt-0.5">ID: BNB-AGT-TEMP-{user.uid?.substring(0, 5).toUpperCase()}</p>
+                    <p className="text-[8px] text-yellow-350 font-mono mt-0.5">ID: AMB-AGT-TEMP-{user.uid?.substring(0, 5).toUpperCase()}</p>
                   </div>
                 </div>
 
@@ -2817,7 +2817,7 @@ const assignUniqueAgentCoordinates = (list: Agent[]): Agent[] => {
 
               <div className="bg-slate-50 border border-slate-150 p-3.5 rounded-2xl text-[10px] text-slate-600 leading-relaxed font-semibold">
                 <p className="font-black text-slate-800 text-[11px] mb-1">ℹ️ অনুমোদন প্রক্রিয়াঃ</p>
-                আপনার আবেদনপত্রটি দাখিল হওয়ার পর, BNB কেন্দ্রীয় গভর্নিং বোর্ড প্রতিটি এলাকার কোটা অনুযায়ী তথ্য রিভিও করে থাকে। অনুমোদন সম্পন্ন হলেই আপনার আইডি কার্ডটি সচল হবে এবং আপনি আপনার এলাকায় কালেকশন পয়েন্ট ও কিস্তি গ্রহণ সেবা শুরু করতে পারবেন।
+                আপনার আবেদনপত্রটি দাখিল হওয়ার পর, AMB কেন্দ্রীয় গভর্নিং বোর্ড প্রতিটি এলাকার কোটা অনুযায়ী তথ্য রিভিও করে থাকে। অনুমোদন সম্পন্ন হলেই আপনার আইডি কার্ডটি সচল হবে এবং আপনি আপনার এলাকায় কালেকশন পয়েন্ট ও কিস্তি গ্রহণ সেবা শুরু করতে পারবেন।
               </div>
             </div>
           </div>

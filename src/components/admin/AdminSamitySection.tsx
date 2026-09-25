@@ -25,14 +25,14 @@ import { User, Transaction, Notice, Offer, BapReport, BapGroup, BapAdminRequest,
 import { normalizeMemberId, formatBanglaAmount, normalizePhoneNumber, findUserInFirestoreByPhone, getNextSequentialMemberId, deleteUserCompletelyFromDatabase, convertBengaliToEnglishDigits } from '../../lib/memberUtils';
 import { sortTransactionsNewestFirst, getTxTime } from '../../lib/transactionUtils';
 import { saveAppConfig, DEFAULT_QARD_CONFIG } from '../../lib/config';
-import { BNBLogo } from '../BNBLogo';
+import { AMBLogo } from '../AMBLogo';
 import { HeaderPendingModal } from '../HeaderPendingModal';
 import SamityScreen from '../SamityScreen';
 import UnifiedBackButton from '../UnifiedBackButton';
 import SamityAdmin from '../SamityAdmin';
 import SafiPremiumShop from '../SafiPremiumShop';
 import TelecomAdmin from '../TelecomAdmin';
-import BnbSalaryAdmin from '../BnbSalaryAdmin';
+import AmbSalaryAdmin from '../AmbSalaryAdmin';
 import { HistoryRetentionSettings } from '../HistoryRetentionSettings';
 import { runWalletEndToEndTests, TestResultItem } from '../../lib/walletTests';
 import { 
@@ -1064,7 +1064,7 @@ export function AdminSamitySection(props: any) {
                   <span>📌 সদস্য সিরিয়াল ও রেজিষ্ট্রেশন কন্ট্রোল</span>
                 </h4>
                 <p className="text-[10px] text-slate-500 truncate">
-                  সদস্যদের সিরিয়াল আইডি 1 থেকে পরপর (BNB00000001 - 1,00,000) সুবিন্যস্ত রাখুন বা নতুন সদস্য যোগ করুন।
+                  সদস্যদের সিরিয়াল আইডি 1 থেকে পরপর (AMB00000001 - 1,00,000) সুবিন্যস্ত রাখুন বা নতুন সদস্য যোগ করুন।
                 </p>
               </div>
               <div className="flex items-center gap-1.5 w-full sm:w-auto shrink-0">
@@ -1156,14 +1156,14 @@ export function AdminSamitySection(props: any) {
                   {/* Row 2: Member ID Normalization & Groups */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">সদস্য আইডি (BNB ফরম্যাট)</label>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">সদস্য আইডি (AMB ফরম্যাট)</label>
                       <div className="flex gap-1.5">
                         <input
                           type="text"
                           required
                           value={newMemberId}
                           onChange={(e) => setNewMemberId(e.target.value.toUpperCase())}
-                          placeholder="BNB00000001"
+                          placeholder="AMB00000001"
                           className="flex-1 bg-white border border-slate-250 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-850 outline-none focus:border-[#00a884]"
                         />
                         <button
@@ -1297,7 +1297,7 @@ export function AdminSamitySection(props: any) {
                             e.target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                           }, 250);
                         }}
-                        placeholder="সদস্যের নাম, মোবাইল নাম্বার অথবা মেম্বার আইডি (যেমন: BNB00000030) দিয়ে খুঁজুন..."
+                        placeholder="সদস্যের নাম, মোবাইল নাম্বার অথবা মেম্বার আইডি (যেমন: AMB00000030) দিয়ে খুঁজুন..."
                         className="w-full pl-9 pr-9 py-2 bg-slate-50 border border-slate-200 focus:border-[#00a884] focus:bg-white rounded-xl text-xs font-bold text-slate-800 outline-none transition shadow-2xs"
                       />
                       {generalMemberSearch && (
@@ -1535,7 +1535,7 @@ export function AdminSamitySection(props: any) {
                                           </span>
                                         ) : (
                                           <span className="text-[8.5px] font-black bg-sky-600 text-white border border-sky-700 px-1.5 py-0.2 rounded inline-flex items-center gap-0.5 shadow-2xs">
-                                            📱 নরমাল সদস্য (BNB কোম্পানি ইনভেস্টার)
+                                            📱 নরমাল সদস্য (AMB কোম্পানি ইনভেস্টার)
                                           </span>
                                         )}
 

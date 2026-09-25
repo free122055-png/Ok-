@@ -59,7 +59,7 @@ export default function AgentProfileCard({
     const lat = agent.realLat !== undefined ? agent.realLat : agent.lat;
     const lng = agent.realLng !== undefined ? agent.realLng : agent.lng;
     navigator.clipboard.writeText(
-      `BNB Agent: ${agent.name}, Phone: ${agent.phone}, Map URL: https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+      `AMB Agent: ${agent.name}, Phone: ${agent.phone}, Map URL: https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
     );
     alert(lang === 'bn' ? 'এজেন্টের তথ্য সফলভাবে ক্লিপবোর্ডে কপি করা হয়েছে!' : 'Agent information successfully copied to clipboard!');
   };
@@ -90,7 +90,7 @@ export default function AgentProfileCard({
           <div>
             <h4 className="text-xs font-black text-slate-100 tracking-tight flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              BNB Cooperative Ltd.
+              AMB Cooperative Ltd.
             </h4>
             <p className="text-[7px] text-[#22C55E] font-black tracking-widest uppercase font-mono">
               {agent.role || 'APPROVED CO-OP AGENT'}
@@ -123,7 +123,7 @@ export default function AgentProfileCard({
               {agent.verified && <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0 fill-emerald-400/10" />}
             </h3>
             <p className="text-[8px] text-slate-350 font-mono mt-0.5">
-              ID: BNB-AGT-{agent.id.substring(0, 6).toUpperCase()}
+              ID: AMB-AGT-{agent.id.substring(0, 6).toUpperCase()}
             </p>
             <p className="text-[8px] text-[#22C55E] bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full inline-block mt-1 font-bold">
               ● {agent.status === 'Available' ? t.agentCardStatusActive : agent.status === 'Busy' ? t.agentCardStatusBusy : t.agentCardStatusOffline}

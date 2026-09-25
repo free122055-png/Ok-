@@ -391,7 +391,7 @@ export async function processUserSamitySavingsAutoDeduction(
         amount: totalToDeduct,
         status: 'approved',
         isApproved: true,
-        paymentMethod: 'BNB Wallet',
+        paymentMethod: 'Al Mayadin Wallet',
         description: options?.customNote || `মেইন ব্যালেন্স থেকে ${monthNamesStr} সমবায় সঞ্চয় কিস্তি ৳${totalToDeduct.toLocaleString('bn-BD')} টাকা স্বয়ংক্রিয়ভাবে কর্তন করে সঞ্চয় ফাণ্ডে জমা করা হয়েছে।`,
         createdAt: nowIso,
         receiptNo: receiptCode
@@ -591,7 +591,7 @@ export async function adminRefundAllFutureAdvanceMonths(
         amount: refundAmount,
         status: 'approved',
         isApproved: true,
-        paymentMethod: 'BNB Wallet',
+        paymentMethod: 'Al Mayadin Wallet',
         description: `অগ্রিম মাসের (${monthNames}) সঞ্চয় কিস্তি ভুলবশত কর্তন হয়েছিল। এডমিন সিস্টেম কর্তৃক ৳${refundAmount.toLocaleString('bn-BD')} টাকা সদস্যের মেইন ব্যালেন্সে ফেরত প্রদান করা হয়েছে।`,
         createdAt: nowIso,
         receiptNo: `REF-ADV-${Date.now()}`
@@ -719,7 +719,7 @@ export async function adminProcessSamityMonthSettlement({
           amount: totalRefund,
           status: 'approved',
           isApproved: true,
-          paymentMethod: 'BNB Wallet',
+          paymentMethod: 'Al Mayadin Wallet',
           description: adminNote || `এডমিন প্যানেল কর্তৃক ${monthNamesStr} সমবায় সঞ্চয় কিস্তি ৳${totalRefund.toLocaleString('bn-BD')} টাকা সমবায় তহবিল থেকে প্রত্যাহার করে মেইন ব্যালেন্সে ফেরত প্রদান করা হয়েছে।`,
           createdAt: nowIso,
           receiptNo: receiptCode
@@ -791,7 +791,7 @@ export async function adminProcessSamityMonthSettlement({
         amount: totalAmount,
         status: 'approved',
         isApproved: true,
-        paymentMethod: deductFromMainBalance ? 'BNB Wallet' : 'Admin Cash/Direct Deposit',
+        paymentMethod: deductFromMainBalance ? 'Al Mayadin Wallet' : 'Admin Cash/Direct Deposit',
         description: adminNote || (deductFromMainBalance 
           ? `এডমিন প্যানেল কর্তৃক মেইন ব্যালেন্স থেকে ${monthNamesStr} সমবায় সঞ্চয় কিস্তি ৳${totalAmount.toLocaleString('bn-BD')} টাকা কর্তন ও সঞ্চয়ে জমা করা হয়েছে।`
           : `এডমিন কর্তৃক ${monthNamesStr} সমবায় সঞ্চয় কিস্তি ৳${totalAmount.toLocaleString('bn-BD')} টাকা সরাসরি সঞ্চয় হিসেবে জমা করা হয়েছে।`),

@@ -2319,7 +2319,7 @@ export default function TelecomAdmin({
 
                 <div className="bg-emerald-50 border border-emerald-150 rounded-xl p-3 flex items-start gap-2 text-emerald-800 text-[10px] font-bold">
                   <span>💡</span>
-                  <p className="leading-normal">এটি সরাসরি সদস্যদের BNB টেলিকম স্ক্রিনের সবুজ রানিং নোটিশ স্ক্রলিং বারে রিয়েল-টাইমে আপডেট হবে।</p>
+                  <p className="leading-normal">এটি সরাসরি সদস্যদের AMB টেলিকম স্ক্রিনের সবুজ রানিং নোটিশ স্ক্রলিং বারে রিয়েল-টাইমে আপডেট হবে।</p>
                 </div>
 
                 <button
@@ -3826,7 +3826,7 @@ export default function TelecomAdmin({
 
                 <div className="bg-emerald-50 border border-emerald-150 rounded-xl p-3 flex items-start gap-2 text-emerald-800 text-[10px] font-bold">
                   <span>💡</span>
-                  <p className="leading-normal">এটি সরাসরি সদস্যদের BNB টেলিকম স্ক্রিনের সবুজ রানিং নোটিশ স্ক্রলিং বারে রিয়েল-টাইমে আপডেট হবে।</p>
+                  <p className="leading-normal">এটি সরাসরি সদস্যদের AMB টেলিকম স্ক্রিনের সবুজ রানিং নোটিশ স্ক্রলিং বারে রিয়েল-টাইমে আপডেট হবে।</p>
                 </div>
 
                 <button

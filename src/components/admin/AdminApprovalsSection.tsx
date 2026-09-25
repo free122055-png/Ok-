@@ -25,14 +25,14 @@ import { User, Transaction, Notice, Offer, BapReport, BapGroup, BapAdminRequest,
 import { normalizeMemberId, formatBanglaAmount, normalizePhoneNumber, findUserInFirestoreByPhone, getNextSequentialMemberId, deleteUserCompletelyFromDatabase, convertBengaliToEnglishDigits } from '../../lib/memberUtils';
 import { sortTransactionsNewestFirst, getTxTime } from '../../lib/transactionUtils';
 import { saveAppConfig, DEFAULT_QARD_CONFIG } from '../../lib/config';
-import { BNBLogo } from '../BNBLogo';
+import { AMBLogo } from '../AMBLogo';
 import { HeaderPendingModal } from '../HeaderPendingModal';
 import SamityScreen from '../SamityScreen';
 import UnifiedBackButton from '../UnifiedBackButton';
 import SamityAdmin from '../SamityAdmin';
 import SafiPremiumShop from '../SafiPremiumShop';
 import TelecomAdmin from '../TelecomAdmin';
-import BnbSalaryAdmin from '../BnbSalaryAdmin';
+import AmbSalaryAdmin from '../AmbSalaryAdmin';
 import { HistoryRetentionSettings } from '../HistoryRetentionSettings';
 import { runWalletEndToEndTests, TestResultItem } from '../../lib/walletTests';
 import { 
@@ -927,7 +927,7 @@ export function AdminApprovalsSection(props: any) {
                                 const reqKey = u.uid || `user_${u.phone}`;
                                 const isExpanded = expandedReqIds[reqKey] || false;
 
-                                const badgeText = isSamity ? '🏢 সমবায় সমিতি সদস্য আবেদন' : '📱 নরমাল সদস্য (BNB কোম্পানি ইনভেস্টার) আবেদন';
+                                const badgeText = isSamity ? '🏢 সমবায় সমিতি সদস্য আবেদন' : '📱 নরমাল সদস্য (AMB কোম্পানি ইনভেস্টার) আবেদন';
                                 const badgeStyle = isSamity ? 'bg-emerald-600 text-white border-emerald-700' : 'bg-sky-600 text-white border-sky-700';
                                 const cardThemeStyle = isSamity 
                                   ? 'bg-emerald-50/40 border-emerald-300 hover:border-emerald-400 border-l-4 border-l-emerald-600'
@@ -1353,7 +1353,7 @@ export function AdminApprovalsSection(props: any) {
                           <div className="space-y-3 pt-2">
                             <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                               <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                                💼 BNB এজেন্ট ও প্রতিনিধি আবেদনসমূহ ({pendingAgents.length} টি)
+                                💼 AMB এজেন্ট ও প্রতিনিধি আবেদনসমূহ ({pendingAgents.length} টি)
                               </h3>
                             </div>
                             <div className="space-y-2">
@@ -1465,7 +1465,7 @@ export function AdminApprovalsSection(props: any) {
                           <div className="space-y-3 pt-2">
                             <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                               <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                                💼 BNB এজেন্ট ও প্রতিনিধি আবেদনসমূহ ({pendingAgents.length} টি)
+                                💼 AMB এজেন্ট ও প্রতিনিধি আবেদনসমূহ ({pendingAgents.length} টি)
                               </h3>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

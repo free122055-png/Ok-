@@ -34,7 +34,7 @@ import {
   ShieldAlert
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BNBLogo } from './BNBLogo';
+import { AMBLogo } from './AMBLogo';
 import { doc, updateDoc, collection, addDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
@@ -94,25 +94,25 @@ export default function DrawerMenu({
 
   // 3. Biometric fingerprint state
   const [fingerprintEnabled, setFingerprintEnabled] = useState(() => {
-    return localStorage.getItem('bnb_biometric_enabled') === 'true';
+    return localStorage.getItem('amb_biometric_enabled') === 'true';
   });
   const [biometricScanning, setBiometricScanning] = useState(false);
   const [biometricComplete, setBiometricComplete] = useState(false);
 
   // 4. Language state
   const [localAppLanguage, setLocalAppLanguage] = useState(() => {
-    return localStorage.getItem('bnb_lang') || 'bn';
+    return localStorage.getItem('amb_lang') || 'bn';
   });
   const appLanguage = propAppLanguage !== undefined ? propAppLanguage : localAppLanguage;
 
   // 5. Notification preference state
   const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
-    return localStorage.getItem('bnb_notify_enabled') !== 'false';
+    return localStorage.getItem('amb_notify_enabled') !== 'false';
   });
 
   // 6. Theme state
   const [localDarkMode, setLocalDarkMode] = useState(() => {
-    return localStorage.getItem('bnb_dark_mode') === 'true';
+    return localStorage.getItem('amb_dark_mode') === 'true';
   });
   const darkMode = propDarkMode !== undefined ? propDarkMode : localDarkMode;
 
@@ -181,13 +181,13 @@ export default function DrawerMenu({
 
         'ℹ️ INFORMATION (তথ্য)': 'ℹ️ SYSTEM INFORMATION',
         'শর্তাবলী (Terms & Conditions)': 'Terms & Conditions',
-        'BNB কো-অপারেティブ এর আইনি শর্তাবলী': 'Legal terms of BNB Cooperative',
+        'AMB কো-অপারেティブ এর আইনি শর্তাবলী': 'Legal terms of AMB Cooperative',
         'গোপনীয়তা নীতি (Privacy Policy)': 'Privacy Policy',
         'আপনার ব্যক্তিগত ও লেনদেন তথ্যের সুরক্ষা': 'Protection of personal and transaction data',
 
         '👨💼 ABOUT (আমাদের সম্পর্কে)': '👨💼 ABOUT THE INITIATIVE',
         'আমাদের সম্পর্কে': 'About Us',
-        'BNB সমবায় উদ্যোগের মূল লক্ষ্য ও টিম': 'Core mission and team of BNB initiative',
+        'AMB সমবায় উদ্যোগের মূল লক্ষ্য ও টিম': 'Core mission and team of AMB initiative',
         'অ্যাপের ভার্সন': 'App Version',
         'রিলিজ ও কারিগরি সংস্করণ বিস্তারিত': 'Release and technical version details',
         'যোগাযোগের তথ্য': 'Contact Information',
@@ -215,7 +215,7 @@ export default function DrawerMenu({
   const handleToggleBiometrics = () => {
     if (fingerprintEnabled) {
       // Disabling is instant
-      localStorage.setItem('bnb_biometric_enabled', 'false');
+      localStorage.setItem('amb_biometric_enabled', 'false');
       setFingerprintEnabled(false);
       setFeedback({ type: 'success', message: 'ফিঙ্গারপ্রিন্ট/ফেস আইডি সফলভাবে নিষ্ক্রিয় করা হয়েছে।' });
     } else {
@@ -227,7 +227,7 @@ export default function DrawerMenu({
         setBiometricComplete(true);
         setTimeout(() => {
           setBiometricScanning(false);
-          localStorage.setItem('bnb_biometric_enabled', 'true');
+          localStorage.setItem('amb_biometric_enabled', 'true');
           setFingerprintEnabled(true);
           setFeedback({ type: 'success', message: 'ফিঙ্গারপ্রিন্ট/ফেস আইডি সফলভাবে সক্রিয় করা হয়েছে!' });
         }, 1000);
@@ -316,7 +316,7 @@ export default function DrawerMenu({
     try {
       // Write durable problem ticket to Firestore
       const reportsRef = collection(db, 'user_reports');
-      const ticketId = 'BNB-' + Math.floor(100000 + Math.random() * 900000);
+      const ticketId = 'AMB-' + Math.floor(100000 + Math.random() * 900000);
       
       await addDoc(reportsRef, {
         ticketId,
@@ -390,7 +390,7 @@ export default function DrawerMenu({
       onLanguageChange(lang);
     } else {
       setLocalAppLanguage(lang);
-      localStorage.setItem('bnb_lang', lang);
+      localStorage.setItem('amb_lang', lang);
     }
     setFeedback({ 
       type: 'success', 
@@ -402,7 +402,7 @@ export default function DrawerMenu({
   const handleNotificationToggle = () => {
     const nextVal = !notificationsEnabled;
     setNotificationsEnabled(nextVal);
-    localStorage.setItem('bnb_notify_enabled', String(nextVal));
+    localStorage.setItem('amb_notify_enabled', String(nextVal));
     setFeedback({ 
       type: 'success', 
       message: nextVal ? 'সব ধরনের পুশ নোটিফিকেশন সচল করা হয়েছে।' : 'পুশ নোটিফিকেশন সাময়িকভাবে বন্ধ করা হয়েছে।' 
@@ -418,7 +418,7 @@ export default function DrawerMenu({
       }
     } else {
       setLocalDarkMode(nextVal);
-      localStorage.setItem('bnb_dark_mode', String(nextVal));
+      localStorage.setItem('amb_dark_mode', String(nextVal));
     }
     setFeedback({ 
       type: 'success', 
@@ -485,7 +485,7 @@ export default function DrawerMenu({
       color: 'text-teal-600',
       bgColor: 'bg-teal-50',
       subItems: [
-        { id: 'terms', label: 'শর্তাবলী (Terms & Conditions)', desc: 'BNB কো-অপারেটিভ এর আইনি শর্তাবলী' },
+        { id: 'terms', label: 'শর্তাবলী (Terms & Conditions)', desc: 'AMB কো-অপারেটিভ এর আইনি শর্তাবলী' },
         { id: 'privacy', label: 'গোপনীয়তা নীতি (Privacy Policy)', desc: 'আপনার ব্যক্তিগত ও লেনদেন তথ্যের সুরক্ষা' },
         { id: 'permissions_info', label: 'অ্যাপ পারমিশন ও ডেটা সেফটি', desc: 'কোন পারমিশন কেন ব্যবহার করা হয়' },
       ]
@@ -497,7 +497,7 @@ export default function DrawerMenu({
       color: 'text-indigo-600',
       bgColor: 'bg-indigo-50',
       subItems: [
-        { id: 'about_us', label: 'আমাদের সম্পর্কে', desc: 'BNB সমবায় উদ্যোগের মূল লক্ষ্য ও টিম' },
+        { id: 'about_us', label: 'আমাদের সম্পর্কে', desc: 'AMB সমবায় উদ্যোগের মূল লক্ষ্য ও টিম' },
         { id: 'app_version', label: 'অ্যাপের ভার্সন', desc: 'রিলিজ ও কারিগরি সংস্করণ বিস্তারিত' },
         { id: 'contact_info', label: 'যোগাযোগের তথ্য', desc: 'আমাদের অফিস ঠিকানা ও কন্টাক্ট ইনফো' },
       ]
@@ -507,12 +507,12 @@ export default function DrawerMenu({
   // FAQ Database
   const faqData = [
     {
-      q: 'Business Network Bangladesh (BNB) সমবায় সমিতি কী?',
-      a: 'BNB হচ্ছে গণপ্রজাতন্ত্রী বাংলাদেশ সরকারের বিধিমালা মেনে পরিচালিত একটি প্রগতিশীল অনলাইন ও অফলাইন ভিত্তিক সমবায় সঞ্চয় ও ঋণদান প্ল্যাটফর্ম। এর মূল উদ্দেশ্য সদস্যদের মাঝে অর্থনৈতিক বন্ধন সুদৃঢ় করা এবং গ্রামীণ ও ক্ষুদ্র ব্যবসায়ীদের সহজ শর্তে পুঁজির ব্যবস্থা করা।'
+      q: 'Al Mayadin Bazar (AMB) সমবায় সমিতি কী?',
+      a: 'AMB হচ্ছে গণপ্রজাতন্ত্রী বাংলাদেশ সরকারের বিধিমালা মেনে পরিচালিত একটি প্রগতিশীল অনলাইন ও অফলাইন ভিত্তিক সমবায় সঞ্চয় ও ঋণদান প্ল্যাটফর্ম। এর মূল উদ্দেশ্য সদস্যদের মাঝে অর্থনৈতিক বন্ধন সুদৃঢ় করা এবং গ্রামীণ ও ক্ষুদ্র ব্যবসায়ীদের সহজ শর্তে পুঁজির ব্যবস্থা করা।'
     },
     {
       q: 'আমানত ও দৈনিক সঞ্চয় জমার নিয়মাবলি কী?',
-      a: 'BNB মেম্বারগণ দৈনিক, সাপ্তাহিক বা মাসিক ভিত্তিতে সঞ্চয় জমা করতে পারেন। বিকাশ, নগদ, রকেট মোবাইল ব্যাংকিং অথবা সরাসরি এজেন্টের মাধ্যমে সঞ্চয় গ্রহণ করা হয়। জমাকৃত সঞ্চয় প্রতি মাসের শেষে সুদমুক্ত লভ্যাংশ বা ক্যাশব্যাক অর্জনে ভূমিকা রাখে।'
+      a: 'AMB মেম্বারগণ দৈনিক, সাপ্তাহিক বা মাসিক ভিত্তিতে সঞ্চয় জমা করতে পারেন। বিকাশ, নগদ, রকেট মোবাইল ব্যাংকিং অথবা সরাসরি এজেন্টের মাধ্যমে সঞ্চয় গ্রহণ করা হয়। জমাকৃত সঞ্চয় প্রতি মাসের শেষে সুদমুক্ত লভ্যাংশ বা ক্যাশব্যাক অর্জনে ভূমিকা রাখে।'
     },
     {
       q: 'আমি কীভাবে লোন বা করজে হাসানা গ্রহণ করতে পারি?',
@@ -520,7 +520,7 @@ export default function DrawerMenu({
     },
     {
       q: 'টেলিকম ও ই-মার্কেট রিচার্জ কমিশন কী?',
-      a: 'BNB টেলিকম প্যানেলে রয়েছে লাভজনক রিচার্জ কমিশন। যেকোনো রিচার্জে সদস্যরা তাৎক্ষণিক 2% থেকে 5% পর্যন্ত ক্যাশব্যাক ও ড্রাইভিং অফার কমিশন পান। এই কমিশন সরাসরি আপনার মূল ব্যালেন্সে যুক্ত হয়।'
+      a: 'AMB টেলিকম প্যানেলে রয়েছে লাভজনক রিচার্জ কমিশন। যেকোনো রিচার্জে সদস্যরা তাৎক্ষণিক 2% থেকে 5% পর্যন্ত ক্যাশব্যাক ও ড্রাইভিং অফার কমিশন পান। এই কমিশন সরাসরি আপনার মূল ব্যালেন্সে যুক্ত হয়।'
     },
     {
       q: 'আমার পিন বা পাসওয়ার্ড ভুলে গেলে করণীয় কী?',
@@ -570,12 +570,12 @@ export default function DrawerMenu({
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <BNBLogo size={34} variant="white" />
+                      <AMBLogo size={34} variant="white" />
                     )}
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-black tracking-wider uppercase text-emerald-300">BNB Business Network Bangladesh</span>
+                      <span className="text-xs font-black tracking-wider uppercase text-emerald-300">AMB Al Mayadin Bazar</span>
                       <span className="bg-emerald-500/80 text-[8px] text-white px-1 py-0.5 rounded font-mono">v2.0</span>
                     </div>
                     <span className="bg-emerald-700/60 text-white font-mono text-[9px] px-2 py-0.5 rounded-md font-bold">Bangladesh</span>
@@ -824,7 +824,7 @@ export default function DrawerMenu({
                 {/* 1. PASSWORD MODIFICATION VIEW */}
                 {activeSubModal === 'change_password' && (
                   <form onSubmit={handlePasswordChange} className="space-y-4 text-left">
-                    <p className="text-[10px] text-slate-450 leading-relaxed font-semibold">আপনার BNB মেম্বার অ্যাকাউন্ট সুরক্ষায় নতুন গোপন পাসওয়ার্ড সেট করুন।</p>
+                    <p className="text-[10px] text-slate-450 leading-relaxed font-semibold">আপনার AMB মেম্বার অ্যাকাউন্ট সুরক্ষায় নতুন গোপন পাসওয়ার্ড সেট করুন।</p>
                     <div>
                       <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">বর্তমান পাসওয়ার্ড</label>
                       <input 
@@ -1234,7 +1234,7 @@ export default function DrawerMenu({
                 {/* 9. FAQ ACCORDION LIST */}
                 {activeSubModal === 'faq' && (
                   <div className="space-y-3 text-left">
-                    <p className="text-[10.5px] text-slate-500 leading-relaxed font-semibold mb-1">BNB মেম্বারদের সচরাচর জিজ্ঞাসিত কিছু সাধারণ উত্তর ও নিয়মাবলি নিচে প্রদান করা হলো:</p>
+                    <p className="text-[10.5px] text-slate-500 leading-relaxed font-semibold mb-1">AMB মেম্বারদের সচরাচর জিজ্ঞাসিত কিছু সাধারণ উত্তর ও নিয়মাবলি নিচে প্রদান করা হলো:</p>
                     
                     <div className="space-y-2 max-h-[50vh] pr-1">
                       {faqData.map((item, idx) => {
@@ -1264,7 +1264,7 @@ export default function DrawerMenu({
                 {activeSubModal === 'terms' && (
                   <div className="text-left space-y-4 text-slate-650 leading-relaxed text-[11px] font-sans max-h-[50vh] pr-1">
                     <div className="bg-blue-50 border border-blue-100 p-3 rounded-2xl text-[10px] text-blue-700 font-semibold mb-2">
-                      ⚠️ BNB মেম্বারশিপ একাউন্ট খোলার পূর্বে দয়া করে আইনি শর্তাবলী মনোযোগ সহকারে পঠন করুন।
+                      ⚠️ AMB মেম্বারশিপ একাউন্ট খোলার পূর্বে দয়া করে আইনি শর্তাবলী মনোযোগ সহকারে পঠন করুন।
                     </div>
                     
                     <div className="space-y-3 font-medium">
@@ -1300,9 +1300,9 @@ export default function DrawerMenu({
                     </div>
 
                     <div className="space-y-1">
-                      <h4 className="text-sm font-bold text-slate-800">BNB App Production Version</h4>
+                      <h4 className="text-sm font-bold text-slate-800">AMB App Production Version</h4>
                       <p className="font-mono text-xs font-black text-purple-700">v2.0 (Stable Release)</p>
-                      <span className="text-[9.5px] text-slate-400 font-mono block">Build Signature: BNB-PROD-20260627</span>
+                      <span className="text-[9.5px] text-slate-400 font-mono block">Build Signature: AMB-PROD-20260627</span>
                     </div>
 
                     <div className="border-t border-slate-100 pt-3 text-left space-y-2.5 max-h-[30vh]">
@@ -1352,7 +1352,7 @@ export default function DrawerMenu({
                         </div>
                         <div className="min-w-0 flex-1">
                           <span className="text-[9px] text-slate-400 font-bold block uppercase tracking-wider leading-none">অফিসিয়াল ইমেইল (Email)</span>
-                          <a href="mailto:support@bnb-business.net" className="text-xs font-mono font-extrabold text-slate-800 hover:text-blue-600 block mt-1 hover:underline truncate">support@bnb-business.net</a>
+                          <a href="mailto:support@amb-business.net" className="text-xs font-mono font-extrabold text-slate-800 hover:text-blue-600 block mt-1 hover:underline truncate">support@amb-business.net</a>
                         </div>
                       </div>
 
@@ -1376,7 +1376,7 @@ export default function DrawerMenu({
                       <ShieldCheck className="w-6 h-6 shrink-0 mt-0.5 text-emerald-600" />
                       <div className="space-y-1">
                         <strong className="block text-xs font-black text-emerald-900">🛡️ আজীবন স্থায়ী ও চিরস্থায়ী অ্যাকাউন্ট (Lifetime Account)</strong>
-                        <span>BNB সমবায় ও ফিন্যান্সিয়াল প্ল্যাটফর্মে একবার অ্যাকাউন্ট তৈরি হলে তা আজীবন চিরস্থায়ী থাকে। এই অ্যাকাউন্ট কখনোই মুছে যাবে না বা সিস্টেম থেকে সরানো হবে না।</span>
+                        <span>AMB সমবায় ও ফিন্যান্সিয়াল প্ল্যাটফর্মে একবার অ্যাকাউন্ট তৈরি হলে তা আজীবন চিরস্থায়ী থাকে। এই অ্যাকাউন্ট কখনোই মুছে যাবে না বা সিস্টেম থেকে সরানো হবে না।</span>
                       </div>
                     </div>
 
@@ -1389,7 +1389,7 @@ export default function DrawerMenu({
                     <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
                       <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                         <span className="text-[10px] text-slate-500 font-bold uppercase">মেম্বার আইডি</span>
-                        <span className="font-mono text-xs font-black text-slate-800">{user.memberId || 'BNB Member'}</span>
+                        <span className="font-mono text-xs font-black text-slate-800">{user.memberId || 'AMB Member'}</span>
                       </div>
                       <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                         <span className="text-[10px] text-slate-500 font-bold uppercase">নিবন্ধিত মোবাইল</span>

@@ -25,14 +25,14 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
-interface BnbBillPayScreenProps {
+interface AmbBillPayScreenProps {
   user: User;
   onBack: () => void;
   syncLiveProfile?: () => void;
   appConfig?: AppConfig | null;
 }
 
-export default function BnbBillPayScreen({ user, onBack, syncLiveProfile, appConfig }: BnbBillPayScreenProps) {
+export default function AmbBillPayScreen({ user, onBack, syncLiveProfile, appConfig }: AmbBillPayScreenProps) {
   const [billCategory, setBillCategory] = useState<string | null>(null);
   const [selectedBillProvider, setSelectedBillProvider] = useState<any | null>(null);
   const [billSearchQuery, setBillSearchQuery] = useState('');
@@ -173,7 +173,7 @@ export default function BnbBillPayScreen({ user, onBack, syncLiveProfile, appCon
     setErrorMsg('');
     setSuccessMsg('');
 
-    if (user.bnbCardStatus === 'inactive') {
+    if (user.ambCardStatus === 'inactive') {
       setErrorMsg('দুঃখিত! আপনার ভার্চুয়াল কার্ডটি লক বা নিষ্ক্রিয় রয়েছে। অনুগ্রহ করে কার্ড আনলক করুন।');
       return;
     }
@@ -253,7 +253,7 @@ export default function BnbBillPayScreen({ user, onBack, syncLiveProfile, appCon
             <ChevronLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-sm font-black text-slate-900 leading-tight">BNB বিল পে</h1>
+            <h1 className="text-sm font-black text-slate-900 leading-tight">AMB বিল পে</h1>
             <p className="text-[10px] text-slate-400 font-bold">ইউটিলিটি ও যাবতীয় পরিষেবা বিল প্রদান</p>
           </div>
         </div>

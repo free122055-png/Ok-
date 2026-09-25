@@ -78,9 +78,9 @@ import {
   Briefcase
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BNBLogo } from '../BNBLogo';
+import { AMBLogo } from '../AMBLogo';
 import SafeDealsEscrowView from '../SafeDealsEscrowView';
-import BNBTelecomScreen from '../BNBTelecomScreen';
+import AMBTelecomScreen from '../AMBTelecomScreen';
 import SamityScreen from '../SamityScreen';
 import SamityRequestForm from '../SamityRequestForm';
 import QardScreen from '../QardScreen';
@@ -89,15 +89,15 @@ import { QardLiveTicker } from '../QardLiveTicker';
 import ProfileView from '../ProfileView';
 import { formatBanglaAmount, hasCompletedSamityProfile } from '../../lib/memberUtils';
 import MoneyExchangeModule from '../MoneyExchangeModule';
-import { BnbMobileBankingPortal } from '../BnbMobileBankingPortal';
+import { AmbMobileBankingPortal } from '../AmbMobileBankingPortal';
 import RationCardView from '../RationCardView';
-import BnbAutoSalaryPay from '../BnbAutoSalaryPay';
-import BnbEducationCenter from '../BnbEducationCenter';
+import AmbAutoSalaryPay from '../AmbAutoSalaryPay';
+import AmbEducationCenter from '../AmbEducationCenter';
 import SmartExchange from '../SmartExchange';
 import SafiPremiumShop from '../SafiPremiumShop';
-import BnbCorporateGuide from '../BnbCorporateGuide';
-import BnbBillPayScreen from '../BnbBillPayScreen';
-import BnbAutoRechargeScreen from '../BnbAutoRechargeScreen';
+import AmbCorporateGuide from '../AmbCorporateGuide';
+import AmbBillPayScreen from '../AmbBillPayScreen';
+import AmbAutoRechargeScreen from '../AmbAutoRechargeScreen';
 import { useBackHandler } from '../../lib/navigationManager';
 
 const cleanDescription = (desc: string, status?: string): string => {
@@ -517,7 +517,7 @@ const {
                     exit={{ opacity: 0, y: 30 }}
                     className="fixed inset-0 z-50 overflow-y-auto bg-slate-50 w-full h-full min-h-screen font-sans"
                   >
-                    <BNBTelecomScreen
+                    <AMBTelecomScreen
                       user={liveUser}
                       allOffers={allOffers}
                       onBack={() => setModalType(null)}
@@ -597,7 +597,7 @@ const {
                           <div>
                             <h1 className="text-sm font-black flex items-center gap-1.5 text-emerald-700 font-sans">
                               <Landmark className="w-4.5 h-4.5 text-emerald-700" />
-                              BNB সমবায় ব্যাংক লিঃ
+                              AMB সমবায় ব্যাংক লিঃ
                             </h1>
                             <p className="text-[9.5px] text-slate-400 uppercase tracking-widest font-mono font-bold">
                               ডিজিটাল রেমিট্যান্স, ক্যাশ আউট ও মোবাইল ব্যাংকিং কোর গেটওয়ে
@@ -613,7 +613,7 @@ const {
                       </header>
 
                       <div className="p-2 md:p-6 w-full flex-1 pb-16">
-                        <BnbMobileBankingPortal 
+                        <AmbMobileBankingPortal 
                           user={liveUser}
                           onClose={() => setModalType(null)}
                           syncLiveProfile={syncLiveProfile}
@@ -1363,7 +1363,7 @@ const {
                     exit={{ opacity: 0, y: 30 }}
                     className="fixed inset-0 z-50 overflow-y-auto bg-slate-50 w-full h-full min-h-screen font-sans"
                   >
-                    <BnbBillPayScreen
+                    <AmbBillPayScreen
                       user={liveUser}
                       onBack={() => setModalType(null)}
                       syncLiveProfile={syncLiveProfile}
@@ -1379,7 +1379,7 @@ const {
                     exit={{ opacity: 0, y: 30 }}
                     className="fixed inset-0 z-50 overflow-y-auto bg-slate-50 w-full h-full min-h-screen font-sans"
                   >
-                    <BnbAutoSalaryPay
+                    <AmbAutoSalaryPay
                       user={liveUser}
                       onBack={() => setModalType(null)}
                       syncLiveProfile={syncLiveProfile}
@@ -1395,7 +1395,7 @@ const {
                     exit={{ opacity: 0, y: 30 }}
                     className="fixed inset-0 z-50 overflow-y-auto bg-slate-50 w-full h-full min-h-screen font-sans"
                   >
-                    <BnbAutoRechargeScreen
+                    <AmbAutoRechargeScreen
                       user={liveUser}
                       onBack={() => setModalType(null)}
                       syncLiveProfile={syncLiveProfile}
@@ -1411,7 +1411,7 @@ const {
                     exit={{ opacity: 0, y: 30 }}
                     className="fixed inset-0 z-50 overflow-y-auto bg-slate-50 w-full h-full min-h-screen font-sans"
                   >
-                    <BnbEducationCenter
+                    <AmbEducationCenter
                       user={liveUser}
                       onBack={() => setModalType(null)}
                       appConfig={appConfig}
@@ -1443,7 +1443,7 @@ const {
                     exit={{ opacity: 0, y: 30 }}
                     className="fixed inset-0 z-50 overflow-y-auto bg-slate-50 w-full h-full min-h-screen font-sans"
                   >
-                    <BnbCorporateGuide
+                    <AmbCorporateGuide
                       user={liveUser}
                       onBack={() => setModalType(null)}
                       appConfig={appConfig}

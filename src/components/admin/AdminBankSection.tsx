@@ -25,14 +25,14 @@ import { User, Transaction, Notice, Offer, BapReport, BapGroup, BapAdminRequest,
 import { normalizeMemberId, formatBanglaAmount, normalizePhoneNumber, findUserInFirestoreByPhone, getNextSequentialMemberId, deleteUserCompletelyFromDatabase, convertBengaliToEnglishDigits } from '../../lib/memberUtils';
 import { sortTransactionsNewestFirst, getTxTime } from '../../lib/transactionUtils';
 import { saveAppConfig, DEFAULT_QARD_CONFIG } from '../../lib/config';
-import { BNBLogo } from '../BNBLogo';
+import { AMBLogo } from '../AMBLogo';
 import { HeaderPendingModal } from '../HeaderPendingModal';
 import SamityScreen from '../SamityScreen';
 import UnifiedBackButton from '../UnifiedBackButton';
 import SamityAdmin from '../SamityAdmin';
 import SafiPremiumShop from '../SafiPremiumShop';
 import TelecomAdmin from '../TelecomAdmin';
-import BnbSalaryAdmin from '../BnbSalaryAdmin';
+import AmbSalaryAdmin from '../AmbSalaryAdmin';
 import { HistoryRetentionSettings } from '../HistoryRetentionSettings';
 import { runWalletEndToEndTests, TestResultItem } from '../../lib/walletTests';
 import { 
@@ -472,13 +472,13 @@ export function AdminBankSection(props: any) {
     <>
         {adminTab === 'bank_admin' && (
           <div className="space-y-6">
-            {/* 🌟 USER DASHBOARD REPLICA: MY BNB TRANSACTION BOX NAVIGATOR */}
+            {/* 🌟 USER DASHBOARD REPLICA: MY AMB TRANSACTION BOX NAVIGATOR */}
             <div className="bg-[#0B1528] p-5 rounded-3xl border border-slate-800 space-y-4 shadow-xl text-left animate-fade-in">
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800/80 pb-3">
                 <div>
                   <h3 className="text-sm font-black text-white flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    MY BNB লেনদেন ও সার্ভিস প্যানেল (Dashboard Interactive Replica)
+                    MY AMB লেনদেন ও সার্ভিস প্যানেল (Dashboard Interactive Replica)
                   </h3>
                   <p className="text-[10px] text-slate-400 mt-0.5">
                     ইউজার ড্যাশবোর্ডের এড মানি, সেন্ড মানি ও রেমিট্যান্স সার্ভিস বক্স। যেকোনো বক্সে ক্লিক করে সেই লেনদেন বা সার্ভিসের ফি, সেটিংস, রেট এডিট ও আপডেট করুন।
@@ -494,7 +494,7 @@ export function AdminBankSection(props: any) {
               <div className="grid grid-cols-4 gap-2 sm:gap-3 text-center">
                 {[
                   { id: 'pending' as const, label: 'পেন্ডিং খাতা', icon: <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5" />, bg: 'bg-amber-500/20 text-amber-400 border-amber-500/40', count: transactions.filter(isPendingTransaction).length },
-                  { id: 'bnb_to_bnb' as const, label: 'এড মানি', icon: <PlusCircle className="w-4 h-4 sm:w-4.5 sm:h-4.5" />, bg: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' },
+                  { id: 'amb_to_amb' as const, label: 'এড মানি', icon: <PlusCircle className="w-4 h-4 sm:w-4.5 sm:h-4.5" />, bg: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' },
                   { id: 'send_money' as const, label: 'সেন্ড মানি', icon: <Send className="w-4 h-4 sm:w-4.5 sm:h-4.5" />, bg: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40' },
                   { id: 'remittance' as const, label: 'রেমিট্যান্স', icon: <Globe className="w-4 h-4 sm:w-4.5 sm:h-4.5" />, bg: 'bg-purple-500/20 text-purple-400 border-purple-500/40' },
                 ].map((item) => {
@@ -1077,12 +1077,12 @@ export function AdminBankSection(props: any) {
               <p className="text-xs text-slate-500 mt-1">সব সমবায় সদস্যদের জন্য ইস্যুকৃত ভার্চুয়াল ডেবিট ও ক্রেডিট প্রি-পেইড কার্ড ফ্রিজ, আনফ্রিজ এবং এটিএম দৈনিক লিমিট নির্ধারণ করুন।</p>
             </div>
 
-            {/* BNB Payment Method & Import Controls Box */}
+            {/* Al Mayadin Payment Method & Import Controls Box */}
             <div className="bg-white border border-slate-200 p-6 rounded-3xl text-left shadow-xs space-y-2">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h3 className="text-base font-black text-slate-800 flex items-center gap-2">
-                    🏦 BNB পেমেন্ট মেথড গেটওয়ে ও অ্যাকাউন্ট সেটিংস ম্যানেজার
+                    🏦 AMB পেমেন্ট মেথড গেটওয়ে ও অ্যাকাউন্ট সেটিংস ম্যানেজার
                   </h3>
                   <p className="text-xs text-slate-500 mt-1">
                     সদস্যদের ডিপোজিট ও উইথড্র পেইজের মোবাইল ব্যাংকিং, বাংলাদেশ ব্যাংক সমূহের অ্যাকাউন্ট এবং আন্তর্জাতিক প্রবাসী ব্যাংকের তথ্য ও সচল অবস্থা এখান থেকে নিয়ন্ত্রণ করুন।
@@ -1102,8 +1102,8 @@ export function AdminBankSection(props: any) {
           </div>
         )}
 
-            {/* 1. ADD MONEY TAB SECTION (bnb_to_bnb) */}
-            {adminBankBoxTab === 'bnb_to_bnb' && (
+            {/* 1. ADD MONEY TAB SECTION (amb_to_amb) */}
+            {adminBankBoxTab === 'amb_to_amb' && (
               <div className="space-y-6 animate-fade-in">
                 {/* 🌟 USER DASHBOARD MATCHING SUB-NAVIGATOR FOR ADD MONEY */}
                 <div className="bg-[#0B1528] border border-slate-800 p-3 rounded-3xl shadow-xl text-left space-y-3">
@@ -2501,7 +2501,7 @@ export function AdminBankSection(props: any) {
                         <input type="number" step="0.1" value={cfgSendBankFlat} onChange={e => setCfgSendBankFlat(Number(e.target.value))} className="w-full mt-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-black text-indigo-700 font-mono focus:border-indigo-500 focus:outline-none bg-white" />
                       </div>
                       <div className="bg-indigo-50/60 p-3.5 rounded-2xl border border-indigo-200/80 shadow-2xs">
-                        <label className="text-[10px] font-black text-indigo-900 block uppercase font-sans">BNB টু ব্যাংক সার্ভিস/ক্যাশ আউট চার্জ (/1000)</label>
+                        <label className="text-[10px] font-black text-indigo-900 block uppercase font-sans">AMB টু ব্যাংক সার্ভিস/ক্যাশ আউট চার্জ (/1000)</label>
                         <input type="number" step="0.1" value={cfgSendBankSvc} onChange={e => setCfgSendBankSvc(Number(e.target.value))} className="w-full mt-1.5 px-3 py-1.5 rounded-lg border border-indigo-300 text-xs font-black text-indigo-800 font-mono focus:border-indigo-500 focus:outline-none bg-white" />
                       </div>
                       <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs">
@@ -3577,12 +3577,12 @@ export function AdminBankSection(props: any) {
                         );
                       })
                       .map((u, idx) => {
-                        const cardNum = u.bnbCardNumber || 'তৈরি করা হয়নি';
-                        const accNum = u.bnbAccountNumber || '—';
-                        const holder = u.bnbCardHolderName || u.name || '—';
-                        const expiry = u.bnbCardExpiry || '—';
-                        const cvv = u.bnbCardCvv || '—';
-                        const status = u.bnbCardStatus || 'active';
+                        const cardNum = u.ambCardNumber || 'তৈরি করা হয়নি';
+                        const accNum = u.ambAccountNumber || '—';
+                        const holder = u.ambCardHolderName || u.name || '—';
+                        const expiry = u.ambCardExpiry || '—';
+                        const cvv = u.ambCardCvv || '—';
+                        const status = u.ambCardStatus || 'active';
 
                         return (
                           <tr key={`${u.uid}-${idx}`} className="hover:bg-slate-50 transition">
@@ -3614,12 +3614,12 @@ export function AdminBankSection(props: any) {
                                 <button
                                   onClick={() => {
                                     setEditingCardUser(u);
-                                    setEditCardNo(u.bnbCardNumber || '');
-                                    setEditCardAcc(u.bnbAccountNumber || '');
-                                    setEditCardHolder(u.bnbCardHolderName || u.name || '');
-                                    setEditCardExpiry(u.bnbCardExpiry || '');
-                                    setEditCardCvv(u.bnbCardCvv || '');
-                                    setEditCardStatus((u.bnbCardStatus as 'active' | 'inactive') || 'active');
+                                    setEditCardNo(u.ambCardNumber || '');
+                                    setEditCardAcc(u.ambAccountNumber || '');
+                                    setEditCardHolder(u.ambCardHolderName || u.name || '');
+                                    setEditCardExpiry(u.ambCardExpiry || '');
+                                    setEditCardCvv(u.ambCardCvv || '');
+                                    setEditCardStatus((u.ambCardStatus as 'active' | 'inactive') || 'active');
                                   }}
                                   className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded text-[10px] font-bold cursor-pointer"
                                 >
