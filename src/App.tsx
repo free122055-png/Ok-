@@ -302,7 +302,7 @@ export default function App() {
               allowLocalhostAsSecureOrigin: true,
               welcomeNotification: {
                 disable: false,
-                title: "BNB Business Network",
+                title: "Al Mayadin Bazar",
                 message: "মোবাইল পুশ নোটিফিকেশন সফলভাবে চালু হয়েছে! 🔔"
               }
             }).then(() => {
