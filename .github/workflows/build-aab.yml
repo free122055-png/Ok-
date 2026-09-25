@@ -1,4 +1,4 @@
-name: Build Signed Android AAB & APK
+name: Build Signed Android AAB (Google Play Store)
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-aab-apk:
-    name: Build & Sign AAB and APK
+  build-aab:
+    name: Build Signed Android App Bundle (AAB)
     runs-on: ubuntu-latest
 
     steps:
@@ -38,26 +38,26 @@ jobs:
         run: |
           if [ ! -f android/app/release.keystore ] || [ ! -s android/app/release.keystore ]; then
             echo "Generating release.keystore via keytool..."
-            keytool -genkeypair -v -keystore android/app/release.keystore -alias almayadin -keypass almayadin123 -storepass almayadin123 -validity 10000 -dname "CN=Al Mayadin Bazar, O=Al Mayadin, C=BD" -keyalg RSA -keysize 2048 -storetype PKCS12
+            keytool -genkeypair -v -keystore android/app/release.keystore -alias almayadin -keypass almayadin123 -storepass almayadin123 -validity 10000 -dname "CN=BNB BUSINESS Network Bangladesh, O=BNB, C=BD" -keyalg RSA -keysize 2048 -storetype PKCS12
           fi
+
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x android/gradlew
 
-      - name: Build Signed AAB and APK
+      - name: Build Signed AAB (Bundle Release)
         run: |
           cd android
-          echo "=== Building Signed Artifacts ==="
-          ./gradlew clean bundleRelease assembleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
+          echo "=== Building Signed Android App Bundle (.aab) ==="
+          ./gradlew clean bundleRelease --no-daemon -Pandroid.suppressUnsupportedCompileSdk=36
 
-      - name: Prepare Artifacts
+      - name: Prepare AAB Artifact
         run: |
           mkdir -p final-artifacts
-          cp android/app/build/outputs/bundle/release/*.aab final-artifacts/app-release.aab || true
-          cp android/app/build/outputs/apk/release/*.apk final-artifacts/app-release.apk || true
+          cp android/app/build/outputs/bundle/release/*.aab final-artifacts/BNB-BUSINESS-Network-Bangladesh-release.aab || cp android/app/build/outputs/bundle/release/*.aab final-artifacts/app-release.aab
 
-      - name: Upload Artifacts
+      - name: Upload AAB Artifact for Play Console
         uses: actions/upload-artifact@v4
         with:
-          name: Release-Builds
-          path: final-artifacts/
+          name: Google-Play-Release-AAB
+          path: final-artifacts/*.aab
           retention-days: 30
