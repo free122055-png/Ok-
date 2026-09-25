@@ -34,6 +34,12 @@ jobs:
       - name: Sync Capacitor Android
         run: npx cap sync android
 
+      - name: Ensure Keystore Exists
+        run: |
+          if [ ! -f android/app/release.keystore ] || [ ! -s android/app/release.keystore ]; then
+            echo "Generating release.keystore via keytool..."
+            keytool -genkeypair -v -keystore android/app/release.keystore -alias almayadin -keypass almayadin123 -storepass almayadin123 -validity 10000 -dname "CN=Al Mayadin Bazar, O=Al Mayadin, C=BD" -keyalg RSA -keysize 2048 -storetype PKCS12
+          fi
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x android/gradlew
 
