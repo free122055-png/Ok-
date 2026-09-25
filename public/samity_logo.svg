@@ -39,6 +39,6 @@
     <path fill="#FFFFFF" d="M 372 248 C 342 288 312 322 262 350 L 262 418 L 278 418 C 290 390 318 355 348 320 C 365 300 378 272 372 248 Z"/>
 
     <!-- BNB Text -->
-    <text x="250" y="328" text-anchor="middle" font-family="'Times New Roman', 'Georgia', serif" font-weight="900" font-size="56" fill="#FFFFFF" filter="url(#shadow)" letter-spacing="1">BNB</text>
+    <text x="250" y="328" text-anchor="middle" font-family="'Times New Roman', 'Georgia', serif" font-weight="900" font-size="56" fill="#FFFFFF" filter="url(#shadow)" letter-spacing="1">AMB</text>
   </g>
 </svg>
